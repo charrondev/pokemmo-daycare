@@ -1,0 +1,40 @@
+$colorBg: #e0e5ec;
+
+body {
+    background-color: #E0E5ED;
+}
+
+.App {
+    text-align: center;
+    background-color: $colorBg;
+    min-height: 100vh;
+    padding: 40px 0;
+    // font-size: calc(10px + 2vmin);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.App-link {
+}
+
+.App-content {
+    min-height: 100vh;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    border-radius: 10px;
+    background-color: lighten($color: $colorBg, $amount: 10);
+    box-shadow: 24px 24px 80px rgb(163, 177, 198, 0.12);
+    text-align: left;
+}

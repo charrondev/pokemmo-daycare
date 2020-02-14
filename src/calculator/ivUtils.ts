@@ -1,12 +1,10 @@
-import { Gender } from "./Pokemon";
-
 export enum Stat {
     HP = "HP",
-    ATTACK = "Attack",
-    DEFENSE = "Defense",
-    SPECIAL_ATTACK = "Special Attack",
-    SPECIAL_DEFENSE = "Special Defense",
-    SPEED = "speed"
+    ATTACK = "Atk",
+    DEFENSE = "Def",
+    SPECIAL_ATTACK = "Sp. Atk",
+    SPECIAL_DEFENSE = "Sp. Def",
+    SPEED = "Speed"
 }
 
 export interface Nature {
@@ -19,16 +17,35 @@ export type IVRequirements = Partial<
     Record<
         Stat,
         {
-            prices: Partial<Record<Gender, number>>
+            value?: number;
+            prices: Partial<Record<Gender, number>>;
         }
     >
 >;
 
-export function subtractIVRequirement(requirements: IVRequirements, statToRemove: Stat): IVRequirements {
+export type ActiveIVs = Partial<Record<Stat, boolean>>;
+
+export enum Gender {
+    MALE = "male",
+    FEMALE = "female"
+}
+
+export function swapGender(gender: Gender): Gender {
+    if (gender === Gender.MALE) {
+        return Gender.FEMALE;
+    } else {
+        return Gender.MALE;
+    }
+}
+
+export function subtractIVRequirement(
+    requirements: IVRequirements,
+    statToRemove: Stat
+): IVRequirements {
     const newRequirements: IVRequirements = {};
     for (const [stat, info] of Object.entries(requirements)) {
-        if (stat !== statToRemove && info) {
-            newRequirements[stat as Stat] = info
+        if (stat !== statToRemove) {
+            newRequirements[stat as Stat] = info;
         }
     }
 

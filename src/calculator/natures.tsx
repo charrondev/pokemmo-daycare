@@ -1,5 +1,4 @@
-import { Nature, Stat } from "./ivUtils";
-
+import { Nature, Stat } from "./IVUtils";
 
 export const Hardy: Nature = {
     name: "Hardy",
