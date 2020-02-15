@@ -1,33 +1,34 @@
-import React, { useState } from "react";
 import "@atlaskit/css-reset";
+import React from "react";
+import { Provider } from "react-redux";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.scss";
-import { CalculatorForm } from "./Form";
-import { Pokemon } from "./calculator/Pokemon";
-import { PokemonTree } from "./PokemonTree";
+import { createStore } from "./state/store";
+import { ProjectList } from "./projects/ProjectList";
+import { Project } from "./projects/Project";
 
 function App() {
-    const [pokemon, setPokemon] = useState<Pokemon | null>(null);
-
     return (
-        <div className="App">
-            <div className="App-content">
-                <h2>PokeMMO Daycare</h2>
-                <p>A calculator for breeding pokemon in PokeMMO.</p>
-                <CalculatorForm
-                    onSubmit={value => {
-                        const pokemon = new Pokemon(
-                            value.pokemon!.pokedexMon.name,
-                            value.ivRequirements,
-                            value.gender,
-                            value.nature
-                        );
-                        console.log(pokemon);
-                        setPokemon(pokemon);
-                    }}
-                />
-                {pokemon && <PokemonTree pokemon={pokemon} />}
+        <Provider store={createStore()}>
+            <div className="App">
+                <div className="App-content">
+                    <BrowserRouter>
+                        <Switch>
+                            <Route
+                                path="/projects"
+                                exact
+                                component={ProjectList}
+                            />
+                            <Route
+                                path="/projects/:projectID"
+                                component={Project}
+                                exact
+                            />
+                        </Switch>
+                    </BrowserRouter>
+                </div>
             </div>
-        </div>
+        </Provider>
     );
 }
 

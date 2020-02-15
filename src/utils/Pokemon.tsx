@@ -11,25 +11,50 @@ import {
     Gender,
     swapGender
 } from "./IVUtils";
+import { uuidv4 } from "../projects/utils";
+
+export interface PokemonType {
+    name: string;
+    ivRequirements: IVRequirements;
+    gender: Gender;
+    nature: Nature | null;
+
+    // Calculated
+    parents: Record<Gender, Pokemon> | null;
+    uuid: string;
+}
 
 /**
  * Class for pokemon data manipulations.
  */
-export class Pokemon {
-    public parents: Record<Gender, Pokemon> | null = null;
-
-    public uuid: string = uuidv4();
-
+export class Pokemon implements PokemonType {
     public static BRACER_COST = 10000;
     public static AVERAGE_UNDEFINED_PRICE = 10000;
     public static EVERSTONE_COST = 7000;
+
+    public parents: Record<Gender, Pokemon> | null = null;
+    public uuid: string = uuidv4();
 
     public constructor(
         public name: string,
         public ivRequirements: IVRequirements,
         public gender: Gender,
-        public nature: Nature | null
+        public nature: Nature | null,
+        parents?: Record<Gender, Pokemon> | null,
+        uuid?: string
     ) {
+        if (uuid) {
+            this.uuid = uuid;
+        }
+
+        if (parents !== undefined) {
+            this.parents = parents;
+        } else {
+            this.calculateParents();
+        }
+    }
+
+    private calculateParents() {
         // This is the stat/gender that's most expensive.
         // It should be elimated first.
         const mostExpensive = this.getMostExpensiveStatGender();
@@ -202,12 +227,4 @@ export class Pokemon {
 
         return mostExpensiveIV;
     }
-}
-
-function uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-        var r = (Math.random() * 16) | 0,
-            v = c == "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
 }

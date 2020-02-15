@@ -3,63 +3,64 @@
  * @license MIT
  */
 
-import React, { useState, useCallback } from "react";
-import Form, {
-    FormSection,
-    Field,
-    FormHeader,
-    CheckboxField,
-    FormFooter,
-    Fieldset
-} from "@atlaskit/form";
-import TextField from "@atlaskit/textfield";
-import { Checkbox } from "@atlaskit/checkbox";
-import styled from "styled-components";
-import { Stat, Nature, IVRequirements, Gender } from "./calculator/IVUtils";
-import Select, {
-    OptionsType,
-    ValueType,
-    OptionType,
-    FormatOptionLabelMeta,
-    AsyncSelect
-} from "@atlaskit/select";
-import * as natures from "./calculator/natures";
 import Button, { ButtonGroup } from "@atlaskit/button";
-import { setValue } from "./utils";
-import { Pokemon } from "./calculator/Pokemon";
+import { Checkbox } from "@atlaskit/checkbox";
+import Form, {
+    CheckboxField,
+    Field,
+    Fieldset,
+    FormFooter,
+    FormHeader,
+    FormSection,
+} from "@atlaskit/form";
+import Select, {
+    AsyncSelect,
+    FormatOptionLabelMeta,
+    OptionsType,
+    OptionType,
+    ValueType,
+} from "@atlaskit/select";
+import TextField from "@atlaskit/textfield";
+import React, { useCallback, useState } from "react";
+import styled from "styled-components";
+import { Gender, IVRequirements, Nature, Stat } from "../utils/IVUtils";
+import * as natures from "../utils/natures";
+import { Pokemon } from "../utils/Pokemon";
 import {
-    pokedexOptions,
+    loadPokedexOptions,
     PokeDexMonOptionType,
-    loadPokedexOptions
+    pokedexOptions,
 } from "./pokedex";
+import { setValue } from "./utils";
 
 interface NatureOptionType extends OptionType {
     nature: Nature;
 }
 
-interface FormValues {
+export interface ProjectFormValues {
     pokemon: PokeDexMonOptionType | null;
-    nature: Nature | null;
+    nature: NatureOptionType | null;
     averagePrice?: number;
     activeIVs: Stat[];
     ivRequirements: IVRequirements;
     gender: Gender;
+    projectName: string;
 }
 
-function mapData(data: any): FormValues {
+function mapData(data: any): ProjectFormValues {
     const result = {
         pokemon: null,
         nature: null,
         averagePrice: undefined,
         activeIVs: [],
         ivRequirements: {},
-        gender: Gender.MALE
+        gender: Gender.MALE,
+        projectName: "",
     };
     for (const [key, value] of Object.entries(data)) {
         setValue(result, key, value, "/");
     }
-    result.nature = data?.nature?.nature;
-    return result as FormValues;
+    return result as ProjectFormValues;
 }
 
 const natureOptions: OptionsType<NatureOptionType> = Object.values(natures).map(
@@ -67,9 +68,9 @@ const natureOptions: OptionsType<NatureOptionType> = Object.values(natures).map(
         return {
             label: nature.name,
             value: nature.name,
-            nature
+            nature,
         };
-    }
+    },
 );
 
 export function useForceUpdate() {
@@ -89,22 +90,30 @@ const RowWrapper = styled.div`
     width: calc(100% + 24px);
 `;
 
-const RowItem = styled.div`
+const RowItem = styled.div<{ alignRight?: boolean }>`
     min-width: 400px;
     padding: 12px;
     flex: 1;
+    ${props =>
+        props.alignRight
+            ? `
+        display: flex;
+        justifyContent: flex-end;
+    `
+            : ""}
 `;
 
-export function CalculatorForm(props: {
-    onSubmit?: (value: FormValues) => void;
+export function ProjectForm(props: {
+    onSubmit?: (value: ProjectFormValues) => void;
+    initialValues?: ProjectFormValues;
 }) {
+    const { initialValues } = props;
     const forceUpdate = useForceUpdate();
     return (
         <div>
-            <Form<FormValues>
+            <Form<ProjectFormValues>
                 onSubmit={(values, form) => {
                     const result = mapData(values);
-                    console.log({ values, result });
                     props.onSubmit?.(result);
                 }}
             >
@@ -113,16 +122,35 @@ export function CalculatorForm(props: {
                     return (
                         <form {...formProps}>
                             <FormSection>
-                                <FormHeader
-                                    title="Start a new Breed"
-                                    description="Let's get started on a new Breed!"
-                                />
+                                <RowWrapper>
+                                    <RowItem>
+                                        <FormHeader
+                                            title="Start a new Breed"
+                                            description="Let's get started on a new Breed!"
+                                        />
+                                    </RowItem>
+                                    <RowItem alignRight>
+                                        {pokemon && (
+                                            <img
+                                                src={
+                                                    pokemon.sprites.animated ??
+                                                    pokemon.sprites.normal
+                                                }
+                                                alt={pokemon.name + " sprite"}
+                                            />
+                                        )}
+                                    </RowItem>
+                                </RowWrapper>
+
                                 <RowWrapper>
                                     <RowItem>
                                         <Field<ValueType<PokeDexMonOptionType>>
                                             name="pokemon"
                                             label="Pokemon Name"
                                             isRequired
+                                            defaultValue={
+                                                initialValues?.pokemon
+                                            }
                                         >
                                             {({ fieldProps }) => {
                                                 return (
@@ -136,7 +164,7 @@ export function CalculatorForm(props: {
                                                         isClearable
                                                         defaultOptions={pokedexOptions.slice(
                                                             0,
-                                                            30
+                                                            30,
                                                         )}
                                                         loadOptions={
                                                             loadPokedexOptions
@@ -144,7 +172,7 @@ export function CalculatorForm(props: {
                                                         placeholder="Pokemon Name"
                                                         onChange={arg => {
                                                             fieldProps.onChange(
-                                                                arg
+                                                                arg,
                                                             );
                                                             forceUpdate();
                                                         }}
@@ -154,16 +182,24 @@ export function CalculatorForm(props: {
                                         </Field>
                                     </RowItem>
                                     <RowItem>
-                                        {pokemon && (
-                                            <img
-                                                src={
-                                                    pokemon.sprites.animated ??
-                                                    pokemon.sprites.normal
-                                                }
-                                                alt={pokemon.name + " sprite"}
-                                            />
-                                        )}
+                                        <Field
+                                            name="projectName"
+                                            label="Project Name"
+                                            defaultValue={
+                                                initialValues?.projectName
+                                            }
+                                        >
+                                            {({ fieldProps }) => (
+                                                <TextField
+                                                    {...fieldProps}
+                                                    placeholder={"(Untitled)"}
+                                                />
+                                            )}
+                                        </Field>
                                     </RowItem>
+                                    {/* <RowItem>
+
+                                    </RowItem> */}
                                 </RowWrapper>
                             </FormSection>
                             <FormSection>
@@ -171,9 +207,13 @@ export function CalculatorForm(props: {
                                     title="Required Stats"
                                     description="Choose your required IVs and nature"
                                 />
-                                <NatureAndIVs onChange={forceUpdate} />
+                                <NatureAndIVs
+                                    initialValues={initialValues}
+                                    onChange={forceUpdate}
+                                />
                             </FormSection>
                             <IVRequirementsForm
+                                initialValues={initialValues}
                                 averagePrice={
                                     mapData(getValues()).averagePrice ||
                                     Pokemon.AVERAGE_UNDEFINED_PRICE
@@ -219,7 +259,10 @@ const CheckWrapper = styled.div`
     margin-right: 12px;
 `;
 
-function NatureAndIVs(props: { onChange: () => void }) {
+function NatureAndIVs(props: {
+    onChange: () => void;
+    initialValues?: ProjectFormValues;
+}) {
     const stats = Object.values(Stat);
     return (
         <RowWrapper>
@@ -227,6 +270,7 @@ function NatureAndIVs(props: { onChange: () => void }) {
                 <Field<ValueType<NatureOptionType>>
                     name="nature"
                     label="Nature"
+                    defaultValue={props.initialValues?.nature ?? undefined}
                 >
                     {({ fieldProps }) => {
                         return (
@@ -246,6 +290,7 @@ function NatureAndIVs(props: { onChange: () => void }) {
                     name="averagePrice"
                     label="Average Price"
                     transform={eventValueToNumber}
+                    defaultValue={props.initialValues?.averagePrice}
                 >
                     {({ fieldProps }) => {
                         return (
@@ -271,7 +316,9 @@ function NatureAndIVs(props: { onChange: () => void }) {
                                     <CheckboxField
                                         name={`activeIVs`}
                                         value={stat}
-                                        defaultIsChecked={i === 0}
+                                        defaultIsChecked={props.initialValues?.activeIVs?.includes(
+                                            stat,
+                                        )}
                                     >
                                         {({ fieldProps }) => {
                                             return (
@@ -279,7 +326,7 @@ function NatureAndIVs(props: { onChange: () => void }) {
                                                     {...fieldProps}
                                                     onChange={(...args) => {
                                                         fieldProps.onChange(
-                                                            ...args
+                                                            ...args,
                                                         );
                                                         props.onChange();
                                                     }}
@@ -309,6 +356,7 @@ const TableItem = styled.td<{ isInput?: boolean }>`
 function IVRequirementsForm(props: {
     activeIVs: Stat[];
     averagePrice: number;
+    initialValues?: ProjectFormValues;
 }) {
     if (props.activeIVs.length === 0) {
         return null;
@@ -336,6 +384,10 @@ function IVRequirementsForm(props: {
                                 <TableItem isInput>
                                     <Field
                                         transform={eventValueToNumber}
+                                        defaultValue={
+                                            props.initialValues
+                                                ?.ivRequirements?.[stat]?.value
+                                        }
                                         name={`ivRequirements/${stat}/value`}
                                     >
                                         {({ fieldProps }) => {
@@ -353,6 +405,11 @@ function IVRequirementsForm(props: {
                                 <TableItem isInput>
                                     <Field
                                         transform={eventValueToNumber}
+                                        defaultValue={
+                                            props.initialValues
+                                                ?.ivRequirements?.[stat]
+                                                ?.prices?.[Gender.MALE]
+                                        }
                                         name={`ivRequirements/${stat}/prices/${Gender.MALE}`}
                                     >
                                         {({ fieldProps }) => {
@@ -370,6 +427,11 @@ function IVRequirementsForm(props: {
                                 <TableItem isInput>
                                     <Field
                                         transform={eventValueToNumber}
+                                        defaultValue={
+                                            props.initialValues
+                                                ?.ivRequirements?.[stat]
+                                                ?.prices?.[Gender.FEMALE]
+                                        }
                                         name={`ivRequirements/${stat}/prices/${Gender.FEMALE}`}
                                     >
                                         {({ fieldProps }) => {
@@ -395,7 +457,7 @@ function IVRequirementsForm(props: {
 
 const formatPokemonLabel = (
     option: PokeDexMonOptionType,
-    { context }: FormatOptionLabelMeta<OptionType>
+    { context }: FormatOptionLabelMeta<OptionType>,
 ) => {
     if (context === "menu") {
         return (
@@ -403,7 +465,7 @@ const formatPokemonLabel = (
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-start"
+                    justifyContent: "flex-start",
                 }}
             >
                 <span>
@@ -417,7 +479,7 @@ const formatPokemonLabel = (
                 <span
                     style={{
                         paddingLeft: 8,
-                        paddingBottom: 0
+                        paddingBottom: 0,
                     }}
                 >
                     {option.label}
@@ -430,7 +492,7 @@ const formatPokemonLabel = (
 
 const formatNatureLabel = (
     option: NatureOptionType,
-    { context }: FormatOptionLabelMeta<OptionType>
+    { context }: FormatOptionLabelMeta<OptionType>,
 ) => {
     if (context === "menu") {
         return (
@@ -438,13 +500,13 @@ const formatNatureLabel = (
                 style={{
                     display: "flex",
                     alignItems: "baseline",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
                 }}
             >
                 <span
                     style={{
                         paddingLeft: 8,
-                        paddingBottom: 0
+                        paddingBottom: 0,
                     }}
                 >
                     {option.label}
