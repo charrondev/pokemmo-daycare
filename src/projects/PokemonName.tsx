@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo } from "react";
-import { getPokemon } from "./pokedex";
+import { getPokemon, makeSpriteUrl } from "../data/pokedex";
 import styled from "styled-components";
 import { uppercaseFirst } from "./utils";
 
@@ -31,13 +31,13 @@ export function PokemonName(props: {
         <TitleCell>
             {props.withSprite && (
                 <img
-                    src={pokemon.sprites.normal}
+                    src={makeSpriteUrl(pokemon)}
                     height={24}
                     width={24}
                     alt={""}
                 />
             )}
-            {uppercaseFirst(pokemon.name)}
+            {uppercaseFirst(pokemon.displayName)}
         </TitleCell>
     );
 }

@@ -45,6 +45,7 @@ export function Project(props: IProps) {
             {/* <p>A calculator for breeding pokemon in PokeMMO.</p> */}
             <ProjectForm
                 onSubmit={values => {
+                    console.log(values);
                     if (!project) {
                         return;
                     }
@@ -58,7 +59,7 @@ export function Project(props: IProps) {
                         pokemon,
                         allParents,
                     } = PokemonFactory.create(
-                        values.pokemon!.pokedexMon.name,
+                        values.pokemon!.pokedexMon.identifier,
                         values.ivRequirements,
                         values.gender,
                         values.nature?.nature ?? null,

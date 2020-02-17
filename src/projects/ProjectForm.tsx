@@ -30,9 +30,14 @@ import {
     loadPokedexOptions,
     PokeDexMonOptionType,
     pokedexOptions,
-} from "./pokedex";
+    makeSpriteUrl,
+    PokedexMon,
+    pokemonForEggGroup,
+} from "../data/pokedex";
 import { setValue } from "./utils";
 import { NatureView } from "./NatureView";
+import { PokemonSpriteAndInfo } from "./PokemonSpriteAndInfo";
+import { PokemonName } from "./PokemonName";
 
 interface NatureOptionType extends OptionType {
     nature: Nature;
@@ -46,6 +51,8 @@ export interface ProjectFormValues {
     ivRequirements: IVRequirements;
     gender: Gender;
     projectName: string;
+    allowEvolvedPokemon?: boolean;
+    allowedAlternativeIdentifiers: string[];
 }
 
 function mapData(data: any): ProjectFormValues {
@@ -57,6 +64,7 @@ function mapData(data: any): ProjectFormValues {
         ivRequirements: {} as IVRequirements,
         gender: Gender.MALE,
         projectName: "",
+        allowedAlternativeIdentifiers: [],
     };
     for (const [key, value] of Object.entries(data)) {
         setValue(result, key, value, "/");
@@ -135,18 +143,16 @@ export function ProjectForm(props: {
                                 <RowWrapper>
                                     <RowItem>
                                         <FormHeader
-                                            title="Start a new Breed"
-                                            description="Let's get started on a new Breed!"
+                                            title="What are your breeding?"
+                                            description="Choose your pokemon and requirements."
                                         />
                                     </RowItem>
                                     <RowItem alignRight>
                                         {pokemon && (
-                                            <img
-                                                src={
-                                                    pokemon.sprites.animated ??
-                                                    pokemon.sprites.normal
+                                            <PokemonSpriteAndInfo
+                                                pokemonIdentifier={
+                                                    pokemon.identifier
                                                 }
-                                                alt={pokemon.name + " sprite"}
                                             />
                                         )}
                                     </RowItem>
@@ -207,11 +213,12 @@ export function ProjectForm(props: {
                                             )}
                                         </Field>
                                     </RowItem>
-                                    {/* <RowItem>
-
-                                    </RowItem> */}
                                 </RowWrapper>
                             </FormSection>
+                            <AlternativeBreedersSection
+                                pokemon={pokemon}
+                                initialValues={initialValues}
+                            />
                             <FormSection>
                                 <FormHeader
                                     title="Required Stats"
@@ -257,11 +264,150 @@ const CheckGroupRow = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
 `;
 
-const CheckWrapper = styled.div`
+const CheckWrapper = styled.div<{ isHidden?: boolean }>`
     margin-right: 12px;
+    min-width: 120px;
+    flex: 1;
+    display: ${props => (props.isHidden ? "none" : "block")};
 `;
+
+function AlternativeBreedersSection(props: {
+    pokemon?: PokedexMon;
+    initialValues?: ProjectFormValues;
+}) {
+    const { pokemon } = props;
+    const [allowEvolvedPokemon, setAllowEvolvedPokemon] = useState(
+        props.initialValues?.allowEvolvedPokemon ?? true,
+    );
+
+    const [exclusionList, setExclusionList] = useState<string[]>([]);
+    const [inclusionList, setInclusionList] = useState<string[]>(
+        props.initialValues?.allowedAlternativeIdentifiers ?? [],
+    );
+
+    if (!pokemon) {
+        return null;
+    }
+
+    const othersInEggGroup = pokemonForEggGroup(
+        pokemon.eggGroup1,
+        pokemon.eggGroup2,
+        allowEvolvedPokemon,
+    );
+
+    return (
+        <FormSection>
+            <FormHeader
+                title="Alternative Breeders"
+                description="The following pokemon may be used as alternatives in the breeding process. Remove any that you don't want to allow."
+            />
+            <RowWrapper>
+                <CheckGroupWrapper>
+                    <Fieldset legend="Alternative Breeder Options">
+                        <CheckGroupRow>
+                            <CheckWrapper>
+                                <CheckboxField
+                                    name={`allowEvolvedPokemon`}
+                                    defaultIsChecked={allowEvolvedPokemon}
+                                >
+                                    {({ fieldProps }) => {
+                                        return (
+                                            <Checkbox
+                                                {...fieldProps}
+                                                onChange={event => {
+                                                    fieldProps.onChange(event);
+                                                    setAllowEvolvedPokemon(
+                                                        event.target.checked,
+                                                    );
+                                                }}
+                                                label="Allow Evolved Pokemon"
+                                            />
+                                        );
+                                    }}
+                                </CheckboxField>
+                            </CheckWrapper>
+                            <Button
+                                onClick={() => {
+                                    setInclusionList([]);
+                                    setExclusionList([]);
+                                }}
+                            >
+                                Clear Exclusions
+                            </Button>
+                        </CheckGroupRow>
+                    </Fieldset>
+                </CheckGroupWrapper>
+            </RowWrapper>
+            <RowWrapper>
+                <CheckGroupWrapper>
+                    <Fieldset legend="Allowed Alternative Pokemon">
+                        <CheckGroupRow>
+                            {othersInEggGroup
+                                .filter(otherMon => {
+                                    return inclusionList.length > 0
+                                        ? inclusionList.includes(
+                                              otherMon.identifier,
+                                          )
+                                        : true &&
+                                              !exclusionList.includes(
+                                                  otherMon.identifier,
+                                              );
+                                })
+                                .map(otherMon => {
+                                    return (
+                                        <CheckWrapper key={otherMon.identifier}>
+                                            <CheckboxField
+                                                name={`allowedAlternativeIdentifiers`}
+                                                value={otherMon.identifier}
+                                                defaultIsChecked={
+                                                    !exclusionList.includes(
+                                                        otherMon.identifier,
+                                                    )
+                                                }
+                                            >
+                                                {({ fieldProps }) => {
+                                                    return (
+                                                        <Checkbox
+                                                            {...fieldProps}
+                                                            onChange={(
+                                                                ...args
+                                                            ) => {
+                                                                fieldProps.onChange(
+                                                                    ...args,
+                                                                );
+                                                                setExclusionList(
+                                                                    [
+                                                                        ...exclusionList,
+                                                                        otherMon.identifier,
+                                                                    ],
+                                                                );
+                                                            }}
+                                                            label={
+                                                                <PokemonName
+                                                                    name={
+                                                                        otherMon.identifier
+                                                                    }
+                                                                    withSprite
+                                                                />
+                                                            }
+                                                        />
+                                                    );
+                                                }}
+                                            </CheckboxField>
+                                        </CheckWrapper>
+                                    );
+                                })}
+                        </CheckGroupRow>
+                    </Fieldset>
+                </CheckGroupWrapper>
+            </RowWrapper>
+        </FormSection>
+    );
+}
 
 function NatureAndIVs(props: {
     onChange: () => void;
@@ -482,7 +628,7 @@ const formatPokemonLabel = (
             >
                 <span>
                     <img
-                        src={option.pokedexMon.sprites.normal}
+                        src={makeSpriteUrl(option.pokedexMon)}
                         alt={option.label + " sprite"}
                         height="24"
                         width="24"

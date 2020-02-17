@@ -107,6 +107,11 @@ export function usePokemon(pokemonID: string | null): PokemonType | null {
     });
 }
 
+export function usePokemonCosts(pokemonID: string | null) {
+    const allPokemon = useAllPokemon();
+    const pokemon = usePokemon(pokemonID);
+}
+
 export function usePokemonActions() {
     return useActions(pokemonSlice.actions);
 }
