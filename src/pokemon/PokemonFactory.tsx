@@ -13,6 +13,7 @@ import {
     ivRequirementsAsString,
 } from "./IVUtils";
 import { uuidv4 } from "../projects/utils";
+import { sample } from "lodash-es";
 
 export enum PokemonStatus {
     USED = "used",
@@ -52,9 +53,16 @@ export class PokemonFactory {
         nature: Nature | null,
         childID: string | null = null,
         projectIDs: string[] = [],
+        allowedAlternatives?: string[],
+        forceName?: boolean,
     ) {
+        let finalName = name;
+        if (!forceName && allowedAlternatives && gender !== Gender.FEMALE) {
+            finalName = sample([name, ...allowedAlternatives])!;
+        }
+
         const pokemon: PokemonType = {
-            name,
+            name: finalName,
             ivRequirements,
             gender,
             nature,
@@ -67,7 +75,11 @@ export class PokemonFactory {
             projectIDs: projectIDs,
         };
 
-        const { parentIDs, allParents } = this.calculateParents(pokemon);
+        const { parentIDs, allParents } = this.calculateParents(
+            pokemon,
+            projectIDs,
+            allowedAlternatives,
+        );
 
         allParents.forEach(parent => {
             parent.projectIDs = projectIDs;
@@ -81,6 +93,8 @@ export class PokemonFactory {
 
     public static calculateParents(
         pokemon: PokemonType,
+        projectIDs?: string[],
+        allowedAlternatives?: string[],
     ): {
         parentIDs: Record<Gender, string> | null;
         allParents: PokemonType[];
@@ -116,6 +130,8 @@ export class PokemonFactory {
                 firstParentGender,
                 null,
                 pokemon.uuid,
+                projectIDs,
+                allowedAlternatives,
             );
 
             const {
@@ -127,6 +143,8 @@ export class PokemonFactory {
                 secondParentGender,
                 pokemon.nature,
                 pokemon.uuid,
+                projectIDs,
+                allowedAlternatives,
             );
 
             const parentIDs = {
@@ -182,6 +200,8 @@ export class PokemonFactory {
                 firstParentGender,
                 null,
                 pokemon.uuid,
+                projectIDs,
+                allowedAlternatives,
             );
 
             const {
@@ -193,6 +213,8 @@ export class PokemonFactory {
                 secondParentGender,
                 null,
                 pokemon.uuid,
+                projectIDs,
+                allowedAlternatives,
             );
 
             const parentIDs = {
@@ -304,7 +326,7 @@ export class PokemonFactory {
 
         for (const [stat, info] of Object.entries(ofRequirements)) {
             const price =
-                info?.prices?.[gender] ??
+                info?.prices?.[gender] ||
                 PokemonFactory.AVERAGE_UNDEFINED_PRICE;
             if (price >= mostExpensiveIVPrice) {
                 mostExpensiveIVPrice = price;

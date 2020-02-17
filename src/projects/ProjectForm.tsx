@@ -348,14 +348,16 @@ function AlternativeBreedersSection(props: {
                         <CheckGroupRow>
                             {othersInEggGroup
                                 .filter(otherMon => {
-                                    return inclusionList.length > 0
-                                        ? inclusionList.includes(
-                                              otherMon.identifier,
-                                          )
-                                        : true &&
-                                              !exclusionList.includes(
+                                    return (
+                                        (inclusionList.length > 0
+                                            ? inclusionList.includes(
                                                   otherMon.identifier,
-                                              );
+                                              )
+                                            : true) &&
+                                        !exclusionList.includes(
+                                            otherMon.identifier,
+                                        )
+                                    );
                                 })
                                 .map(otherMon => {
                                     return (

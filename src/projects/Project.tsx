@@ -55,16 +55,15 @@ export function Project(props: IProps) {
                             pokemonID: project.pokemonID,
                         });
 
-                    const {
-                        pokemon,
-                        allParents,
-                    } = PokemonFactory.create(
+                    const { pokemon, allParents } = PokemonFactory.create(
                         values.pokemon!.pokedexMon.identifier,
                         values.ivRequirements,
                         values.gender,
                         values.nature?.nature ?? null,
                         null,
                         [project.projectID],
+                        values.allowedAlternativeIdentifiers,
+                        true,
                     );
 
                     addPokemon([pokemon, ...allParents]);
