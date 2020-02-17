@@ -11,30 +11,43 @@ import TableTree, {
     Row,
     Rows,
 } from "@atlaskit/table-tree";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { PokemonType } from "../utils/Pokemon";
+import { PokemonStatus, PokemonType } from "../pokemon/PokemonFactory";
+import {
+    PokemonByID,
+    useAllPokemon,
+    usePokemonActions,
+} from "../pokemon/pokemonSlice";
 import { IVView } from "./IVView";
-import { getPokemon } from "./pokedex";
+import { NatureView } from "./NatureView";
+import { PokemonName } from "./PokemonName";
+import {
+    useProject,
+    useProjectPokemon,
+    useProjectActions,
+} from "./projectsSlice";
 
 interface IPokemonTreeItem {
     pokemon: PokemonType;
     children: IPokemonTreeItem[];
 }
 
-function mapPokemonToTree(pokemon: PokemonType): IPokemonTreeItem {
+function mapPokemonToTree(
+    pokemonID: string,
+    allPokemon: PokemonByID,
+): IPokemonTreeItem {
+    const pokemon = allPokemon[pokemonID];
+
     return {
         pokemon,
-        children: pokemon.parents
-            ? Object.values(pokemon.parents).map(mapPokemonToTree)
+        children: pokemon.parentIDs
+            ? Object.values(pokemon.parentIDs).map(id =>
+                  mapPokemonToTree(id, allPokemon),
+              )
             : [],
     };
 }
-
-const TitleCell = styled.span`
-    display: flex;
-    align-items: center;
-`;
 
 const TableStyler = styled.div`
     & [role="gridcell"]:first-child {
@@ -47,71 +60,122 @@ const TableStyler = styled.div`
     }
 `;
 
-export function PokemonTree(props: { pokemon: PokemonType }) {
-    const [expandedIDs, setExpandedIDs] = useState<{
-        [uuid: string]: boolean;
-    }>({});
-    const treeData = [mapPokemonToTree(props.pokemon)];
+const StickyTableHead = styled.div`
+    background: #f9fafb;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+`;
+
+const CustomCell = styled(Cell)<{ isUsed?: boolean }>`
+    opacity: ${props => (props.isUsed ? 0.7 : 1)};
+`;
+
+export function PokemonTree(props: {
+    projectID: string;
+    onCalculateClick?: () => void;
+}) {
+    const project = useProject(props.projectID);
+    const pokemon = useProjectPokemon(props.projectID);
+    const allPokemon = useAllPokemon();
+    const { setPokemonStatus } = usePokemonActions();
+    const { expandPokemon, collapsePokemon } = useProjectActions();
+
+    if (!project || !pokemon) {
+        return null;
+    }
+
+    const { expandedPokemonIDs } = project;
+
+    const treeData = [mapPokemonToTree(pokemon.uuid, allPokemon)];
 
     return (
         <TableStyler>
             <TableTree>
-                <Headers>
-                    <Header width={"20%"} style={{ flex: 1 }}>
-                        Pokemon
-                    </Header>
-                    <Header width={80}>Gender</Header>
-                    <Header width={400}>Stats</Header>
-                    <Header width={100}>Complete</Header>
-                </Headers>
+                <StickyTableHead>
+                    <Headers>
+                        <Header width={"20%"} style={{ flex: 1 }}>
+                            Pokemon
+                        </Header>
+                        <Header width={80}>Gender</Header>
+                        <Header width={150}>Nature</Header>
+                        <Header width={400}>Stats</Header>
+                        <Header width={100}>Complete</Header>
+                    </Headers>
+                </StickyTableHead>
                 <Rows
                     items={treeData}
                     render={({ pokemon, children }: IPokemonTreeItem) => {
                         if (!pokemon) {
                             return null;
                         }
-                        const pokeDexMon = getPokemon(pokemon.name)!;
 
+                        const isUsed = pokemon.status === PokemonStatus.USED;
                         return (
                             <Row
-                                isDefaultExpanded={true}
+                                // isDefaultExpanded={true}
                                 itemId={pokemon.uuid}
                                 items={children}
                                 hasChildren={children.length > 0}
-                                isExpanded={expandedIDs[pokemon.uuid]}
+                                isExpanded={
+                                    expandedPokemonIDs[pokemon.uuid] ?? true
+                                }
                                 onExpand={() =>
-                                    setExpandedIDs({
-                                        [pokemon.uuid]: true,
+                                    expandPokemon({
+                                        pokemonID: pokemon.uuid,
+                                        projectID: project.projectID,
                                     })
                                 }
                                 onCollapse={() =>
-                                    setExpandedIDs({
-                                        [pokemon.uuid]: false,
+                                    collapsePokemon({
+                                        pokemonID: pokemon.uuid,
+                                        projectID: project.projectID,
                                     })
                                 }
                             >
-                                <Cell width={"20%"} style={{ flex: 1 }}>
-                                    <TitleCell>
-                                        <img
-                                            src={pokeDexMon.sprites.normal}
-                                            height={24}
-                                            width={24}
-                                            alt={""}
-                                        />
-                                        {pokemon.name}
-                                    </TitleCell>
-                                </Cell>
-                                <Cell>
+                                <CustomCell
+                                    isUsed={isUsed}
+                                    width={"20%"}
+                                    style={{ flex: 1 }}
+                                >
+                                    <PokemonName
+                                        withSprite
+                                        name={pokemon.name}
+                                    />
+                                </CustomCell>
+                                <CustomCell isUsed={isUsed}>
                                     <em>{pokemon.gender}</em>
-                                </Cell>
-                                <Cell>
+                                </CustomCell>
+                                <CustomCell isUsed={isUsed}>
+                                    <NatureView
+                                        nature={pokemon.nature}
+                                        isVertical
+                                    />
+                                </CustomCell>
+                                <CustomCell isUsed={isUsed}>
                                     <IVView
                                         ivRequirements={pokemon.ivRequirements}
                                     />
-                                </Cell>
-                                <Cell>
-                                    <Checkbox />
-                                </Cell>
+                                </CustomCell>
+
+                                <CustomCell isUsed={isUsed}>
+                                    <Checkbox
+                                        onChange={() => {
+                                            if (isUsed) {
+                                                setPokemonStatus({
+                                                    pokemon,
+                                                    status: PokemonStatus.READY,
+                                                });
+                                            } else {
+                                                setPokemonStatus({
+                                                    pokemon,
+                                                    status: PokemonStatus.USED,
+                                                });
+                                            }
+                                        }}
+                                        isChecked={isUsed}
+                                    />
+                                </CustomCell>
                             </Row>
                         );
                     }}

@@ -4,7 +4,9 @@
  */
 
 import React from "react";
-import { IVRequirements } from "../utils/IVUtils";
+import { IVRequirements, Stat } from "../pokemon/IVUtils";
+import styled from "styled-components";
+import Lozenge from "@atlaskit/lozenge";
 
 export function IVView(props: { ivRequirements: IVRequirements }) {
     return (
@@ -17,16 +19,82 @@ export function IVView(props: { ivRequirements: IVRequirements }) {
                 margin: 0,
             }}
         >
-            {Object.entries(props.ivRequirements).map(([stat, requirement]) => {
-                const value = requirement?.value ?? 31;
-
-                return (
-                    <li key={stat} style={{ listStyle: "none", margin: 4 }}>
-                        <strong>{stat}:</strong>
-                        {value}
-                    </li>
-                );
-            })}
+            {props.ivRequirements[Stat.HP] && (
+                <StatView
+                    stat={Stat.HP}
+                    points={props.ivRequirements[Stat.HP]!.value ?? 31}
+                />
+            )}
+            {props.ivRequirements[Stat.ATTACK] && (
+                <StatView
+                    stat={Stat.ATTACK}
+                    points={props.ivRequirements[Stat.ATTACK]!.value ?? 31}
+                />
+            )}
+            {props.ivRequirements[Stat.DEFENSE] && (
+                <StatView
+                    stat={Stat.DEFENSE}
+                    points={props.ivRequirements[Stat.DEFENSE]!.value ?? 31}
+                />
+            )}
+            {props.ivRequirements[Stat.SPECIAL_ATTACK] && (
+                <StatView
+                    stat={Stat.SPECIAL_ATTACK}
+                    points={
+                        props.ivRequirements[Stat.SPECIAL_ATTACK]!.value ?? 31
+                    }
+                />
+            )}
+            {props.ivRequirements[Stat.SPECIAL_DEFENSE] && (
+                <StatView
+                    stat={Stat.SPECIAL_DEFENSE}
+                    points={
+                        props.ivRequirements[Stat.SPECIAL_DEFENSE]!.value ?? 31
+                    }
+                />
+            )}
+            {props.ivRequirements[Stat.SPEED] && (
+                <StatView
+                    stat={Stat.SPEED}
+                    points={props.ivRequirements[Stat.SPEED]!.value ?? 31}
+                />
+            )}
         </ul>
+    );
+}
+
+const StatName = styled.strong`
+    color: white;
+`;
+
+const StatPoints = styled.span`
+    color: white;
+`;
+
+function StatView(props: { stat: Stat; points: number }) {
+    const color = (() => {
+        switch (props.stat) {
+            case Stat.HP:
+                return "#995D81";
+            case Stat.ATTACK:
+                return "#FF6872";
+            case Stat.DEFENSE:
+                return "#6093C9";
+            case Stat.SPECIAL_ATTACK:
+                return "#BF6167";
+            case Stat.SPECIAL_DEFENSE:
+                return "#4F7396";
+            case Stat.SPEED:
+                return "#222D35";
+        }
+    })();
+
+    return (
+        <li style={{ listStyle: "none", margin: 4 }}>
+            <Lozenge appearance={{ backgroundColor: color }}>
+                <StatName>{props.stat} </StatName>
+                <StatPoints>{props.points}</StatPoints>
+            </Lozenge>
+        </li>
     );
 }

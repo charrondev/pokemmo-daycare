@@ -5,10 +5,12 @@
 
 import { combineReducers } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-import { projectsSlice } from "../projects/projectsState";
+import { projectsSlice } from "../projects/projectsSlice";
+import { pokemonSlice } from "../pokemon/pokemonSlice";
 
 export const rootReducer = combineReducers({
-    projects: projectsSlice.reducer
+    projects: projectsSlice.reducer,
+    pokemon: pokemonSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -4,30 +4,28 @@
  */
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { useActions, uuidv4 } from "./utils";
-import { PokemonType } from "../utils/Pokemon";
+import { PokemonType, PokemonStatus } from "../pokemon/PokemonFactory";
+import { pokemonSlice, usePokemon } from "../pokemon/pokemonSlice";
+import { useStateSelector } from "../state/reducers";
 import { ProjectFormValues } from "./ProjectForm";
+import { useActions } from "./utils";
 
-interface IDCollection {
-    [uuid: string]: boolean;
-}
-
-interface IProjectData {
+type IDCollection = Record<string, boolean>;
+export interface ProjectDataType {
     name: string;
     projectID: string;
-    expandedPokemon: IDCollection;
-    completedPokemon: IDCollection;
-    pokemon: PokemonType | null;
+    expandedPokemonIDs: IDCollection;
+    pokemonID: string | null;
     dateCreated: string;
     lastFormValues: ProjectFormValues | null;
 }
 
 interface IProjectsState {
-    [projectID: string]: IProjectData;
+    [projectID: string]: ProjectDataType;
 }
 
 type StateWithProject<T extends string> = IProjectsState &
-    { [key in T]: IProjectData };
+    { [key in T]: ProjectDataType };
 
 type ProjectPayload<T> = PayloadAction<
     T & {
@@ -42,6 +40,8 @@ function ensureProject(
     return id in data;
 }
 
+export const UNTITLED_PROJECT = "(Untitled Project)";
+
 export const projectsSlice = createSlice({
     name: "projects",
     initialState: {} as IProjectsState,
@@ -51,10 +51,9 @@ export const projectsSlice = createSlice({
             const now = new Date();
             state[projectID] = {
                 projectID,
-                pokemon: null,
-                expandedPokemon: {},
-                completedPokemon: {},
-                name: "(Untitled Project)",
+                pokemonID: null,
+                expandedPokemonIDs: {},
+                name: UNTITLED_PROJECT,
                 dateCreated: now.toISOString(),
                 lastFormValues: null,
             };
@@ -65,7 +64,7 @@ export const projectsSlice = createSlice({
         ) => {
             const { projectID, pokemonID } = action.payload;
             ensureProject(state as IProjectsState, projectID);
-            state[projectID].expandedPokemon[pokemonID] = true;
+            state[projectID].expandedPokemonIDs[pokemonID] = true;
         },
         collapsePokemon: (
             state,
@@ -73,15 +72,12 @@ export const projectsSlice = createSlice({
         ) => {
             const { projectID, pokemonID } = action.payload;
             ensureProject(state as IProjectsState, projectID);
-            state[projectID].expandedPokemon[pokemonID] = false;
+            state[projectID].expandedPokemonIDs[pokemonID] = false;
         },
-        setPokemon: (
-            state,
-            action: ProjectPayload<{ pokemon: PokemonType }>,
-        ) => {
-            const { projectID, pokemon } = action.payload;
+        setPokemon: (state, action: ProjectPayload<{ pokemonID: string }>) => {
+            const { projectID, pokemonID } = action.payload;
             ensureProject(state as IProjectsState, projectID);
-            state[projectID].pokemon = pokemon;
+            state[projectID].pokemonID = pokemonID;
         },
         stashFormValues: (
             state,
@@ -92,8 +88,31 @@ export const projectsSlice = createSlice({
             state[projectID].lastFormValues = values;
         },
     },
+    extraReducers: builder =>
+        builder.addCase(
+            pokemonSlice.actions.setPokemonStatus,
+            (state, action) => {
+                const { pokemon, status } = action.payload;
+
+                if (status === PokemonStatus.USED) {
+                    const projects = pokemon.projectIDs.map(id => state[id]);
+                    projects.forEach(proj => {
+                        proj.expandedPokemonIDs[pokemon.uuid] = false;
+                    });
+                }
+            },
+        ),
 });
 
 export function useProjectActions() {
     return useActions(projectsSlice.actions);
+}
+
+export function useProject(projectID: string): ProjectDataType | null {
+    return useStateSelector(state => state.projects[projectID]);
+}
+
+export function useProjectPokemon(projectID: string): PokemonType | null {
+    const project = useProject(projectID);
+    return usePokemon(project?.pokemonID ?? null);
 }

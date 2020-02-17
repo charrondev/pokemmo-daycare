@@ -11,7 +11,7 @@ export function createStore() {
     const store = configureStore({
         reducer: rootReducer,
         middleware: [save({ debounce: 500 })],
-        preloadedState: load()
+        preloadedState: load(),
     });
 
     // Enable Webpack hot module replacement for reducers

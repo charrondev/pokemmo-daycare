@@ -4,6 +4,7 @@
  */
 
 import { OptionsType, OptionType } from "@atlaskit/select";
+import { uppercaseFirst } from "./utils";
 const allPokemon: PokedexMon[] = require("pokedex/lib/pokemon.json");
 
 export function getPokemon(input: string | number) {
@@ -35,31 +36,27 @@ export interface PokeDexMonOptionType extends OptionType {
     pokedexMon: PokedexMon;
 }
 
-function uppercaseFirst(text: string): string {
-    return text.charAt(0).toUpperCase() + text.substring(1);
-}
-
 function mapDexMonToItem(pokedexMon: PokedexMon): PokeDexMonOptionType {
     return {
         label: uppercaseFirst(pokedexMon.name),
         value: pokedexMon.id,
-        pokedexMon
+        pokedexMon,
     };
 }
 
 export const pokedexOptions: OptionsType<PokeDexMonOptionType> = allPokemon.map(
-    mapDexMonToItem
+    mapDexMonToItem,
 );
 
 export const loadPokedexOptions = async (
-    input: string
+    input: string,
 ): Promise<OptionsType<PokeDexMonOptionType>> => {
     return allPokemon
         .filter(
             poke =>
                 poke.name.includes(input.toLowerCase()) &&
                 !poke.name.includes("-") &&
-                !poke.sprites.normal.includes("x-y")
+                !poke.sprites.normal.includes("x-y"),
         )
         .map(mapDexMonToItem);
 };

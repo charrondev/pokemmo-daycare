@@ -4,13 +4,17 @@
  */
 
 import { BreadcrumbsItem, BreadcrumbsStateless } from "@atlaskit/breadcrumbs";
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { useStateSelector } from "../state/reducers";
-import { Pokemon } from "../utils/Pokemon";
+import { PokemonFactory } from "../pokemon/PokemonFactory";
+import { usePokemonActions } from "../pokemon/pokemonSlice";
 import { PokemonTree } from "./PokemonTree";
 import { ProjectForm } from "./ProjectForm";
-import { useProjectActions } from "./projectsState";
+import {
+    useProject,
+    useProjectActions,
+    useProjectPokemon,
+} from "./projectsSlice";
 
 interface IProps {}
 
@@ -18,7 +22,9 @@ const UNTITLED = "(Untitled)";
 
 export function Project(props: IProps) {
     const { projectID } = useParams<{ projectID: string }>();
-    const project = useStateSelector(state => state.projects[projectID]);
+    const project = useProject(projectID);
+    const projectPokemon = useProjectPokemon(projectID);
+    const { addPokemon, clearPokemonAndChildren } = usePokemonActions();
     const { setPokemon, stashFormValues } = useProjectActions();
 
     if (projectID && !project) {
@@ -26,12 +32,12 @@ export function Project(props: IProps) {
     }
 
     return (
-        <div className="App-content">
+        <div>
             <BreadcrumbsStateless>
                 <BreadcrumbsItem href={"/projects"} text={"Projects"} />
                 <BreadcrumbsItem
                     href={`/projects/${projectID}`}
-                    text={project.lastFormValues?.projectName || UNTITLED}
+                    text={project?.lastFormValues?.projectName || UNTITLED}
                 />
             </BreadcrumbsStateless>
 
@@ -39,19 +45,36 @@ export function Project(props: IProps) {
             {/* <p>A calculator for breeding pokemon in PokeMMO.</p> */}
             <ProjectForm
                 onSubmit={values => {
-                    const pokemon = new Pokemon(
+                    if (!project) {
+                        return;
+                    }
+                    project.pokemonID &&
+                        clearPokemonAndChildren({
+                            projectID,
+                            pokemonID: project.pokemonID,
+                        });
+
+                    const {
+                        pokemon,
+                        allParents,
+                    } = PokemonFactory.create(
                         values.pokemon!.pokedexMon.name,
                         values.ivRequirements,
                         values.gender,
                         values.nature?.nature ?? null,
+                        null,
+                        [project.projectID],
                     );
-                    console.log(pokemon);
-                    setPokemon({ pokemon, projectID });
+
+                    addPokemon([pokemon, ...allParents]);
+                    setPokemon({ pokemonID: pokemon.uuid, projectID });
                     stashFormValues({ projectID, values });
                 }}
-                initialValues={project.lastFormValues ?? undefined}
+                initialValues={project?.lastFormValues ?? undefined}
             />
-            {project.pokemon && <PokemonTree pokemon={project.pokemon} />}
+            {projectPokemon && project && (
+                <PokemonTree projectID={project.projectID} />
+            )}
         </div>
     );
 }

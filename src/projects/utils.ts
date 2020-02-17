@@ -75,3 +75,7 @@ export function useActions<A, M extends ActionCreatorsMapObject<A>>(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, dispatch, deps]);
 }
+
+export function uppercaseFirst(text: string): string {
+    return text.charAt(0).toUpperCase() + text.substring(1);
+}

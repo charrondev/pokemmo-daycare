@@ -1,4 +1,5 @@
 $colorBg: #e0e5ec;
+$fgColor: #F9FAFB;
 
 body {
     background-color: #E0E5ED;
@@ -28,13 +29,19 @@ body {
 .App-link {
 }
 
+.Container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 32px;
+}
+
 .App-content {
     min-height: 100vh;
-    max-width: 950px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 24px 32px;
     border-radius: 10px;
-    background-color: lighten($color: $colorBg, $amount: 10);
+    background-color: $fgColor;
     box-shadow: 24px 24px 80px rgb(163, 177, 198, 0.12);
     text-align: left;
 }

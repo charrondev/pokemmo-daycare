@@ -7,11 +7,13 @@ import { Button } from "@atlaskit/button/dist/cjs/components/Button";
 import DynamicTable from "@atlaskit/dynamic-table";
 import React from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
+import { useAllPokemon } from "../pokemon/pokemonSlice";
 import { useStateSelector } from "../state/reducers";
 import { IVView } from "./IVView";
-import { useProjectActions } from "./projectsState";
+import { PokemonName } from "./PokemonName";
+import { useProjectActions, UNTITLED_PROJECT } from "./projectsSlice";
 import { uuidv4 } from "./utils";
-import styled from "styled-components";
 
 interface IProps {}
 
@@ -32,11 +34,12 @@ const HeadingGroup = styled.div`
 
 export function ProjectList(props: IProps) {
     const projects = useStateSelector(state => state.projects);
+    const allPokemon = useAllPokemon();
 
     return (
         <div>
             <HeadingGroup>
-                <h2>NatureOptionType</h2>
+                <h2>Projects</h2>
                 <NewProjectButton />
             </HeadingGroup>
             <DynamicTable
@@ -61,11 +64,14 @@ export function ProjectList(props: IProps) {
                     ],
                 }}
                 rows={Object.values(projects).map(project => {
+                    const { pokemonID } = project;
+                    const pokemon =
+                        pokemonID !== null ? allPokemon[pokemonID] : null;
                     return {
                         key: project.projectID,
                         cells: [
                             {
-                                key: SortKey.PROJECT_NAME,
+                                key: project.lastFormValues?.projectName,
                                 content: (
                                     <div>
                                         <a
@@ -77,30 +83,28 @@ export function ProjectList(props: IProps) {
                                 ),
                             },
                             {
-                                key: SortKey.POKEMON_NAME,
-                                content: <div>{project.pokemon?.name}</div>,
-                            },
-                            {
-                                content: project.pokemon && (
-                                    <IVView
-                                        ivRequirements={
-                                            project.pokemon.ivRequirements
-                                        }
+                                key: pokemon?.name,
+                                content: (
+                                    <PokemonName
+                                        name={pokemon?.name}
+                                        withSprite
                                     />
                                 ),
                             },
                             {
-                                key: SortKey.DATE_CREATED,
+                                content: pokemon && (
+                                    <IVView
+                                        ivRequirements={pokemon.ivRequirements}
+                                    />
+                                ),
+                            },
+                            {
+                                key: project.dateCreated,
                                 content: <div>{project.dateCreated}</div>,
                             },
                         ],
                     };
                 })}
-                // rowsPerPage={10}
-                // defaultPage={1}
-                // loadingSpinnerSize="large"
-                // isLoading={false}
-                // isFixedSize
                 defaultSortKey={SortKey.DATE_CREATED}
                 defaultSortOrder="ASC"
                 onSort={() => console.log("onSort")}

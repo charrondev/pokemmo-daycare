@@ -1,0 +1,650 @@
+speciesID,displayName,identifier,eggGroup1,eggGroup2,percentageMale,captureRate,generationID,evolvesFromSpeciesID,evolveChainID,type1,type2,generation,isLegendary,isBaby
+1,Bulbasaur,bulbasaur,Monster,Grass,88.1,45,1,,1,grass,poison,1,0,0
+2,Ivysaur,ivysaur,Monster,Grass,88.1,45,1,1,1,grass,poison,1,0,0
+3,Venusaur,venusaur,Monster,Grass,88.1,45,1,2,1,grass,poison,1,0,0
+4,Charmander,charmander,Monster,Dragon,88.1,45,1,,2,fire,,1,0,0
+5,Charmeleon,charmeleon,Monster,Dragon,88.1,45,1,4,2,fire,,1,0,0
+6,Charizard,charizard,Monster,Dragon,88.1,45,1,5,2,fire,flying,1,0,0
+7,Squirtle,squirtle,Monster,Water 1,88.1,45,1,,3,water,,1,0,0
+8,Wartortle,wartortle,Monster,Water 1,88.1,45,1,7,3,water,,1,0,0
+9,Blastoise,blastoise,Monster,Water 1,88.1,45,1,8,3,water,,1,0,0
+10,Caterpie,caterpie,Bug,,50,255,1,,4,bug,,1,0,0
+11,Metapod,metapod,Bug,,50,120,1,10,4,bug,,1,0,0
+12,Butterfree,butterfree,Bug,,50,45,1,11,4,bug,flying,1,0,0
+13,Weedle,weedle,Bug,,50,255,1,,5,bug,poison,1,0,0
+14,Kakuna,kakuna,Bug,,50,120,1,13,5,bug,poison,1,0,0
+15,Beedrill,beedrill,Bug,,50,45,1,14,5,bug,poison,1,0,0
+16,Pidgey,pidgey,Flying,,50,255,1,,6,normal,flying,1,0,0
+17,Pidgeotto,pidgeotto,Flying,,50,120,1,16,6,normal,flying,1,0,0
+18,Pidgeot,pidgeot,Flying,,50,45,1,17,6,normal,flying,1,0,0
+19,Rattata,rattata,Field,,50,255,1,,7,normal,dark,1,0,0
+20,Raticate,raticate,Field,,50,127,1,19,7,normal,dark,1,0,0
+21,Spearow,spearow,Flying,,50,255,1,,8,normal,flying,1,0,0
+22,Fearow,fearow,Flying,,50,90,1,21,8,normal,flying,1,0,0
+23,Ekans,ekans,Field,Dragon,50,255,1,,9,poison,,1,0,0
+24,Arbok,arbok,Field,Dragon,50,90,1,23,9,poison,,1,0,0
+25,Pikachu,pikachu,Field,Fairy,50,190,1,172,10,electric,,1,0,0
+26,Raichu,raichu,Field,Fairy,50,75,1,25,10,electric,electric,1,0,0
+27,Sandshrew,sandshrew,Field,,50,255,1,,11,ground,ice,1,0,0
+28,Sandslash,sandslash,Field,,50,90,1,27,11,ground,ice,1,0,0
+29,Nidoran♀,nidoran-f,Monster,Field,0,235,1,,12,poison,,1,0,0
+30,Nidorina,nidorina,Undiscovered,,0,120,1,29,12,poison,,1,0,0
+31,Nidoqueen,nidoqueen,Undiscovered,,0,45,1,30,12,poison,ground,1,0,0
+32,Nidoran♂,nidoran-m,Monster,Field,100,235,1,,13,poison,,1,0,0
+33,Nidorino,nidorino,Monster,Field,100,120,1,32,13,poison,,1,0,0
+34,Nidoking,nidoking,Monster,Field,100,45,1,33,13,poison,ground,1,0,0
+35,Clefairy,clefairy,Fairy,,24.6,150,1,173,14,fairy,,1,0,0
+36,Clefable,clefable,Fairy,,24.6,25,1,35,14,fairy,,1,0,0
+37,Vulpix,vulpix,Field,,24.6,190,1,,15,fire,ice,1,0,0
+38,Ninetales,ninetales,Field,,24.6,75,1,37,15,fire,ice,1,0,0
+39,Jigglypuff,jigglypuff,Fairy,,24.6,170,1,174,16,normal,fairy,1,0,0
+40,Wigglytuff,wigglytuff,Fairy,,24.6,50,1,39,16,normal,fairy,1,0,0
+41,Zubat,zubat,Flying,,50,255,1,,17,poison,flying,1,0,0
+42,Golbat,golbat,Flying,,50,90,1,41,17,poison,flying,1,0,0
+43,Oddish,oddish,Grass,,50,255,1,,18,grass,poison,1,0,0
+44,Gloom,gloom,Grass,,50,120,1,43,18,grass,poison,1,0,0
+45,Vileplume,vileplume,Grass,,50,45,1,44,18,grass,poison,1,0,0
+46,Paras,paras,Bug,Grass,50,190,1,,19,bug,grass,1,0,0
+47,Parasect,parasect,Bug,Grass,50,75,1,46,19,bug,grass,1,0,0
+48,Venonat,venonat,Bug,,50,190,1,,20,bug,poison,1,0,0
+49,Venomoth,venomoth,Bug,,50,75,1,48,20,bug,poison,1,0,0
+50,Diglett,diglett,Field,,50,255,1,,21,ground,ground,1,0,0
+51,Dugtrio,dugtrio,Field,,50,50,1,50,21,ground,ground,1,0,0
+52,Meowth,meowth,Field,,50,255,1,,22,normal,dark,1,0,0
+53,Persian,persian,Field,,50,90,1,52,22,normal,dark,1,0,0
+54,Psyduck,psyduck,Water 1,Field,50,190,1,,23,water,,1,0,0
+55,Golduck,golduck,Water 1,Field,50,75,1,54,23,water,,1,0,0
+56,Mankey,mankey,Field,,50,190,1,,24,fighting,,1,0,0
+57,Primeape,primeape,Field,,50,75,1,56,24,fighting,,1,0,0
+58,Growlithe,growlithe,Field,,75.4,190,1,,25,fire,,1,0,0
+59,Arcanine,arcanine,Field,,75.4,75,1,58,25,fire,,1,0,0
+60,Poliwag,poliwag,Water 1,,50,255,1,,26,water,,1,0,0
+61,Poliwhirl,poliwhirl,Water 1,,50,120,1,60,26,water,,1,0,0
+62,Poliwrath,poliwrath,Water 1,,50,45,1,61,26,water,fighting,1,0,0
+63,Abra,abra,Human-Like,,75.4,200,1,,27,psychic,,1,0,0
+64,Kadabra,kadabra,Human-Like,,75.4,100,1,63,27,psychic,,1,0,0
+65,Alakazam,alakazam,Human-Like,,75.4,50,1,64,27,psychic,,1,0,0
+66,Machop,machop,Human-Like,,75.4,180,1,,28,fighting,,1,0,0
+67,Machoke,machoke,Human-Like,,75.4,90,1,66,28,fighting,,1,0,0
+68,Machamp,machamp,Human-Like,,75.4,45,1,67,28,fighting,,1,0,0
+69,Bellsprout,bellsprout,Grass,,50,255,1,,29,grass,poison,1,0,0
+70,Weepinbell,weepinbell,Grass,,50,120,1,69,29,grass,poison,1,0,0
+71,Victreebel,victreebel,Grass,,50,45,1,70,29,grass,poison,1,0,0
+72,Tentacool,tentacool,Water 3,,50,190,1,,30,water,poison,1,0,0
+73,Tentacruel,tentacruel,Water 3,,50,60,1,72,30,water,poison,1,0,0
+74,Geodude,geodude,Mineral,,50,255,1,,31,rock,ground,1,0,0
+75,Graveler,graveler,Mineral,,50,120,1,74,31,rock,ground,1,0,0
+76,Golem,golem,Mineral,,50,45,1,75,31,rock,ground,1,0,0
+77,Ponyta,ponyta,Field,,50,190,1,,32,fire,,1,0,0
+78,Rapidash,rapidash,Field,,50,60,1,77,32,fire,,1,0,0
+79,Slowpoke,slowpoke,Monster,Water 1,50,190,1,,33,water,psychic,1,0,0
+80,Slowbro,slowbro,Monster,Water 1,50,75,1,79,33,water,psychic,1,0,0
+81,Magnemite,magnemite,Mineral,,,190,1,,34,electric,steel,1,0,0
+82,Magneton,magneton,Mineral,,,60,1,81,34,electric,steel,1,0,0
+83,Farfetch'd,farfetchd,Flying,Field,50,45,1,,35,normal,flying,1,0,0
+84,Doduo,doduo,Flying,,50,190,1,,36,normal,flying,1,0,0
+85,Dodrio,dodrio,Flying,,50,45,1,84,36,normal,flying,1,0,0
+86,Seel,seel,Water 1,Field,50,190,1,,37,water,,1,0,0
+87,Dewgong,dewgong,Water 1,Field,50,75,1,86,37,water,ice,1,0,0
+88,Grimer,grimer,Amorphous,,50,190,1,,38,poison,poison,1,0,0
+89,Muk,muk,Amorphous,,50,75,1,88,38,poison,poison,1,0,0
+90,Shellder,shellder,Water 3,,50,190,1,,39,water,,1,0,0
+91,Cloyster,cloyster,Water 3,,50,60,1,90,39,water,ice,1,0,0
+92,Gastly,gastly,Amorphous,,50,190,1,,40,ghost,poison,1,0,0
+93,Haunter,haunter,Amorphous,,50,90,1,92,40,ghost,poison,1,0,0
+94,Gengar,gengar,Amorphous,,50,45,1,93,40,ghost,poison,1,0,0
+95,Onix,onix,Mineral,,50,45,1,,41,rock,ground,1,0,0
+96,Drowzee,drowzee,Human-Like,,50,190,1,,42,psychic,,1,0,0
+97,Hypno,hypno,Human-Like,,50,75,1,96,42,psychic,,1,0,0
+98,Krabby,krabby,Water 3,,50,225,1,,43,water,,1,0,0
+99,Kingler,kingler,Water 3,,50,60,1,98,43,water,,1,0,0
+100,Voltorb,voltorb,Mineral,,,190,1,,44,electric,,1,0,0
+101,Electrode,electrode,Mineral,,,60,1,100,44,electric,,1,0,0
+102,Exeggcute,exeggcute,Grass,,50,90,1,,45,grass,psychic,1,0,0
+103,Exeggutor,exeggutor,Grass,,50,45,1,102,45,grass,psychic,1,0,0
+104,Cubone,cubone,Monster,,50,190,1,,46,ground,,1,0,0
+105,Marowak,marowak,Monster,,50,75,1,104,46,ground,fire,1,0,0
+106,Hitmonlee,hitmonlee,Human-Like,,100,45,1,236,47,fighting,,1,0,0
+107,Hitmonchan,hitmonchan,Human-Like,,100,45,1,236,47,fighting,,1,0,0
+108,Lickitung,lickitung,Monster,,50,45,1,,48,normal,,1,0,0
+109,Koffing,koffing,Amorphous,,50,190,1,,49,poison,,1,0,0
+110,Weezing,weezing,Amorphous,,50,60,1,109,49,poison,,1,0,0
+111,Rhyhorn,rhyhorn,Monster,Field,50,120,1,,50,ground,rock,1,0,0
+112,Rhydon,rhydon,Monster,Field,50,60,1,111,50,ground,rock,1,0,0
+113,Chansey,chansey,Fairy,,0,30,1,440,51,normal,,1,0,0
+114,Tangela,tangela,Grass,,50,45,1,,52,grass,,1,0,0
+115,Kangaskhan,kangaskhan,Monster,,0,45,1,,53,normal,,1,0,0
+116,Horsea,horsea,Water 1,Dragon,50,225,1,,54,water,,1,0,0
+117,Seadra,seadra,Water 1,Dragon,50,75,1,116,54,water,,1,0,0
+118,Goldeen,goldeen,Water 2,,50,225,1,,55,water,,1,0,0
+119,Seaking,seaking,Water 2,,50,60,1,118,55,water,,1,0,0
+120,Staryu,staryu,Water 3,,,225,1,,56,water,,1,0,0
+121,Starmie,starmie,Water 3,,,60,1,120,56,water,psychic,1,0,0
+122,Mr. Mime,mr-mime,Human-Like,,50,45,1,439,57,psychic,fairy,1,0,0
+123,Scyther,scyther,Bug,,50,45,1,,58,bug,flying,1,0,0
+124,Jynx,jynx,Human-Like,,0,45,1,238,59,ice,psychic,1,0,0
+125,Electabuzz,electabuzz,Human-Like,,75.4,45,1,239,60,electric,,1,0,0
+126,Magmar,magmar,Human-Like,,75.4,45,1,240,61,fire,,1,0,0
+127,Pinsir,pinsir,Bug,,50,45,1,,62,bug,,1,0,0
+128,Tauros,tauros,Field,,100,45,1,,63,normal,,1,0,0
+129,Magikarp,magikarp,Water 2,Dragon,50,255,1,,64,water,,1,0,0
+130,Gyarados,gyarados,Water 2,Dragon,50,45,1,129,64,water,flying,1,0,0
+131,Lapras,lapras,Monster,Water 1,50,45,1,,65,water,ice,1,0,0
+132,Ditto,ditto,Ditto,,,35,1,,66,normal,,1,0,0
+133,Eevee,eevee,Field,,88.1,45,1,,67,normal,,1,0,0
+134,Vaporeon,vaporeon,Field,,88.1,45,1,133,67,water,,1,0,0
+135,Jolteon,jolteon,Field,,88.1,45,1,133,67,electric,,1,0,0
+136,Flareon,flareon,Field,,88.1,45,1,133,67,fire,,1,0,0
+137,Porygon,porygon,Mineral,,,45,1,,68,normal,,1,0,0
+138,Omanyte,omanyte,Water 1,Water 3,88.1,45,1,,69,rock,water,1,0,0
+139,Omastar,omastar,Water 1,Water 3,88.1,45,1,138,69,rock,water,1,0,0
+140,Kabuto,kabuto,Water 1,Water 3,88.1,45,1,,70,rock,water,1,0,0
+141,Kabutops,kabutops,Water 1,Water 3,88.1,45,1,140,70,rock,water,1,0,0
+142,Aerodactyl,aerodactyl,Flying,,88.1,45,1,,71,rock,flying,1,0,0
+143,Snorlax,snorlax,Monster,,88.1,25,1,446,72,normal,,1,0,0
+144,Articuno,articuno,Undiscovered,,,3,1,,73,ice,flying,1,1,0
+145,Zapdos,zapdos,Undiscovered,,,3,1,,74,electric,flying,1,1,0
+146,Moltres,moltres,Undiscovered,,,3,1,,75,fire,flying,1,1,0
+147,Dratini,dratini,Water 1,Dragon,50,45,1,,76,dragon,,1,0,0
+148,Dragonair,dragonair,Water 1,Dragon,50,45,1,147,76,dragon,,1,0,0
+149,Dragonite,dragonite,Water 1,Dragon,50,45,1,148,76,dragon,flying,1,0,0
+150,Mewtwo,mewtwo,Undiscovered,,,3,1,,77,psychic,,1,1,0
+151,Mew,mew,Undiscovered,,,45,1,,78,psychic,,1,1,0
+152,Chikorita,chikorita,Monster,Grass,88.1,45,2,,79,grass,,2,0,0
+153,Bayleef,bayleef,Monster,Grass,88.1,45,2,152,79,grass,,2,0,0
+154,Meganium,meganium,Monster,Grass,88.1,45,2,153,79,grass,,2,0,0
+155,Cyndaquil,cyndaquil,Field,,88.1,45,2,,80,fire,,2,0,0
+156,Quilava,quilava,Field,,88.1,45,2,155,80,fire,,2,0,0
+157,Typhlosion,typhlosion,Field,,88.1,45,2,156,80,fire,,2,0,0
+158,Totodile,totodile,Monster,Water 1,88.1,45,2,,81,water,,2,0,0
+159,Croconaw,croconaw,Monster,Water 1,88.1,45,2,158,81,water,,2,0,0
+160,Feraligatr,feraligatr,Monster,Water 1,88.1,45,2,159,81,water,,2,0,0
+161,Sentret,sentret,Field,,50,255,2,,82,normal,,2,0,0
+162,Furret,furret,Field,,50,90,2,161,82,normal,,2,0,0
+163,Hoothoot,hoothoot,Flying,,50,255,2,,83,normal,flying,2,0,0
+164,Noctowl,noctowl,Flying,,50,90,2,163,83,normal,flying,2,0,0
+165,Ledyba,ledyba,Bug,,50,255,2,,84,bug,flying,2,0,0
+166,Ledian,ledian,Bug,,50,90,2,165,84,bug,flying,2,0,0
+167,Spinarak,spinarak,Bug,,50,255,2,,85,bug,poison,2,0,0
+168,Ariados,ariados,Bug,,50,90,2,167,85,bug,poison,2,0,0
+169,Crobat,crobat,Flying,,50,90,2,42,17,poison,flying,2,0,0
+170,Chinchou,chinchou,Water 2,,50,190,2,,86,water,electric,2,0,0
+171,Lanturn,lanturn,Water 2,,50,75,2,170,86,water,electric,2,0,0
+172,Pichu,pichu,Undiscovered,,50,190,2,,10,electric,,2,0,1
+173,Cleffa,cleffa,Undiscovered,,24.6,150,2,,14,fairy,,2,0,1
+174,Igglybuff,igglybuff,Undiscovered,,24.6,170,2,,16,normal,fairy,2,0,1
+175,Togepi,togepi,Undiscovered,,88.1,190,2,,87,fairy,,2,0,1
+176,Togetic,togetic,Flying,Fairy,88.1,75,2,175,87,fairy,flying,2,0,0
+177,Natu,natu,Flying,,50,190,2,,88,psychic,flying,2,0,0
+178,Xatu,xatu,Flying,,50,75,2,177,88,psychic,flying,2,0,0
+179,Mareep,mareep,Monster,Field,50,235,2,,89,electric,,2,0,0
+180,Flaaffy,flaaffy,Monster,Field,50,120,2,179,89,electric,,2,0,0
+181,Ampharos,ampharos,Monster,Field,50,45,2,180,89,electric,,2,0,0
+182,Bellossom,bellossom,Grass,,50,45,2,44,18,grass,,2,0,0
+183,Marill,marill,Water 1,Fairy,50,190,2,298,90,water,fairy,2,0,0
+184,Azumarill,azumarill,Water 1,Fairy,50,75,2,183,90,water,fairy,2,0,0
+185,Sudowoodo,sudowoodo,Mineral,,50,65,2,438,91,rock,,2,0,0
+186,Politoed,politoed,Water 1,,50,45,2,61,26,water,,2,0,0
+187,Hoppip,hoppip,Fairy,Grass,50,255,2,,92,grass,flying,2,0,0
+188,Skiploom,skiploom,Fairy,Grass,50,120,2,187,92,grass,flying,2,0,0
+189,Jumpluff,jumpluff,Fairy,Grass,50,45,2,188,92,grass,flying,2,0,0
+190,Aipom,aipom,Field,,50,45,2,,93,normal,,2,0,0
+191,Sunkern,sunkern,Grass,,50,235,2,,94,grass,,2,0,0
+192,Sunflora,sunflora,Grass,,50,120,2,191,94,grass,,2,0,0
+193,Yanma,yanma,Bug,,50,75,2,,95,bug,flying,2,0,0
+194,Wooper,wooper,Water 1,Field,50,255,2,,96,water,ground,2,0,0
+195,Quagsire,quagsire,Water 1,Field,50,90,2,194,96,water,ground,2,0,0
+196,Espeon,espeon,Field,,88.1,45,2,133,67,psychic,,2,0,0
+197,Umbreon,umbreon,Field,,88.1,45,2,133,67,dark,,2,0,0
+198,Murkrow,murkrow,Flying,,50,30,2,,97,dark,flying,2,0,0
+199,Slowking,slowking,Monster,Water 1,50,70,2,79,33,water,psychic,2,0,0
+200,Misdreavus,misdreavus,Amorphous,,50,45,2,,98,ghost,,2,0,0
+201,Unown,unown,Undiscovered,,,225,2,,99,psychic,,2,0,0
+202,Wobbuffet,wobbuffet,Amorphous,,50,45,2,360,100,psychic,,2,0,0
+203,Girafarig,girafarig,Field,,50,60,2,,101,normal,psychic,2,0,0
+204,Pineco,pineco,Bug,,50,190,2,,102,bug,,2,0,0
+205,Forretress,forretress,Bug,,50,75,2,204,102,bug,steel,2,0,0
+206,Dunsparce,dunsparce,Field,,50,190,2,,103,normal,,2,0,0
+207,Gligar,gligar,Bug,,50,60,2,,104,ground,flying,2,0,0
+208,Steelix,steelix,Mineral,,50,25,2,95,41,steel,ground,2,0,0
+209,Snubbull,snubbull,Field,Fairy,24.6,190,2,,105,fairy,,2,0,0
+210,Granbull,granbull,Field,Fairy,24.6,75,2,209,105,fairy,,2,0,0
+211,Qwilfish,qwilfish,Water 2,,50,45,2,,106,water,poison,2,0,0
+212,Scizor,scizor,Bug,,50,25,2,123,58,bug,steel,2,0,0
+213,Shuckle,shuckle,Bug,,50,190,2,,107,bug,rock,2,0,0
+214,Heracross,heracross,Bug,,50,45,2,,108,bug,fighting,2,0,0
+215,Sneasel,sneasel,Field,,50,60,2,,109,dark,ice,2,0,0
+216,Teddiursa,teddiursa,Field,,50,120,2,,110,normal,,2,0,0
+217,Ursaring,ursaring,Field,,50,60,2,216,110,normal,,2,0,0
+218,Slugma,slugma,Amorphous,,50,190,2,,111,fire,,2,0,0
+219,Magcargo,magcargo,Amorphous,,50,75,2,218,111,fire,rock,2,0,0
+220,Swinub,swinub,Field,,50,225,2,,112,ice,ground,2,0,0
+221,Piloswine,piloswine,Field,,50,75,2,220,112,ice,ground,2,0,0
+222,Corsola,corsola,Water 1,Water 3,24.6,60,2,,113,water,rock,2,0,0
+223,Remoraid,remoraid,Water 1,Water 2,50,190,2,,114,water,,2,0,0
+224,Octillery,octillery,Water 1,Water 2,50,75,2,223,114,water,,2,0,0
+225,Delibird,delibird,Water 1,Field,50,45,2,,115,ice,flying,2,0,0
+226,Mantine,mantine,Water 1,,50,25,2,458,116,water,flying,2,0,0
+227,Skarmory,skarmory,Flying,,50,25,2,,117,steel,flying,2,0,0
+228,Houndour,houndour,Field,,50,120,2,,118,dark,fire,2,0,0
+229,Houndoom,houndoom,Field,,50,45,2,228,118,dark,fire,2,0,0
+230,Kingdra,kingdra,Water 1,Dragon,50,45,2,117,54,water,dragon,2,0,0
+231,Phanpy,phanpy,Field,,50,120,2,,119,ground,,2,0,0
+232,Donphan,donphan,Field,,50,60,2,231,119,ground,,2,0,0
+233,Porygon2,porygon2,Mineral,,,45,2,137,68,normal,,2,0,0
+234,Stantler,stantler,Field,,50,45,2,,120,normal,,2,0,0
+235,Smeargle,smeargle,Field,,50,45,2,,121,normal,,2,0,0
+236,Tyrogue,tyrogue,Undiscovered,,100,75,2,,47,fighting,,2,0,1
+237,Hitmontop,hitmontop,Human-Like,,100,45,2,236,47,fighting,,2,0,0
+238,Smoochum,smoochum,Undiscovered,,0,45,2,,59,ice,psychic,2,0,1
+239,Elekid,elekid,Undiscovered,,75.4,45,2,,60,electric,,2,0,1
+240,Magby,magby,Undiscovered,,75.4,45,2,,61,fire,,2,0,1
+241,Miltank,miltank,Field,,0,45,2,,122,normal,,2,0,0
+242,Blissey,blissey,Fairy,,0,30,2,113,51,normal,,2,0,0
+243,Raikou,raikou,Undiscovered,,,3,2,,123,electric,,2,1,0
+244,Entei,entei,Undiscovered,,,3,2,,124,fire,,2,1,0
+245,Suicune,suicune,Undiscovered,,,3,2,,125,water,,2,1,0
+246,Larvitar,larvitar,Monster,,50,45,2,,126,rock,ground,2,0,0
+247,Pupitar,pupitar,Monster,,50,45,2,246,126,rock,ground,2,0,0
+248,Tyranitar,tyranitar,Monster,,50,45,2,247,126,rock,dark,2,0,0
+249,Lugia,lugia,Undiscovered,,,3,2,,127,psychic,flying,2,1,0
+250,Ho-Oh,ho-oh,Undiscovered,,,3,2,,128,fire,flying,2,1,0
+251,Celebi,celebi,Undiscovered,,,45,2,,129,psychic,grass,2,1,0
+252,Treecko,treecko,Monster,Dragon,88.1,45,3,,130,grass,,3,0,0
+253,Grovyle,grovyle,Monster,Dragon,88.1,45,3,252,130,grass,,3,0,0
+254,Sceptile,sceptile,Monster,Dragon,88.1,45,3,253,130,grass,,3,0,0
+255,Torchic,torchic,Field,,88.1,45,3,,131,fire,,3,0,0
+256,Combusken,combusken,Field,,88.1,45,3,255,131,fire,fighting,3,0,0
+257,Blaziken,blaziken,Field,,88.1,45,3,256,131,fire,fighting,3,0,0
+258,Mudkip,mudkip,Monster,Water 1,88.1,45,3,,132,water,,3,0,0
+259,Marshtomp,marshtomp,Monster,Water 1,88.1,45,3,258,132,water,ground,3,0,0
+260,Swampert,swampert,Monster,Water 1,88.1,45,3,259,132,water,ground,3,0,0
+261,Poochyena,poochyena,Field,,50,255,3,,133,dark,,3,0,0
+262,Mightyena,mightyena,Field,,50,127,3,261,133,dark,,3,0,0
+263,Zigzagoon,zigzagoon,Field,,50,255,3,,134,normal,,3,0,0
+264,Linoone,linoone,Field,,50,90,3,263,134,normal,,3,0,0
+265,Wurmple,wurmple,Bug,,50,255,3,,135,bug,,3,0,0
+266,Silcoon,silcoon,Bug,,50,120,3,265,135,bug,,3,0,0
+267,Beautifly,beautifly,Bug,,50,45,3,266,135,bug,flying,3,0,0
+268,Cascoon,cascoon,Bug,,50,120,3,265,135,bug,,3,0,0
+269,Dustox,dustox,Bug,,50,45,3,268,135,bug,poison,3,0,0
+270,Lotad,lotad,Water 1,Grass,50,255,3,,136,water,grass,3,0,0
+271,Lombre,lombre,Water 1,Grass,50,120,3,270,136,water,grass,3,0,0
+272,Ludicolo,ludicolo,Water 1,Grass,50,45,3,271,136,water,grass,3,0,0
+273,Seedot,seedot,Field,Grass,50,255,3,,137,grass,,3,0,0
+274,Nuzleaf,nuzleaf,Field,Grass,50,120,3,273,137,grass,dark,3,0,0
+275,Shiftry,shiftry,Field,Grass,50,45,3,274,137,grass,dark,3,0,0
+276,Taillow,taillow,Flying,,50,200,3,,138,normal,flying,3,0,0
+277,Swellow,swellow,Flying,,50,45,3,276,138,normal,flying,3,0,0
+278,Wingull,wingull,Water 1,Flying,50,190,3,,139,water,flying,3,0,0
+279,Pelipper,pelipper,Water 1,Flying,50,45,3,278,139,water,flying,3,0,0
+280,Ralts,ralts,Human-Like*,Amorphous,50,235,3,,140,psychic,fairy,3,0,0
+281,Kirlia,kirlia,Human-Like*,Amorphous,50,120,3,280,140,psychic,fairy,3,0,0
+282,Gardevoir,gardevoir,Human-Like*,Amorphous,50,45,3,281,140,psychic,fairy,3,0,0
+283,Surskit,surskit,Water 1,Bug,50,200,3,,141,bug,water,3,0,0
+284,Masquerain,masquerain,Water 1,Bug,50,75,3,283,141,bug,flying,3,0,0
+285,Shroomish,shroomish,Fairy,Grass,50,255,3,,142,grass,,3,0,0
+286,Breloom,breloom,Fairy,Grass,50,90,3,285,142,grass,fighting,3,0,0
+287,Slakoth,slakoth,Field,,50,255,3,,143,normal,,3,0,0
+288,Vigoroth,vigoroth,Field,,50,120,3,287,143,normal,,3,0,0
+289,Slaking,slaking,Field,,50,45,3,288,143,normal,,3,0,0
+290,Nincada,nincada,Bug,,50,255,3,,144,bug,ground,3,0,0
+291,Ninjask,ninjask,Bug,,50,120,3,290,144,bug,flying,3,0,0
+292,Shedinja,shedinja,Mineral,,,45,3,290,144,bug,ghost,3,0,0
+293,Whismur,whismur,Monster,Field,50,190,3,,145,normal,,3,0,0
+294,Loudred,loudred,Monster,Field,50,120,3,293,145,normal,,3,0,0
+295,Exploud,exploud,Monster,Field,50,45,3,294,145,normal,,3,0,0
+296,Makuhita,makuhita,Human-Like,,75.4,180,3,,146,fighting,,3,0,0
+297,Hariyama,hariyama,Human-Like,,75.4,200,3,296,146,fighting,,3,0,0
+298,Azurill,azurill,Undiscovered,,24.6,150,3,,90,normal,fairy,3,0,1
+299,Nosepass,nosepass,Mineral,,50,255,3,,147,rock,,3,0,0
+300,Skitty,skitty,Field,Fairy,24.6,255,3,,148,normal,,3,0,0
+301,Delcatty,delcatty,Field,Fairy,24.6,60,3,300,148,normal,,3,0,0
+302,Sableye,sableye,Human-Like,,50,45,3,,149,dark,ghost,3,0,0
+303,Mawile,mawile,Field,Fairy,50,45,3,,150,steel,fairy,3,0,0
+304,Aron,aron,Monster,,50,180,3,,151,steel,rock,3,0,0
+305,Lairon,lairon,Monster,,50,90,3,304,151,steel,rock,3,0,0
+306,Aggron,aggron,Monster,,50,45,3,305,151,steel,rock,3,0,0
+307,Meditite,meditite,Human-Like,,50,180,3,,152,fighting,psychic,3,0,0
+308,Medicham,medicham,Human-Like,,50,90,3,307,152,fighting,psychic,3,0,0
+309,Electrike,electrike,Field,,50,120,3,,153,electric,,3,0,0
+310,Manectric,manectric,Field,,50,45,3,309,153,electric,,3,0,0
+311,Plusle,plusle,Fairy,,50,200,3,,154,electric,,3,0,0
+312,Minun,minun,Fairy,,50,200,3,,155,electric,,3,0,0
+313,Volbeat,volbeat,Bug,Human-Like,100,150,3,,156,bug,,3,0,0
+314,Illumise,illumise,Bug,Human-Like,0,150,3,,157,bug,,3,0,0
+315,Roselia,roselia,Fairy,Grass,50,150,3,406,158,grass,poison,3,0,0
+316,Gulpin,gulpin,Amorphous,,50,225,3,,159,poison,,3,0,0
+317,Swalot,swalot,Amorphous,,50,75,3,316,159,poison,,3,0,0
+318,Carvanha,carvanha,Water 2,,50,225,3,,160,water,dark,3,0,0
+319,Sharpedo,sharpedo,Water 2,,50,60,3,318,160,water,dark,3,0,0
+320,Wailmer,wailmer,Field,Water 2,50,125,3,,161,water,,3,0,0
+321,Wailord,wailord,Field,Water 2,50,60,3,320,161,water,,3,0,0
+322,Numel,numel,Field,,50,255,3,,162,fire,ground,3,0,0
+323,Camerupt,camerupt,Field,,50,150,3,322,162,fire,ground,3,0,0
+324,Torkoal,torkoal,Field,,50,90,3,,163,fire,,3,0,0
+325,Spoink,spoink,Field,,50,255,3,,164,psychic,,3,0,0
+326,Grumpig,grumpig,Field,,50,60,3,325,164,psychic,,3,0,0
+327,Spinda,spinda,Field,Human-Like,50,255,3,,165,normal,,3,0,0
+328,Trapinch,trapinch,Bug,Dragon*,50,255,3,,166,ground,,3,0,0
+329,Vibrava,vibrava,Bug,Dragon*,50,120,3,328,166,ground,dragon,3,0,0
+330,Flygon,flygon,Bug,Dragon*,50,45,3,329,166,ground,dragon,3,0,0
+331,Cacnea,cacnea,Grass,Human-Like,50,190,3,,167,grass,,3,0,0
+332,Cacturne,cacturne,Grass,Human-Like,50,60,3,331,167,grass,dark,3,0,0
+333,Swablu,swablu,Flying,Dragon,50,255,3,,168,normal,flying,3,0,0
+334,Altaria,altaria,Flying,Dragon,50,45,3,333,168,dragon,flying,3,0,0
+335,Zangoose,zangoose,Field,,50,90,3,,169,normal,,3,0,0
+336,Seviper,seviper,Field,Dragon,50,90,3,,170,poison,,3,0,0
+337,Lunatone,lunatone,Mineral,,,45,3,,171,rock,psychic,3,0,0
+338,Solrock,solrock,Mineral,,,45,3,,172,rock,psychic,3,0,0
+339,Barboach,barboach,Water 2,,50,190,3,,173,water,ground,3,0,0
+340,Whiscash,whiscash,Water 2,,50,75,3,339,173,water,ground,3,0,0
+341,Corphish,corphish,Water 1,Water 3,50,205,3,,174,water,,3,0,0
+342,Crawdaunt,crawdaunt,Water 1,Water 3,50,155,3,341,174,water,dark,3,0,0
+343,Baltoy,baltoy,Mineral,,,255,3,,175,ground,psychic,3,0,0
+344,Claydol,claydol,Mineral,,,90,3,343,175,ground,psychic,3,0,0
+345,Lileep,lileep,Water 3,,88.1,45,3,,176,rock,grass,3,0,0
+346,Cradily,cradily,Water 3,,88.1,45,3,345,176,rock,grass,3,0,0
+347,Anorith,anorith,Water 3,,88.1,45,3,,177,rock,bug,3,0,0
+348,Armaldo,armaldo,Water 3,,88.1,45,3,347,177,rock,bug,3,0,0
+349,Feebas,feebas,Water 1,Dragon,50,255,3,,178,water,,3,0,0
+350,Milotic,milotic,Water 1,Dragon,50,60,3,349,178,water,,3,0,0
+351,Castform,castform,Fairy,Amorphous,50,45,3,,179,normal,,3,0,0
+352,Kecleon,kecleon,Field,,50,200,3,,180,normal,,3,0,0
+353,Shuppet,shuppet,Amorphous,,50,225,3,,181,ghost,,3,0,0
+354,Banette,banette,Amorphous,,50,45,3,353,181,ghost,,3,0,0
+355,Duskull,duskull,Amorphous,,50,190,3,,182,ghost,,3,0,0
+356,Dusclops,dusclops,Amorphous,,50,90,3,355,182,ghost,,3,0,0
+357,Tropius,tropius,Monster,Grass,50,200,3,,183,grass,flying,3,0,0
+358,Chimecho,chimecho,Amorphous,,50,45,3,433,184,psychic,,3,0,0
+359,Absol,absol,Field,,50,30,3,,185,dark,,3,0,0
+360,Wynaut,wynaut,Undiscovered,,50,125,3,,100,psychic,,3,0,1
+361,Snorunt,snorunt,Fairy,Mineral,50,190,3,,186,ice,,3,0,0
+362,Glalie,glalie,Fairy,Mineral,50,75,3,361,186,ice,,3,0,0
+363,Spheal,spheal,Water 1,Field,50,255,3,,187,ice,water,3,0,0
+364,Sealeo,sealeo,Water 1,Field,50,120,3,363,187,ice,water,3,0,0
+365,Walrein,walrein,Water 1,Field,50,45,3,364,187,ice,water,3,0,0
+366,Clamperl,clamperl,Water 1,,50,255,3,,188,water,,3,0,0
+367,Huntail,huntail,Water 1,,50,60,3,366,188,water,,3,0,0
+368,Gorebyss,gorebyss,Water 1,,50,60,3,366,188,water,,3,0,0
+369,Relicanth,relicanth,Water 1,Water 2,88.1,25,3,,189,water,rock,3,0,0
+370,Luvdisc,luvdisc,Water 2,,24.6,225,3,,190,water,,3,0,0
+371,Bagon,bagon,Dragon,,50,45,3,,191,dragon,,3,0,0
+372,Shelgon,shelgon,Dragon,,50,45,3,371,191,dragon,,3,0,0
+373,Salamence,salamence,Dragon,,50,45,3,372,191,dragon,flying,3,0,0
+374,Beldum,beldum,Mineral,,,3,3,,192,steel,psychic,3,0,0
+375,Metang,metang,Mineral,,,3,3,374,192,steel,psychic,3,0,0
+376,Metagross,metagross,Mineral,,,3,3,375,192,steel,psychic,3,0,0
+377,Regirock,regirock,Undiscovered,,,3,3,,193,rock,,3,1,0
+378,Regice,regice,Undiscovered,,,3,3,,194,ice,,3,1,0
+379,Registeel,registeel,Undiscovered,,,3,3,,195,steel,,3,1,0
+380,Latias,latias,Undiscovered,,0,3,3,,196,dragon,psychic,3,1,0
+381,Latios,latios,Undiscovered,,100,3,3,,197,dragon,psychic,3,1,0
+382,Kyogre,kyogre,Undiscovered,,,3,3,,198,water,,3,1,0
+383,Groudon,groudon,Undiscovered,,,3,3,,199,ground,,3,1,0
+384,Rayquaza,rayquaza,Undiscovered,,,45,3,,200,dragon,flying,3,1,0
+385,Jirachi,jirachi,Undiscovered,,,3,3,,201,steel,psychic,3,1,0
+386,Deoxys,deoxys,Undiscovered,,,3,3,,202,psychic,,3,1,0
+387,Turtwig,turtwig,Monster,Grass,88.1,45,4,,203,grass,,4,0,0
+388,Grotle,grotle,Monster,Grass,88.1,45,4,387,203,grass,,4,0,0
+389,Torterra,torterra,Monster,Grass,88.1,45,4,388,203,grass,ground,4,0,0
+390,Chimchar,chimchar,Field,Human-Like,88.1,45,4,,204,fire,,4,0,0
+391,Monferno,monferno,Field,Human-Like,88.1,45,4,390,204,fire,fighting,4,0,0
+392,Infernape,infernape,Field,Human-Like,88.1,45,4,391,204,fire,fighting,4,0,0
+393,Piplup,piplup,Water 1,Field,88.1,45,4,,205,water,,4,0,0
+394,Prinplup,prinplup,Water 1,Field,88.1,45,4,393,205,water,,4,0,0
+395,Empoleon,empoleon,Water 1,Field,88.1,45,4,394,205,water,steel,4,0,0
+396,Starly,starly,Flying,,50,255,4,,206,normal,flying,4,0,0
+397,Staravia,staravia,Flying,,50,120,4,396,206,normal,flying,4,0,0
+398,Staraptor,staraptor,Flying,,50,45,4,397,206,normal,flying,4,0,0
+399,Bidoof,bidoof,Water 1,Field,50,255,4,,207,normal,,4,0,0
+400,Bibarel,bibarel,Water 1,Field,50,127,4,399,207,normal,water,4,0,0
+401,Kricketot,kricketot,Bug,,50,255,4,,208,bug,,4,0,0
+402,Kricketune,kricketune,Bug,,50,45,4,401,208,bug,,4,0,0
+403,Shinx,shinx,Field,,50,235,4,,209,electric,,4,0,0
+404,Luxio,luxio,Field,,50,120,4,403,209,electric,,4,0,0
+405,Luxray,luxray,Field,,50,45,4,404,209,electric,,4,0,0
+406,Budew,budew,Undiscovered,,50,255,4,,158,grass,poison,4,0,1
+407,Roserade,roserade,Fairy,Grass,50,75,4,315,158,grass,poison,4,0,0
+408,Cranidos,cranidos,Monster,,88.1,45,4,,211,rock,,4,0,0
+409,Rampardos,rampardos,Monster,,88.1,45,4,408,211,rock,,4,0,0
+410,Shieldon,shieldon,Monster,,88.1,45,4,,212,rock,steel,4,0,0
+411,Bastiodon,bastiodon,Monster,,88.1,45,4,410,212,rock,steel,4,0,0
+412,Burmy,burmy,Bug,,50,120,4,,213,bug,,4,0,0
+413,Wormadam,wormadam,Bug,,0,45,4,412,213,bug,grass,4,0,0
+414,Mothim,mothim,Bug,,100,45,4,412,213,bug,flying,4,0,0
+415,Combee,combee,Bug,,88.1,120,4,,214,bug,flying,4,0,0
+416,Vespiquen,vespiquen,Bug,,0,45,4,415,214,bug,flying,4,0,0
+417,Pachirisu,pachirisu,Field,Fairy,50,200,4,,215,electric,,4,0,0
+418,Buizel,buizel,Water 1,Field,50,190,4,,216,water,,4,0,0
+419,Floatzel,floatzel,Water 1,Field,50,75,4,418,216,water,,4,0,0
+420,Cherubi,cherubi,Fairy,Grass,50,190,4,,217,grass,,4,0,0
+421,Cherrim,cherrim,Fairy,Grass,50,75,4,420,217,grass,,4,0,0
+422,Shellos,shellos,Water 1,Amorphous,50,190,4,,218,water,,4,0,0
+423,Gastrodon,gastrodon,Water 1,Amorphous,50,75,4,422,218,water,ground,4,0,0
+424,Ambipom,ambipom,Field,,50,45,4,190,93,normal,,4,0,0
+425,Drifloon,drifloon,Amorphous,,50,125,4,,219,ghost,flying,4,0,0
+426,Drifblim,drifblim,Amorphous,,50,60,4,425,219,ghost,flying,4,0,0
+427,Buneary,buneary,Field,Human-Like,50,190,4,,220,normal,,4,0,0
+428,Lopunny,lopunny,Field,Human-Like,50,60,4,427,220,normal,,4,0,0
+429,Mismagius,mismagius,Amorphous,,50,45,4,200,98,ghost,,4,0,0
+430,Honchkrow,honchkrow,Flying,,50,30,4,198,97,dark,flying,4,0,0
+431,Glameow,glameow,Field,,24.6,190,4,,221,normal,,4,0,0
+432,Purugly,purugly,Field,,24.6,75,4,431,221,normal,,4,0,0
+433,Chingling,chingling,Undiscovered,,50,120,4,,184,psychic,,4,0,1
+434,Stunky,stunky,Field,,50,225,4,,223,poison,dark,4,0,0
+435,Skuntank,skuntank,Field,,50,60,4,434,223,poison,dark,4,0,0
+436,Bronzor,bronzor,Mineral,,,255,4,,224,steel,psychic,4,0,0
+437,Bronzong,bronzong,Mineral,,,90,4,436,224,steel,psychic,4,0,0
+438,Bonsly,bonsly,Undiscovered,,50,255,4,,91,rock,,4,0,1
+439,Mime Jr.,mime-jr,Undiscovered,,50,145,4,,57,psychic,fairy,4,0,1
+440,Happiny,happiny,Undiscovered,,0,130,4,,51,normal,,4,0,1
+441,Chatot,chatot,Flying,,50,30,4,,228,normal,flying,4,0,0
+442,Spiritomb,spiritomb,Amorphous,,50,100,4,,229,ghost,dark,4,0,0
+443,Gible,gible,Monster,Dragon,50,45,4,,230,dragon,ground,4,0,0
+444,Gabite,gabite,Monster,Dragon,50,45,4,443,230,dragon,ground,4,0,0
+445,Garchomp,garchomp,Monster,Dragon,50,45,4,444,230,dragon,ground,4,0,0
+446,Munchlax,munchlax,Undiscovered,,88.1,50,4,,72,normal,,4,0,1
+447,Riolu,riolu,Undiscovered,,88.1,75,4,,232,fighting,,4,0,1
+448,Lucario,lucario,Field,Human-Like,88.1,45,4,447,232,fighting,steel,4,0,0
+449,Hippopotas,hippopotas,Field,,50,140,4,,233,ground,,4,0,0
+450,Hippowdon,hippowdon,Field,,50,60,4,449,233,ground,,4,0,0
+451,Skorupi,skorupi,Bug,Water 3,50,120,4,,234,poison,bug,4,0,0
+452,Drapion,drapion,Bug,Water 3,50,45,4,451,234,poison,dark,4,0,0
+453,Croagunk,croagunk,Human-Like,,50,140,4,,235,poison,fighting,4,0,0
+454,Toxicroak,toxicroak,Human-Like,,50,75,4,453,235,poison,fighting,4,0,0
+455,Carnivine,carnivine,Grass,,50,200,4,,236,grass,,4,0,0
+456,Finneon,finneon,Water 2,,50,190,4,,237,water,,4,0,0
+457,Lumineon,lumineon,Water 2,,50,75,4,456,237,water,,4,0,0
+458,Mantyke,mantyke,Undiscovered,,50,25,4,,116,water,flying,4,0,1
+459,Snover,snover,Monster,Grass,50,120,4,,239,grass,ice,4,0,0
+460,Abomasnow,abomasnow,Monster,Grass,50,60,4,459,239,grass,ice,4,0,0
+461,Weavile,weavile,Field,,50,45,4,215,109,dark,ice,4,0,0
+462,Magnezone,magnezone,Mineral,,,30,4,82,34,electric,steel,4,0,0
+463,Lickilicky,lickilicky,Monster,,50,30,4,108,48,normal,,4,0,0
+464,Rhyperior,rhyperior,Monster,Field,50,30,4,112,50,ground,rock,4,0,0
+465,Tangrowth,tangrowth,Grass,,50,30,4,114,52,grass,,4,0,0
+466,Electivire,electivire,Human-Like,,75.4,30,4,125,60,electric,,4,0,0
+467,Magmortar,magmortar,Human-Like,,75.4,30,4,126,61,fire,,4,0,0
+468,Togekiss,togekiss,Flying,Fairy,88.1,30,4,176,87,fairy,flying,4,0,0
+469,Yanmega,yanmega,Bug,,50,30,4,193,95,bug,flying,4,0,0
+470,Leafeon,leafeon,Field,,88.1,45,4,133,67,grass,,4,0,0
+471,Glaceon,glaceon,Field,,88.1,45,4,133,67,ice,,4,0,0
+472,Gliscor,gliscor,Bug,,50,30,4,207,104,ground,flying,4,0,0
+473,Mamoswine,mamoswine,Field,,50,50,4,221,112,ice,ground,4,0,0
+474,Porygon-Z,porygon-z,Mineral,,,30,4,233,68,normal,,4,0,0
+475,Gallade,gallade,Human-Like*,Amorphous,100,45,4,281,140,psychic,fighting,4,0,0
+476,Probopass,probopass,Mineral,,50,60,4,299,147,rock,steel,4,0,0
+477,Dusknoir,dusknoir,Amorphous,,50,45,4,356,182,ghost,,4,0,0
+478,Froslass,froslass,Fairy,Mineral,0,75,4,361,186,ice,ghost,4,0,0
+479,Rotom,rotom,Amorphous,,,45,4,,240,electric,ghost,4,0,0
+480,Uxie,uxie,Undiscovered,,,3,4,,241,psychic,,4,1,0
+481,Mesprit,mesprit,Undiscovered,,,3,4,,242,psychic,,4,1,0
+482,Azelf,azelf,Undiscovered,,,3,4,,243,psychic,,4,1,0
+483,Dialga,dialga,Undiscovered,,,3,4,,244,steel,dragon,4,1,0
+484,Palkia,palkia,Undiscovered,,,3,4,,245,water,dragon,4,1,0
+485,Heatran,heatran,Undiscovered,,50,3,4,,246,fire,steel,4,1,0
+486,Regigigas,regigigas,Undiscovered,,,3,4,,247,normal,,4,1,0
+487,Giratina,giratina,Undiscovered,,,3,4,,248,ghost,dragon,4,1,0
+488,Cresselia,cresselia,Undiscovered,,0,3,4,,249,psychic,,4,1,0
+489,Phione,phione,Water 1,Fairy,,30,4,,250,water,,4,0,0
+490,Manaphy,manaphy,Water 1,Fairy,,3,4,,250,water,,4,1,0
+491,Darkrai,darkrai,Undiscovered,,,3,4,,252,dark,,4,1,0
+492,Shaymin,shaymin,Undiscovered,,,45,4,,253,grass,grass,4,1,0
+493,Arceus,arceus,Undiscovered,,,3,4,,254,normal,,4,1,0
+494,Victini,victini,Undiscovered,,,3,5,,255,psychic,fire,5,1,0
+495,Snivy,snivy,Field,Grass,88.1,45,5,,256,grass,,5,0,0
+496,Servine,servine,Field,Grass,88.1,45,5,495,256,grass,,5,0,0
+497,Serperior,serperior,Field,Grass,88.1,45,5,496,256,grass,,5,0,0
+498,Tepig,tepig,Field,,88.1,45,5,,257,fire,,5,0,0
+499,Pignite,pignite,Field,,88.1,45,5,498,257,fire,fighting,5,0,0
+500,Emboar,emboar,Field,,88.1,45,5,499,257,fire,fighting,5,0,0
+501,Oshawott,oshawott,Field,,88.1,45,5,,258,water,,5,0,0
+502,Dewott,dewott,Field,,88.1,45,5,501,258,water,,5,0,0
+503,Samurott,samurott,Field,,88.1,45,5,502,258,water,,5,0,0
+504,Patrat,patrat,Field,,50,255,5,,259,normal,,5,0,0
+505,Watchog,watchog,Field,,50,255,5,504,259,normal,,5,0,0
+506,Lillipup,lillipup,Field,,50,255,5,,260,normal,,5,0,0
+507,Herdier,herdier,Field,,50,120,5,506,260,normal,,5,0,0
+508,Stoutland,stoutland,Field,,50,45,5,507,260,normal,,5,0,0
+509,Purrloin,purrloin,Field,,50,255,5,,261,dark,,5,0,0
+510,Liepard,liepard,Field,,50,90,5,509,261,dark,,5,0,0
+511,Pansage,pansage,Field,,88.1,190,5,,262,grass,,5,0,0
+512,Simisage,simisage,Field,,88.1,75,5,511,262,grass,,5,0,0
+513,Pansear,pansear,Field,,88.1,190,5,,263,fire,,5,0,0
+514,Simisear,simisear,Field,,88.1,75,5,513,263,fire,,5,0,0
+515,Panpour,panpour,Field,,88.1,190,5,,264,water,,5,0,0
+516,Simipour,simipour,Field,,88.1,75,5,515,264,water,,5,0,0
+517,Munna,munna,Field,,50,190,5,,265,psychic,,5,0,0
+518,Musharna,musharna,Field,,50,75,5,517,265,psychic,,5,0,0
+519,Pidove,pidove,Flying,,50,255,5,,266,normal,flying,5,0,0
+520,Tranquill,tranquill,Flying,,50,120,5,519,266,normal,flying,5,0,0
+521,Unfezant,unfezant,Flying,,50,45,5,520,266,normal,flying,5,0,0
+522,Blitzle,blitzle,Field,,50,190,5,,267,electric,,5,0,0
+523,Zebstrika,zebstrika,Field,,50,75,5,522,267,electric,,5,0,0
+524,Roggenrola,roggenrola,Mineral,,50,255,5,,268,rock,,5,0,0
+525,Boldore,boldore,Mineral,,50,120,5,524,268,rock,,5,0,0
+526,Gigalith,gigalith,Mineral,,50,45,5,525,268,rock,,5,0,0
+527,Woobat,woobat,Field,Flying,50,190,5,,269,psychic,flying,5,0,0
+528,Swoobat,swoobat,Field,Flying,50,45,5,527,269,psychic,flying,5,0,0
+529,Drilbur,drilbur,Field,,50,120,5,,270,ground,,5,0,0
+530,Excadrill,excadrill,Field,,50,60,5,529,270,ground,steel,5,0,0
+531,Audino,audino,Fairy,,50,255,5,,271,normal,,5,0,0
+532,Timburr,timburr,Human-Like,,75.4,180,5,,272,fighting,,5,0,0
+533,Gurdurr,gurdurr,Human-Like,,75.4,90,5,532,272,fighting,,5,0,0
+534,Conkeldurr,conkeldurr,Human-Like,,75.4,45,5,533,272,fighting,,5,0,0
+535,Tympole,tympole,Water 1,,50,255,5,,273,water,,5,0,0
+536,Palpitoad,palpitoad,Water 1,,50,120,5,535,273,water,ground,5,0,0
+537,Seismitoad,seismitoad,Water 1,,50,45,5,536,273,water,ground,5,0,0
+538,Throh,throh,Human-Like,,100,45,5,,274,fighting,,5,0,0
+539,Sawk,sawk,Human-Like,,100,45,5,,275,fighting,,5,0,0
+540,Sewaddle,sewaddle,Bug,,50,255,5,,276,bug,grass,5,0,0
+541,Swadloon,swadloon,Bug,,50,120,5,540,276,bug,grass,5,0,0
+542,Leavanny,leavanny,Bug,,50,45,5,541,276,bug,grass,5,0,0
+543,Venipede,venipede,Bug,,50,255,5,,277,bug,poison,5,0,0
+544,Whirlipede,whirlipede,Bug,,50,120,5,543,277,bug,poison,5,0,0
+545,Scolipede,scolipede,Bug,,50,45,5,544,277,bug,poison,5,0,0
+546,Cottonee,cottonee,Grass,Fairy,50,190,5,,278,grass,fairy,5,0,0
+547,Whimsicott,whimsicott,Grass,Fairy,50,75,5,546,278,grass,fairy,5,0,0
+548,Petilil,petilil,Grass,,0,190,5,,279,grass,,5,0,0
+549,Lilligant,lilligant,Grass,,0,75,5,548,279,grass,,5,0,0
+550,Basculin,basculin,Water 2,,50,25,5,,280,water,,5,0,0
+551,Sandile,sandile,Field,,50,180,5,,281,ground,dark,5,0,0
+552,Krokorok,krokorok,Field,,50,90,5,551,281,ground,dark,5,0,0
+553,Krookodile,krookodile,Field,,50,45,5,552,281,ground,dark,5,0,0
+554,Darumaka,darumaka,Field,,50,120,5,,282,fire,,5,0,0
+555,Darmanitan,darmanitan,Field,,50,60,5,554,282,fire,fire,5,0,0
+556,Maractus,maractus,Grass,,50,255,5,,283,grass,,5,0,0
+557,Dwebble,dwebble,Bug,Mineral,50,190,5,,284,bug,rock,5,0,0
+558,Crustle,crustle,Bug,Mineral,50,75,5,557,284,bug,rock,5,0,0
+559,Scraggy,scraggy,Field,Dragon,50,180,5,,285,dark,fighting,5,0,0
+560,Scrafty,scrafty,Field,Dragon,50,90,5,559,285,dark,fighting,5,0,0
+561,Sigilyph,sigilyph,Flying,,50,45,5,,286,psychic,flying,5,0,0
+562,Yamask,yamask,Mineral,Amorphous,50,190,5,,287,ghost,,5,0,0
+563,Cofagrigus,cofagrigus,Mineral,Amorphous,50,90,5,562,287,ghost,,5,0,0
+564,Tirtouga,tirtouga,Water 1,Water 3,88.1,45,5,,288,water,rock,5,0,0
+565,Carracosta,carracosta,Water 1,Water 3,88.1,45,5,564,288,water,rock,5,0,0
+566,Archen,archen,Flying,Water 3,88.1,45,5,,289,rock,flying,5,0,0
+567,Archeops,archeops,Flying,Water 3,88.1,45,5,566,289,rock,flying,5,0,0
+568,Trubbish,trubbish,Mineral,,50,190,5,,290,poison,,5,0,0
+569,Garbodor,garbodor,Mineral,,50,60,5,568,290,poison,,5,0,0
+570,Zorua,zorua,Field,,88.1,75,5,,291,dark,,5,0,0
+571,Zoroark,zoroark,Field,,88.1,45,5,570,291,dark,,5,0,0
+572,Minccino,minccino,Field,,24.6,255,5,,292,normal,,5,0,0
+573,Cinccino,cinccino,Field,,24.6,60,5,572,292,normal,,5,0,0
+574,Gothita,gothita,Human-Like,,24.6,200,5,,293,psychic,,5,0,0
+575,Gothorita,gothorita,Human-Like,,24.6,100,5,574,293,psychic,,5,0,0
+576,Gothitelle,gothitelle,Human-Like,,24.6,50,5,575,293,psychic,,5,0,0
+577,Solosis,solosis,Amorphous,,50,200,5,,294,psychic,,5,0,0
+578,Duosion,duosion,Amorphous,,50,100,5,577,294,psychic,,5,0,0
+579,Reuniclus,reuniclus,Amorphous,,50,50,5,578,294,psychic,,5,0,0
+580,Ducklett,ducklett,Water 1,Flying,50,190,5,,295,water,flying,5,0,0
+581,Swanna,swanna,Water 1,Flying,50,45,5,580,295,water,flying,5,0,0
+582,Vanillite,vanillite,Mineral,,50,255,5,,296,ice,,5,0,0
+583,Vanillish,vanillish,Mineral,,50,120,5,582,296,ice,,5,0,0
+584,Vanilluxe,vanilluxe,Mineral,,50,45,5,583,296,ice,,5,0,0
+585,Deerling,deerling,Field,,50,190,5,,297,normal,grass,5,0,0
+586,Sawsbuck,sawsbuck,Field,,50,75,5,585,297,normal,grass,5,0,0
+587,Emolga,emolga,Field,,50,200,5,,298,electric,flying,5,0,0
+588,Karrablast,karrablast,Bug,,50,200,5,,299,bug,,5,0,0
+589,Escavalier,escavalier,Bug,,50,75,5,588,299,bug,steel,5,0,0
+590,Foongus,foongus,Grass,,50,190,5,,300,grass,poison,5,0,0
+591,Amoonguss,amoonguss,Grass,,50,75,5,590,300,grass,poison,5,0,0
+592,Frillish,frillish,Amorphous,,50,190,5,,301,water,ghost,5,0,0
+593,Jellicent,jellicent,Amorphous,,50,60,5,592,301,water,ghost,5,0,0
+594,Alomomola,alomomola,Water 1,Water 2,50,75,5,,302,water,,5,0,0
+595,Joltik,joltik,Bug,,50,190,5,,303,bug,electric,5,0,0
+596,Galvantula,galvantula,Bug,,50,75,5,595,303,bug,electric,5,0,0
+597,Ferroseed,ferroseed,Grass,Mineral,50,255,5,,304,grass,steel,5,0,0
+598,Ferrothorn,ferrothorn,Grass,Mineral,50,90,5,597,304,grass,steel,5,0,0
+599,Klink,klink,Mineral,,,130,5,,305,steel,,5,0,0
+600,Klang,klang,Mineral,,,60,5,599,305,steel,,5,0,0
+601,Klinklang,klinklang,Mineral,,,30,5,600,305,steel,,5,0,0
+602,Tynamo,tynamo,Amorphous,,50,190,5,,306,electric,,5,0,0
+603,Eelektrik,eelektrik,Amorphous,,50,60,5,602,306,electric,,5,0,0
+604,Eelektross,eelektross,Amorphous,,50,30,5,603,306,electric,,5,0,0
+605,Elgyem,elgyem,Human-Like,,50,255,5,,307,psychic,,5,0,0
+606,Beheeyem,beheeyem,Human-Like,,50,90,5,605,307,psychic,,5,0,0
+607,Litwick,litwick,Amorphous,,50,190,5,,308,ghost,fire,5,0,0
+608,Lampent,lampent,Amorphous,,50,90,5,607,308,ghost,fire,5,0,0
+609,Chandelure,chandelure,Amorphous,,50,45,5,608,308,ghost,fire,5,0,0
+610,Axew,axew,Monster,Dragon,50,75,5,,309,dragon,,5,0,0
+611,Fraxure,fraxure,Monster,Dragon,50,60,5,610,309,dragon,,5,0,0
+612,Haxorus,haxorus,Monster,Dragon,50,45,5,611,309,dragon,,5,0,0
+613,Cubchoo,cubchoo,Field,,50,120,5,,310,ice,,5,0,0
+614,Beartic,beartic,Field,,50,60,5,613,310,ice,,5,0,0
+615,Cryogonal,cryogonal,Mineral,,,25,5,,311,ice,,5,0,0
+616,Shelmet,shelmet,Bug,,50,200,5,,312,bug,,5,0,0
+617,Accelgor,accelgor,Bug,,50,75,5,616,312,bug,,5,0,0
+618,Stunfisk,stunfisk,Water 1,Amorphous,50,75,5,,313,ground,electric,5,0,0
+619,Mienfoo,mienfoo,Field,Human-Like,50,180,5,,314,fighting,,5,0,0
+620,Mienshao,mienshao,Field,Human-Like,50,45,5,619,314,fighting,,5,0,0
+621,Druddigon,druddigon,Dragon,Monster,50,45,5,,315,dragon,,5,0,0
+622,Golett,golett,Mineral,,,190,5,,316,ground,ghost,5,0,0
+623,Golurk,golurk,Mineral,,,90,5,622,316,ground,ghost,5,0,0
+624,Pawniard,pawniard,Human-Like,,50,120,5,,317,dark,steel,5,0,0
+625,Bisharp,bisharp,Human-Like,,50,45,5,624,317,dark,steel,5,0,0
+626,Bouffalant,bouffalant,Field,,50,45,5,,318,normal,,5,0,0
+627,Rufflet,rufflet,Flying,,100,190,5,,319,normal,flying,5,0,0
+628,Braviary,braviary,Flying,,100,60,5,627,319,normal,flying,5,0,0
+629,Vullaby,vullaby,Flying,,0,190,5,,320,dark,flying,5,0,0
+630,Mandibuzz,mandibuzz,Flying,,0,60,5,629,320,dark,flying,5,0,0
+631,Heatmor,heatmor,Field,,50,90,5,,321,fire,,5,0,0
+632,Durant,durant,Bug,,50,90,5,,322,bug,steel,5,0,0
+633,Deino,deino,Dragon,,50,45,5,,323,dark,dragon,5,0,0
+634,Zweilous,zweilous,Dragon,,50,45,5,633,323,dark,dragon,5,0,0
+635,Hydreigon,hydreigon,Dragon,,50,45,5,634,323,dark,dragon,5,0,0
+636,Larvesta,larvesta,Bug,,50,45,5,,324,bug,fire,5,0,0
+637,Volcarona,volcarona,Bug,,50,15,5,636,324,bug,fire,5,0,0
+638,Cobalion,cobalion,Undiscovered,,,3,5,,325,steel,fighting,5,1,0
+639,Terrakion,terrakion,Undiscovered,,,3,5,,326,rock,fighting,5,1,0
+640,Virizion,virizion,Undiscovered,,,3,5,,327,grass,fighting,5,1,0
+641,Tornadus,tornadus,Undiscovered,,100,3,5,,328,flying,,5,1,0
+642,Thundurus,thundurus,Undiscovered,,100,3,5,,329,electric,flying,5,1,0
+643,Reshiram,reshiram,Undiscovered,,,3,5,,330,dragon,fire,5,1,0
+644,Zekrom,zekrom,Undiscovered,,,3,5,,331,dragon,electric,5,1,0
+645,Landorus,landorus,Undiscovered,,100,3,5,,332,ground,flying,5,1,0
+646,Kyurem,kyurem,Undiscovered,,,3,5,,333,dragon,ice,5,1,0
+647,Keldeo,keldeo,Undiscovered,,,3,5,,334,water,fighting,5,1,0
+648,Meloetta,meloetta,Undiscovered,,,3,5,,335,normal,psychic,5,1,0
+649,Genesect,genesect,Undiscovered,,,3,5,,336,bug,steel,5,1,0

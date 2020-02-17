@@ -4,7 +4,7 @@ export enum Stat {
     DEFENSE = "Def",
     SPECIAL_ATTACK = "Sp. Atk",
     SPECIAL_DEFENSE = "Sp. Def",
-    SPEED = "Speed"
+    SPEED = "Speed",
 }
 
 export interface Nature {
@@ -23,11 +23,27 @@ export type IVRequirements = Partial<
     >
 >;
 
+export function ivRequirementsAsString(reqs: IVRequirements): string {
+    const statNum = (stat: Stat) => {
+        const statInfo = reqs[stat];
+        if (!statInfo) {
+            return 0;
+        } else {
+            return statInfo.value || 31;
+        }
+    };
+    return `${statNum(Stat.HP)}_${statNum(Stat.ATTACK)}_${statNum(
+        Stat.DEFENSE,
+    )}_${statNum(Stat.SPECIAL_ATTACK)}_${statNum(
+        Stat.SPECIAL_DEFENSE,
+    )}_${statNum(Stat.SPEED)}`;
+}
+
 export type ActiveIVs = Partial<Record<Stat, boolean>>;
 
 export enum Gender {
     MALE = "male",
-    FEMALE = "female"
+    FEMALE = "female",
 }
 
 export function swapGender(gender: Gender): Gender {
@@ -40,7 +56,7 @@ export function swapGender(gender: Gender): Gender {
 
 export function subtractIVRequirement(
     requirements: IVRequirements,
-    statToRemove: Stat
+    statToRemove: Stat,
 ): IVRequirements {
     const newRequirements: IVRequirements = {};
     for (const [stat, info] of Object.entries(requirements)) {

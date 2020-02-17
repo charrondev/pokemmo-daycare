@@ -9,9 +9,9 @@ import Form, {
     CheckboxField,
     Field,
     Fieldset,
-    FormFooter,
     FormHeader,
     FormSection,
+    FormFooter,
 } from "@atlaskit/form";
 import Select, {
     AsyncSelect,
@@ -23,15 +23,16 @@ import Select, {
 import TextField from "@atlaskit/textfield";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import { Gender, IVRequirements, Nature, Stat } from "../utils/IVUtils";
-import * as natures from "../utils/natures";
-import { Pokemon } from "../utils/Pokemon";
+import { Gender, IVRequirements, Nature, Stat } from "../pokemon/IVUtils";
+import * as natures from "../pokemon/natures";
+import { PokemonFactory } from "../pokemon/PokemonFactory";
 import {
     loadPokedexOptions,
     PokeDexMonOptionType,
     pokedexOptions,
 } from "./pokedex";
 import { setValue } from "./utils";
+import { NatureView } from "./NatureView";
 
 interface NatureOptionType extends OptionType {
     nature: Nature;
@@ -52,14 +53,23 @@ function mapData(data: any): ProjectFormValues {
         pokemon: null,
         nature: null,
         averagePrice: undefined,
-        activeIVs: [],
-        ivRequirements: {},
+        activeIVs: [] as any[],
+        ivRequirements: {} as IVRequirements,
         gender: Gender.MALE,
         projectName: "",
     };
     for (const [key, value] of Object.entries(data)) {
         setValue(result, key, value, "/");
     }
+
+    const finalRequirements: IVRequirements = {};
+    for (const [stat, statInfo] of Object.entries(result.ivRequirements)) {
+        if (result.activeIVs.includes(stat) && stat in result.ivRequirements) {
+            statInfo!.value = statInfo?.value ?? 31;
+            finalRequirements[stat as Stat] = statInfo;
+        }
+    }
+    result.ivRequirements = finalRequirements;
     return result as ProjectFormValues;
 }
 
@@ -149,7 +159,7 @@ export function ProjectForm(props: {
                                             label="Pokemon Name"
                                             isRequired
                                             defaultValue={
-                                                initialValues?.pokemon
+                                                initialValues?.pokemon ?? null
                                             }
                                         >
                                             {({ fieldProps }) => {
@@ -186,7 +196,7 @@ export function ProjectForm(props: {
                                             name="projectName"
                                             label="Project Name"
                                             defaultValue={
-                                                initialValues?.projectName
+                                                initialValues?.projectName ?? ""
                                             }
                                         >
                                             {({ fieldProps }) => (
@@ -216,13 +226,15 @@ export function ProjectForm(props: {
                                 initialValues={initialValues}
                                 averagePrice={
                                     mapData(getValues()).averagePrice ||
-                                    Pokemon.AVERAGE_UNDEFINED_PRICE
+                                    PokemonFactory.AVERAGE_UNDEFINED_PRICE
                                 }
                                 activeIVs={mapData(getValues()).activeIVs}
                             ></IVRequirementsForm>
                             <FormFooter>
                                 <ButtonGroup>
-                                    <Button type="submit">Calculate</Button>
+                                    <Button appearance="primary" type="submit">
+                                        {pokemon ? "Recalculate" : "Calculate"}
+                                    </Button>
                                 </ButtonGroup>
                             </FormFooter>
                         </form>
@@ -232,14 +244,6 @@ export function ProjectForm(props: {
         </div>
     );
 }
-
-const StatModifierLabel = styled.span`
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 0 3px;
-    display: inline-block;
-    font-size: 0.6em;
-`;
 
 const CheckGroupWrapper = styled.div`
     display: flex;
@@ -270,7 +274,7 @@ function NatureAndIVs(props: {
                 <Field<ValueType<NatureOptionType>>
                     name="nature"
                     label="Nature"
-                    defaultValue={props.initialValues?.nature ?? undefined}
+                    defaultValue={props.initialValues?.nature ?? null}
                 >
                     {({ fieldProps }) => {
                         return (
@@ -290,7 +294,7 @@ function NatureAndIVs(props: {
                     name="averagePrice"
                     label="Average Price"
                     transform={eventValueToNumber}
-                    defaultValue={props.initialValues?.averagePrice}
+                    defaultValue={props.initialValues?.averagePrice ?? ""}
                 >
                     {({ fieldProps }) => {
                         return (
@@ -300,7 +304,7 @@ function NatureAndIVs(props: {
                                     fieldProps.onChange(...args);
                                     props.onChange();
                                 }}
-                                placeholder={Pokemon.AVERAGE_UNDEFINED_PRICE.toString()}
+                                placeholder={PokemonFactory.AVERAGE_UNDEFINED_PRICE.toString()}
                                 type="number"
                             />
                         );
@@ -316,9 +320,14 @@ function NatureAndIVs(props: {
                                     <CheckboxField
                                         name={`activeIVs`}
                                         value={stat}
-                                        defaultIsChecked={props.initialValues?.activeIVs?.includes(
-                                            stat,
-                                        )}
+                                        defaultIsChecked={
+                                            props.initialValues?.activeIVs
+                                                ? Object.values(
+                                                      props.initialValues
+                                                          .activeIVs,
+                                                  )?.includes(stat)
+                                                : false
+                                        }
                                     >
                                         {({ fieldProps }) => {
                                             return (
@@ -386,7 +395,8 @@ function IVRequirementsForm(props: {
                                         transform={eventValueToNumber}
                                         defaultValue={
                                             props.initialValues
-                                                ?.ivRequirements?.[stat]?.value
+                                                ?.ivRequirements?.[stat]
+                                                ?.value ?? ""
                                         }
                                         name={`ivRequirements/${stat}/value`}
                                     >
@@ -395,6 +405,8 @@ function IVRequirementsForm(props: {
                                                 <TextField
                                                     placeholder={"31"}
                                                     isCompact
+                                                    max={31}
+                                                    min={0}
                                                     type="number"
                                                     {...fieldProps}
                                                 />
@@ -408,7 +420,7 @@ function IVRequirementsForm(props: {
                                         defaultValue={
                                             props.initialValues
                                                 ?.ivRequirements?.[stat]
-                                                ?.prices?.[Gender.MALE]
+                                                ?.prices?.[Gender.MALE] ?? ""
                                         }
                                         name={`ivRequirements/${stat}/prices/${Gender.MALE}`}
                                     >
@@ -430,7 +442,7 @@ function IVRequirementsForm(props: {
                                         defaultValue={
                                             props.initialValues
                                                 ?.ivRequirements?.[stat]
-                                                ?.prices?.[Gender.FEMALE]
+                                                ?.prices?.[Gender.FEMALE] ?? ""
                                         }
                                         name={`ivRequirements/${stat}/prices/${Gender.FEMALE}`}
                                     >
@@ -495,36 +507,7 @@ const formatNatureLabel = (
     { context }: FormatOptionLabelMeta<OptionType>,
 ) => {
     if (context === "menu") {
-        return (
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    justifyContent: "space-between",
-                }}
-            >
-                <span
-                    style={{
-                        paddingLeft: 8,
-                        paddingBottom: 0,
-                    }}
-                >
-                    {option.label}
-                </span>
-                <span>
-                    {option.nature.positiveStat && (
-                        <StatModifierLabel>
-                            +{option.nature.positiveStat}
-                        </StatModifierLabel>
-                    )}
-                    {option.nature.negativeStat && (
-                        <StatModifierLabel>
-                            -{option.nature.negativeStat}
-                        </StatModifierLabel>
-                    )}
-                </span>
-            </div>
-        );
+        return <NatureView nature={option.nature} />;
     }
     return option.label;
 };
