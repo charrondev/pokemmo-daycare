@@ -12,7 +12,7 @@ import { useAllPokemon } from "../pokemon/pokemonSlice";
 import { useStateSelector } from "../state/reducers";
 import { IVView } from "./IVView";
 import { PokemonName } from "./PokemonName";
-import { useProjectActions } from "./projectsSlice";
+import { useProjectActions, UNTITLED_PROJECT } from "./projectsSlice";
 import { uuidv4 } from "./utils";
 
 interface IProps {}
@@ -77,7 +77,9 @@ export function ProjectList(props: IProps) {
                                         <a
                                             href={`/projects/${project.projectID}`}
                                         >
-                                            {project.name}
+                                            {project.lastFormValues
+                                                ?.projectName ??
+                                                UNTITLED_PROJECT}
                                         </a>
                                     </div>
                                 ),
