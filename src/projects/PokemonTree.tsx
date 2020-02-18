@@ -113,7 +113,6 @@ export function PokemonTree(props: {
                         const isUsed = pokemon.status === PokemonStatus.USED;
                         return (
                             <Row
-                                // isDefaultExpanded={true}
                                 itemId={pokemon.uuid}
                                 items={children}
                                 hasChildren={children.length > 0}

@@ -12,7 +12,7 @@ import { useAllPokemon } from "../pokemon/pokemonSlice";
 import { useStateSelector } from "../state/reducers";
 import { IVView } from "./IVView";
 import { PokemonName } from "./PokemonName";
-import { useProjectActions, UNTITLED_PROJECT } from "./projectsSlice";
+import { useProjectActions } from "./projectsSlice";
 import { uuidv4 } from "./utils";
 
 interface IProps {}

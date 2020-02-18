@@ -33,11 +33,14 @@ import {
     makeSpriteUrl,
     PokedexMon,
     pokemonForEggGroup,
+    getPokemon,
+    mapDexMonToItem,
 } from "../data/pokedex";
 import { setValue } from "./utils";
 import { NatureView } from "./NatureView";
 import { PokemonSpriteAndInfo } from "./PokemonSpriteAndInfo";
 import { PokemonName } from "./PokemonName";
+import { ProjectFormHeader } from "./ProjectFormHeader";
 
 interface NatureOptionType extends OptionType {
     nature: Nature;
@@ -126,12 +129,24 @@ export function ProjectForm(props: {
     initialValues?: ProjectFormValues;
 }) {
     const { initialValues } = props;
+    const [allowEvolvedPokemon, setAllowEvolvedPokemon] = useState(
+        props.initialValues?.allowEvolvedPokemon ?? true,
+    );
+
+    const [
+        allowedAlternativeIdentifiers,
+        setAllowedAlternativeIdentifiers,
+    ] = useState<string[]>(
+        props.initialValues?.allowedAlternativeIdentifiers ?? [],
+    );
     const forceUpdate = useForceUpdate();
     return (
         <div>
             <Form<ProjectFormValues>
                 onSubmit={(values, form) => {
                     const result = mapData(values);
+                    result.allowEvolvedPokemon = allowEvolvedPokemon;
+                    result.allowedAlternativeIdentifiers = allowedAlternativeIdentifiers;
                     props.onSubmit?.(result);
                 }}
             >
@@ -215,9 +230,12 @@ export function ProjectForm(props: {
                                     </RowItem>
                                 </RowWrapper>
                             </FormSection>
-                            <AlternativeBreedersSection
+                            <AlternativeBreedersInput
                                 pokemon={pokemon}
-                                initialValues={initialValues}
+                                value={allowedAlternativeIdentifiers}
+                                onChange={setAllowedAlternativeIdentifiers}
+                                allowEvolved={allowEvolvedPokemon}
+                                onAllowEvolvedChange={setAllowEvolvedPokemon}
                             />
                             <FormSection>
                                 <FormHeader
@@ -268,6 +286,11 @@ const CheckGroupRow = styled.div`
     flex-wrap: wrap;
 `;
 
+const CenterVertical = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
 const CheckWrapper = styled.div<{ isHidden?: boolean }>`
     margin-right: 12px;
     min-width: 120px;
@@ -275,19 +298,20 @@ const CheckWrapper = styled.div<{ isHidden?: boolean }>`
     display: ${props => (props.isHidden ? "none" : "block")};
 `;
 
-function AlternativeBreedersSection(props: {
+function AlternativeBreedersInput(props: {
     pokemon?: PokedexMon;
-    initialValues?: ProjectFormValues;
+    value: string[];
+    onChange: (newValues: string[]) => void;
+    allowEvolved: boolean;
+    onAllowEvolvedChange: (newValue: boolean) => void;
 }) {
-    const { pokemon } = props;
-    const [allowEvolvedPokemon, setAllowEvolvedPokemon] = useState(
-        props.initialValues?.allowEvolvedPokemon ?? true,
-    );
-
-    const [exclusionList, setExclusionList] = useState<string[]>([]);
-    const [inclusionList, setInclusionList] = useState<string[]>(
-        props.initialValues?.allowedAlternativeIdentifiers ?? [],
-    );
+    const {
+        pokemon,
+        allowEvolved,
+        onAllowEvolvedChange,
+        value,
+        onChange,
+    } = props;
 
     if (!pokemon) {
         return null;
@@ -296,7 +320,7 @@ function AlternativeBreedersSection(props: {
     const othersInEggGroup = pokemonForEggGroup(
         pokemon.eggGroup1,
         pokemon.eggGroup2,
-        allowEvolvedPokemon,
+        allowEvolved,
     );
 
     return (
@@ -305,104 +329,73 @@ function AlternativeBreedersSection(props: {
                 title="Alternative Breeders"
                 description="The following pokemon may be used as alternatives in the breeding process. Remove any that you don't want to allow."
             />
-            <RowWrapper>
-                <CheckGroupWrapper>
-                    <Fieldset legend="Alternative Breeder Options">
-                        <CheckGroupRow>
-                            <CheckWrapper>
-                                <CheckboxField
-                                    name={`allowEvolvedPokemon`}
-                                    defaultIsChecked={allowEvolvedPokemon}
-                                >
-                                    {({ fieldProps }) => {
-                                        return (
-                                            <Checkbox
-                                                {...fieldProps}
-                                                onChange={event => {
-                                                    fieldProps.onChange(event);
-                                                    setAllowEvolvedPokemon(
-                                                        event.target.checked,
-                                                    );
-                                                }}
-                                                label="Allow Evolved Pokemon"
-                                            />
-                                        );
-                                    }}
-                                </CheckboxField>
-                            </CheckWrapper>
-                            <Button
-                                onClick={() => {
-                                    setInclusionList([]);
-                                    setExclusionList([]);
-                                }}
-                            >
-                                Clear Exclusions
-                            </Button>
-                        </CheckGroupRow>
-                    </Fieldset>
-                </CheckGroupWrapper>
-            </RowWrapper>
+            <ProjectFormHeader
+                right={
+                    <Button
+                        onClick={() => {
+                            onChange([]);
+                        }}
+                    >
+                        Clear Alternatives
+                    </Button>
+                }
+            >
+                <CenterVertical>
+                    <Checkbox
+                        onChange={event => {
+                            onAllowEvolvedChange(event.target.checked);
+                        }}
+                        isChecked={allowEvolved}
+                        label="Allow Evolved Pokemon"
+                    />
+                </CenterVertical>
+                <Select<PokeDexMonOptionType>
+                    value={null}
+                    formatOptionLabel={formatPokemonLabel}
+                    isClearable
+                    options={othersInEggGroup
+                        .filter(mon => {
+                            return (
+                                !value.includes(mon.identifier) &&
+                                mon.identifier !== pokemon.identifier
+                            );
+                        })
+                        .map(mapDexMonToItem)}
+                    placeholder="Add Alternative"
+                    onChange={arg => {
+                        if (arg && "pokedexMon" in arg) {
+                            onChange([...value, arg.pokedexMon.identifier]);
+                        }
+                    }}
+                />
+            </ProjectFormHeader>
             <RowWrapper>
                 <CheckGroupWrapper>
                     <Fieldset legend="Allowed Alternative Pokemon">
                         <CheckGroupRow>
-                            {othersInEggGroup
-                                .filter(otherMon => {
-                                    return (
-                                        (inclusionList.length > 0
-                                            ? inclusionList.includes(
-                                                  otherMon.identifier,
-                                              )
-                                            : true) &&
-                                        !exclusionList.includes(
-                                            otherMon.identifier,
-                                        )
-                                    );
-                                })
-                                .map(otherMon => {
-                                    return (
-                                        <CheckWrapper key={otherMon.identifier}>
-                                            <CheckboxField
-                                                name={`allowedAlternativeIdentifiers`}
-                                                value={otherMon.identifier}
-                                                defaultIsChecked={
-                                                    !exclusionList.includes(
-                                                        otherMon.identifier,
-                                                    )
-                                                }
-                                            >
-                                                {({ fieldProps }) => {
-                                                    return (
-                                                        <Checkbox
-                                                            {...fieldProps}
-                                                            onChange={(
-                                                                ...args
-                                                            ) => {
-                                                                fieldProps.onChange(
-                                                                    ...args,
-                                                                );
-                                                                setExclusionList(
-                                                                    [
-                                                                        ...exclusionList,
-                                                                        otherMon.identifier,
-                                                                    ],
-                                                                );
-                                                            }}
-                                                            label={
-                                                                <PokemonName
-                                                                    name={
-                                                                        otherMon.identifier
-                                                                    }
-                                                                    withSprite
-                                                                />
-                                                            }
-                                                        />
-                                                    );
-                                                }}
-                                            </CheckboxField>
-                                        </CheckWrapper>
-                                    );
-                                })}
+                            {value.map(otherMonID => {
+                                const otherMon = getPokemon(otherMonID)!;
+                                return (
+                                    <CheckWrapper key={otherMon.identifier}>
+                                        <Checkbox
+                                            isChecked={true}
+                                            onChange={() => {
+                                                onChange(
+                                                    value.filter(
+                                                        id => id !== otherMonID,
+                                                    ),
+                                                );
+                                            }}
+                                            label={
+                                                <PokemonName
+                                                    name={otherMon.identifier}
+                                                    withSprite
+                                                />
+                                            }
+                                        />
+                                    </CheckWrapper>
+                                );
+                            })}
                         </CheckGroupRow>
                     </Fieldset>
                 </CheckGroupWrapper>

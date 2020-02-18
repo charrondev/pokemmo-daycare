@@ -53,12 +53,8 @@ const fullMemoize = (...args: any[]) => {
 };
 
 export const pokemonForEggGroup = memoize(
-    (
-        eggGroup1: string,
-        eggGroup2?: string | null,
-        allowEvolved?: boolean,
-    ): PokedexMon[] => {
-        return allPokemon.filter(mon => {
+    (eggGroup1: string, eggGroup2?: string | null, allowEvolved?: boolean) => {
+        const pokemon: PokedexMon[] = allPokemon.filter(mon => {
             const match1 =
                 mon.eggGroup1 === eggGroup1 || mon.eggGroup2 === eggGroup1;
             const match2 =
@@ -68,6 +64,8 @@ export const pokemonForEggGroup = memoize(
                 allowEvolved || mon.evolvesFromSpeciesID == null;
             return (match1 || match2) && matchEvolved;
         });
+
+        return pokemon;
     },
     fullMemoize,
 );
@@ -82,7 +80,7 @@ export interface PokeDexMonOptionType extends OptionType {
     pokedexMon: PokedexMon;
 }
 
-function mapDexMonToItem(pokedexMon: PokedexMon): PokeDexMonOptionType {
+export function mapDexMonToItem(pokedexMon: PokedexMon): PokeDexMonOptionType {
     return {
         label: uppercaseFirst(pokedexMon.displayName),
         value: pokedexMon.identifier,
