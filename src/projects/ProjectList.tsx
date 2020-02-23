@@ -3,17 +3,21 @@
  * @license MIT
  */
 
-import { Button } from "@atlaskit/button/dist/cjs/components/Button";
-import DynamicTable from "@atlaskit/dynamic-table";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import styled from "styled-components";
-import { useAllPokemon } from "../pokemon/pokemonSlice";
-import { useStateSelector } from "../state/reducers";
-import { IVView } from "./IVView";
-import { PokemonName } from "./PokemonName";
-import { useProjectActions, UNTITLED_PROJECT } from "./projectsSlice";
-import { uuidv4 } from "./utils";
+import styled from "@emotion/styled";
+import { useStateSelector } from "@pokemmo/state/reducers";
+import { useAllPokemon } from "@pokemmo/pokemon/pokemonSlice";
+import {
+    UNTITLED_PROJECT,
+    useProjectActions,
+} from "@pokemmo/projects/projectsSlice";
+import { PokemonName } from "@pokemmo/projects/PokemonName";
+import { IVView } from "@pokemmo/projects/IVView";
+import { uuidv4 } from "@pokemmo/utils";
+import { FormButton, ButtonType } from "@pokemmo/form/FormButton";
+import { PageLayout } from "@pokemmo/layout/PageLayout";
+import { ProjectListItem } from "@pokemmo/projects/ProjectListitem";
 
 interface IProps {}
 
@@ -37,83 +41,30 @@ export function ProjectList(props: IProps) {
     const allPokemon = useAllPokemon();
 
     return (
-        <div>
-            <HeadingGroup>
-                <h2>Projects</h2>
-                <NewProjectButton />
-            </HeadingGroup>
-            <DynamicTable
-                head={{
-                    cells: [
-                        {
-                            content: "Project Name",
-                            isSortable: true,
-                            key: SortKey.PROJECT_NAME,
-                        },
-                        {
-                            content: "Pokemon",
-                            isSortable: true,
-                            key: SortKey.POKEMON_NAME,
-                        },
-                        { content: "Stats", isSortable: false },
-                        {
-                            content: "Date Updated",
-                            isSortable: true,
-                            key: SortKey.DATE_CREATED,
-                        },
-                    ],
-                }}
-                rows={Object.values(projects).map(project => {
-                    const { pokemonID } = project;
-                    const pokemon =
-                        pokemonID !== null ? allPokemon[pokemonID] : null;
-                    return {
-                        key: project.projectID,
-                        cells: [
-                            {
-                                key: project.lastFormValues?.projectName,
-                                content: (
-                                    <div>
-                                        <a
-                                            href={`/projects/${project.projectID}`}
-                                        >
-                                            {project.lastFormValues
-                                                ?.projectName ??
-                                                UNTITLED_PROJECT}
-                                        </a>
-                                    </div>
-                                ),
-                            },
-                            {
-                                key: pokemon?.name,
-                                content: (
-                                    <PokemonName
-                                        name={pokemon?.name}
-                                        withSprite
-                                    />
-                                ),
-                            },
-                            {
-                                content: pokemon && (
-                                    <IVView
-                                        ivRequirements={pokemon.ivRequirements}
-                                    />
-                                ),
-                            },
-                            {
-                                key: project.dateCreated,
-                                content: <div>{project.dateCreated}</div>,
-                            },
-                        ],
-                    };
-                })}
-                defaultSortKey={SortKey.DATE_CREATED}
-                defaultSortOrder="ASC"
-                onSort={() => console.log("onSort")}
-                onSetPage={() => console.log("onSetPage")}
-                emptyView={<NewProjectButton />}
-            />
-        </div>
+        <PageLayout
+            content={
+                <>
+                    <HeadingGroup>
+                        <h2>Projects</h2>
+                        <NewProjectButton />
+                    </HeadingGroup>
+                    Hello Project List
+                </>
+            }
+            subNav={<ProjectListNav />}
+        />
+    );
+}
+
+function ProjectListNav() {
+    return (
+        <>
+            <h2>Project List</h2>
+            <ul>
+                <ProjectListItem project={{} as any}></ProjectListItem>
+                <ProjectListItem project={{} as any}></ProjectListItem>
+            </ul>
+        </>
     );
 }
 
@@ -122,8 +73,8 @@ function NewProjectButton() {
     const { initProject } = useProjectActions();
 
     return (
-        <Button
-            appearance="primary"
+        <FormButton
+            buttonType={ButtonType.PRIMARY}
             onClick={() => {
                 const projectID = uuidv4();
                 initProject({ projectID });
@@ -131,6 +82,6 @@ function NewProjectButton() {
             }}
         >
             New Project
-        </Button>
+        </FormButton>
     );
 }

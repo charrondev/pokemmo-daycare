@@ -4,8 +4,8 @@
  */
 
 import React from "react";
-import styled from "styled-components";
-import { getPokemon, makeSpriteUrl } from "../data/pokedex";
+import styled from "@emotion/styled";
+import { getPokemon, makeSpriteUrl } from "@pokemmo/data/pokedex";
 
 interface IProps {
     pokemonIdentifier: string;

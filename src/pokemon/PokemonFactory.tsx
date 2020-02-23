@@ -3,17 +3,17 @@
  * @license MIT
  */
 
-import {
-    Nature,
-    Stat,
-    IVRequirements,
-    subtractIVRequirement,
-    Gender,
-    swapGender,
-    ivRequirementsAsString,
-} from "./IVUtils";
-import { uuidv4 } from "../projects/utils";
 import { sample } from "lodash-es";
+import {
+    IVRequirements,
+    Gender,
+    Nature,
+    ivRequirementsAsString,
+    swapGender,
+    subtractIVRequirement,
+    Stat,
+} from "@pokemmo/pokemon/IVUtils";
+import { uuidv4 } from "@pokemmo/utils";
 
 export enum PokemonStatus {
     USED = "used",

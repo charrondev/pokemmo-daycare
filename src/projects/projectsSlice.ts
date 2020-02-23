@@ -4,11 +4,24 @@
  */
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PokemonType, PokemonStatus } from "../pokemon/PokemonFactory";
-import { pokemonSlice, usePokemon } from "../pokemon/pokemonSlice";
-import { useStateSelector } from "../state/reducers";
-import { ProjectFormValues } from "./ProjectForm";
-import { useActions } from "./utils";
+import { pokemonSlice, usePokemon } from "@pokemmo/pokemon/pokemonSlice";
+import { PokemonStatus, PokemonType } from "@pokemmo/pokemon/PokemonFactory";
+import { useActions } from "@pokemmo/utils";
+import { useStateSelector } from "@pokemmo/state/reducers";
+import { PokeDexMonOptionType } from "@pokemmo/data/pokedex";
+import { Nature, Stat, IVRequirements, Gender } from "@pokemmo/pokemon/IVUtils";
+
+export interface ProjectFormValues {
+    pokemon: PokeDexMonOptionType | null;
+    nature: Nature | null;
+    averagePrice?: number;
+    activeIVs: Stat[];
+    ivRequirements: IVRequirements;
+    gender: Gender;
+    projectName: string;
+    allowEvolvedPokemon?: boolean;
+    allowedAlternativeIdentifiers: string[];
+}
 
 type IDCollection = Record<string, boolean>;
 export interface ProjectDataType {

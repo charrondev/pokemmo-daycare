@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const FormHeader = styled.header`
     display: flex;
@@ -19,6 +19,7 @@ const FormHeader = styled.header`
     margin: 0;
     padding: 12px 0;
     border-bottom: 1px solid lightgray;
+    flex-wrap: wrap;
 `;
 
 const Left = styled.div`

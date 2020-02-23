@@ -3,10 +3,10 @@
  * @license MIT
  */
 
-import { OptionsType, OptionType } from "@atlaskit/select";
-import { uppercaseFirst } from "../projects/utils";
+import { uppercaseFirst } from "@pokemmo/utils";
 import { memoize } from "lodash-es";
-const allPokemon: PokedexMon[] = require("../data/pokemon.csv");
+import { OptionsType } from "react-select";
+const allPokemon: PokedexMon[] = require("@pokemmo/data/pokemon.csv");
 
 export const allEggGroups = allPokemon.reduce(
     (eggGroups: Set<string>, pokemon) => {
@@ -76,8 +76,10 @@ export function makeSpriteUrl(pokemon: PokedexMon, animated?: boolean) {
     }normal/${pokemon.identifier}.${animated ? "gif" : "png"}`;
 }
 
-export interface PokeDexMonOptionType extends OptionType {
+export interface PokeDexMonOptionType {
     pokedexMon: PokedexMon;
+    label: string;
+    value: string;
 }
 
 export function mapDexMonToItem(pokedexMon: PokedexMon): PokeDexMonOptionType {

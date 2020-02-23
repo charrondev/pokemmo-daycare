@@ -4,10 +4,8 @@
  */
 
 import React from "react";
-import { IVRequirements, Stat } from "../pokemon/IVUtils";
-import styled from "styled-components";
-import Lozenge from "@atlaskit/lozenge";
-
+import styled from "@emotion/styled";
+import { IVRequirements, Stat } from "@pokemmo/pokemon/IVUtils";
 export function IVView(props: { ivRequirements: IVRequirements }) {
     return (
         <ul
@@ -71,6 +69,11 @@ const StatPoints = styled.span`
     color: white;
 `;
 
+const Lozenge = styled.span`
+    display: inline-block;
+    height: 24;
+`;
+
 function StatView(props: { stat: Stat; points: number }) {
     const color = (() => {
         switch (props.stat) {
@@ -91,7 +94,7 @@ function StatView(props: { stat: Stat; points: number }) {
 
     return (
         <li style={{ listStyle: "none", margin: 4 }}>
-            <Lozenge appearance={{ backgroundColor: color }}>
+            <Lozenge style={{ backgroundColor: color }}>
                 <StatName>{props.stat} </StatName>
                 <StatPoints>{props.points}</StatPoints>
             </Lozenge>

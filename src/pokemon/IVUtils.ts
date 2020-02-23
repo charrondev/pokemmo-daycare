@@ -1,3 +1,8 @@
+/**
+ * @copyright 2020 Adam (charrondev) Charron
+ * @license MIT
+ */
+
 export enum Stat {
     HP = "HP",
     ATTACK = "Atk",

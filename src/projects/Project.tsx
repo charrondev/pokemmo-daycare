@@ -3,18 +3,15 @@
  * @license MIT
  */
 
-import { BreadcrumbsItem, BreadcrumbsStateless } from "@atlaskit/breadcrumbs";
-import React from "react";
-import { useParams } from "react-router-dom";
-import { PokemonFactory } from "../pokemon/PokemonFactory";
-import { usePokemonActions } from "../pokemon/pokemonSlice";
-import { PokemonTree } from "./PokemonTree";
-import { ProjectForm } from "./ProjectForm";
+import { usePokemonActions } from "@pokemmo/pokemon/pokemonSlice";
+import { PokemonTree } from "@pokemmo/projects/PokemonTree";
 import {
     useProject,
     useProjectActions,
     useProjectPokemon,
-} from "./projectsSlice";
+} from "@pokemmo/projects/projectsSlice";
+import React from "react";
+import { useParams } from "react-router-dom";
 
 interface IProps {}
 
@@ -33,45 +30,45 @@ export function Project(props: IProps) {
 
     return (
         <div>
-            <BreadcrumbsStateless>
+            {/* <BreadcrumbsStateless>
                 <BreadcrumbsItem href={"/projects"} text={"Projects"} />
                 <BreadcrumbsItem
                     href={`/projects/${projectID}`}
                     text={project?.lastFormValues?.projectName || UNTITLED}
                 />
-            </BreadcrumbsStateless>
-
+            </BreadcrumbsStateless> */}
             {/* <h2>PokeMMO Daycare</h2> */}
             {/* <p>A calculator for breeding pokemon in PokeMMO.</p> */}
-            <ProjectForm
-                onSubmit={values => {
-                    console.log(values);
-                    if (!project) {
-                        return;
-                    }
-                    project.pokemonID &&
-                        clearPokemonAndChildren({
-                            projectID,
-                            pokemonID: project.pokemonID,
-                        });
+            {/* <ProjectForm
+            //     onSubmit={values => {
+            //         console.log(values);
+            //         if (!project) {
+            //             return;
+            //         }
+            //         project.pokemonID &&
+            //             clearPokemonAndChildren({
+            //                 projectID,
+            //                 pokemonID: project.pokemonID,
+            //             });
 
-                    const { pokemon, allParents } = PokemonFactory.create(
-                        values.pokemon!.pokedexMon.identifier,
-                        values.ivRequirements,
-                        values.gender,
-                        values.nature?.nature ?? null,
-                        null,
-                        [project.projectID],
-                        values.allowedAlternativeIdentifiers,
-                        true,
-                    );
+            //         const { pokemon, allParents } = PokemonFactory.create(
+            //             values.pokemon!.pokedexMon.identifier,
+            //             values.ivRequirements,
+            //             values.gender,
+            //             values.nature?.nature ?? null,
+            //             null,
+            //             [project.projectID],
+            //             values.allowedAlternativeIdentifiers,
+            //             true,
+            //         );
 
-                    addPokemon([pokemon, ...allParents]);
-                    setPokemon({ pokemonID: pokemon.uuid, projectID });
-                    stashFormValues({ projectID, values });
-                }}
-                initialValues={project?.lastFormValues ?? undefined}
-            />
+            //         addPokemon([pokemon, ...allParents]);
+            //         setPokemon({ pokemonID: pokemon.uuid, projectID });
+            //         stashFormValues({ projectID, values });
+            //     }}
+            //     initialValues={project?.lastFormValues ?? undefined}
+            // /> */}
+            Hello Project Form
             {projectPokemon && project && (
                 <PokemonTree projectID={project.projectID} />
             )}

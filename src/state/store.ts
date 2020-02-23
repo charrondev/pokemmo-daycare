@@ -3,11 +3,16 @@
  * @license MIT
  */
 
-import { configureStore } from "@reduxjs/toolkit";
-import { rootReducer } from "./reducers";
+import { configureStore, Store } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
+import { rootReducer } from "@pokemmo/state/reducers";
 
-export function createStore() {
+let storeCache: Store | null = null;
+
+export function getStore() {
+    if (storeCache) {
+        return storeCache;
+    }
     const store = configureStore({
         reducer: rootReducer,
         middleware: [save({ debounce: 500 })],
@@ -19,6 +24,8 @@ export function createStore() {
         const nextRootReducer = require("./reducers");
         store.replaceReducer(nextRootReducer);
     });
+
+    storeCache = store;
 
     return store;
 }

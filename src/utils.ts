@@ -1,3 +1,8 @@
+/**
+ * @copyright 2020 Adam (charrondev) Charron
+ * @license MIT
+ */
+
 import { useDispatch } from "react-redux";
 import { bindActionCreators, ActionCreatorsMapObject } from "@reduxjs/toolkit";
 import { useMemo } from "react";

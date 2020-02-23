@@ -4,9 +4,9 @@
  */
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PokemonType, PokemonStatus } from "./PokemonFactory";
-import { useActions } from "../projects/utils";
-import { useStateSelector } from "../state/reducers";
+import { PokemonType, PokemonStatus } from "@pokemmo/pokemon/PokemonFactory";
+import { useStateSelector } from "@pokemmo/state/reducers";
+import { useActions } from "@pokemmo/utils";
 
 export type PokemonByID = Record<string, PokemonType>;
 

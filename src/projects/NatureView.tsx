@@ -4,8 +4,8 @@
  */
 
 import React from "react";
-import { Nature } from "../pokemon/IVUtils";
-import styled from "styled-components";
+import styled from "@emotion/styled";
+import { Nature } from "@pokemmo/pokemon/IVUtils";
 
 const NatureViewWrapper = styled.span<{ isVertical?: boolean }>`
     display: flex;

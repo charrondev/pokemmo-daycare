@@ -304,6 +304,7 @@ module.exports = function(webpackEnv) {
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...(modules.webpackAliases || {}),
+        "@pokemmo": path.resolve(__dirname, "../src"),
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -377,6 +378,7 @@ module.exports = function(webpackEnv) {
                 ),
 
                 plugins: [
+                  require.resolve("babel-plugin-emotion"),
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -389,6 +391,9 @@ module.exports = function(webpackEnv) {
                     },
                   ],
                 ],
+                presets: [
+                  require.resolve("@emotion/babel-preset-css-prop"),
+                ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
                 // directory for faster rebuilds.
@@ -397,6 +402,18 @@ module.exports = function(webpackEnv) {
                 cacheCompression: false,
                 compact: isEnvProduction,
               },
+            },
+            // Process SVGs
+            {
+              test: /\.svg$/,
+              use: [
+                {
+                  loader: '@svgr/webpack',
+                  options: {
+                    title: true,
+                  },
+                },
+              ],
             },
             // Process any JS outside of the app with Babel.
             // Unlike the application JS, we only compile the standard ES features.
@@ -644,7 +661,7 @@ module.exports = function(webpackEnv) {
           typescript: resolve.sync('typescript', {
             basedir: paths.appNodeModules,
           }),
-          async: isEnvDevelopment,
+          async: true,
           useTypescriptIncrementalApi: true,
           checkSyntacticErrors: true,
           resolveModuleNameModule: process.versions.pnp

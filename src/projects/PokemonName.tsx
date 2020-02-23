@@ -4,9 +4,9 @@
  */
 
 import React, { useMemo } from "react";
-import { getPokemon, makeSpriteUrl } from "../data/pokedex";
-import styled from "styled-components";
-import { uppercaseFirst } from "./utils";
+import styled from "@emotion/styled";
+import { getPokemon, makeSpriteUrl } from "@pokemmo/data/pokedex";
+import { uppercaseFirst } from "@pokemmo/utils";
 
 const TitleCell = styled.span`
     display: flex;

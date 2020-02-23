@@ -5,8 +5,8 @@
 
 import { combineReducers } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-import { projectsSlice } from "../projects/projectsSlice";
-import { pokemonSlice } from "../pokemon/pokemonSlice";
+import { projectsSlice } from "@pokemmo/projects/projectsSlice";
+import { pokemonSlice } from "@pokemmo/pokemon/pokemonSlice";
 
 export const rootReducer = combineReducers({
     projects: projectsSlice.reducer,
