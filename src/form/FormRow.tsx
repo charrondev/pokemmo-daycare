@@ -4,24 +4,48 @@
  */
 
 import React from "react";
+import { CssType } from "@pokemmo/styles/variables";
 
 export function FormRow(
-    props: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>,
+    _props: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> & {
+        firstItemStyles?: CssType;
+        lastItemStyles?: CssType;
+        itemStyles?: CssType;
+        itemXPadding?: number;
+        itemYPadding?: number;
+    },
 ) {
+    const {
+        firstItemStyles = {},
+        lastItemStyles = {},
+        itemStyles = {},
+        itemXPadding = 18,
+        itemYPadding = 6,
+        ...props
+    } = _props;
     return (
         <div
             {...props}
             css={{
                 display: "flex",
                 flexWrap: "wrap",
-                marginBottom: 32,
+                marginBottom: itemXPadding * 2,
+                marginLeft: -itemXPadding,
+                width: `calc(100% + ${itemXPadding * 2}px)`,
                 "& > *": {
                     flex: 1,
                     minWidth: 400,
-                    marginRight: 32,
+                    paddingLeft: itemXPadding,
+                    paddingRight: itemXPadding,
+                    paddingTop: itemYPadding,
+                    paddingBottom: itemYPadding,
+                    ...(itemStyles as any),
                 },
-                "& > *:last-child": {
-                    marginRight: 0,
+                "& > *:first-of-type": {
+                    ...(firstItemStyles as any),
+                },
+                "& > *:last-of-type": {
+                    ...(lastItemStyles as any),
                 },
             }}
         />

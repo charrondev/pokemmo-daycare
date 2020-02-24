@@ -33,6 +33,7 @@ import {
 } from "@pokemmo/pokemon/PokemonFactory";
 import { uppercaseFirst } from "@pokemmo/utils";
 import { FormInput } from "@pokemmo/form/FormInput";
+import { Stat } from "@pokemmo/pokemon/IVUtils";
 
 interface IProps extends React.ComponentProps<typeof Dialog> {
     pokemonID?: string;
@@ -44,6 +45,7 @@ interface IPokemonForm {
     nature: NatureSelectOptionType | null;
     ownershipStatus: OwnershipStatus;
     cost: number | null;
+    stats: Record<Stat, number>;
 }
 
 const INITIAL_FORM: IPokemonForm = {
@@ -51,6 +53,14 @@ const INITIAL_FORM: IPokemonForm = {
     nature: null,
     ownershipStatus: OwnershipStatus.CAUGHT,
     cost: null,
+    stats: {
+        [Stat.HP]: 0,
+        [Stat.ATTACK]: 0,
+        [Stat.DEFENSE]: 0,
+        [Stat.SPECIAL_ATTACK]: 0,
+        [Stat.SPECIAL_DEFENSE]: 0,
+        [Stat.SPEED]: 0,
+    },
 };
 
 const ownershipOptions: IToggleButtonOption[] = Object.values(
@@ -106,11 +116,13 @@ export function PokemonForm(_props: IProps) {
                     title="Status & Price"
                     description="Input price and current status of your pokemon"
                 />
-                <FormRow>
-                    <FormLabel
-                        label="Status"
-                        css={{ flex: "initial", minWidth: 0 }}
-                    >
+                <FormRow
+                    firstItemStyles={{
+                        flex: "initial",
+                        minWidth: 0,
+                    }}
+                >
+                    <FormLabel label="Status">
                         <FormToggleButton
                             options={ownershipOptions}
                             fieldName="ownershipStatus"
@@ -126,6 +138,30 @@ export function PokemonForm(_props: IProps) {
                             />
                         </FormLabel>
                     )}
+                </FormRow>
+                <FormHeading
+                    title="Stats"
+                    description="Add the stats for your Pokemon."
+                />
+                <FormRow
+                    itemStyles={{
+                        flex: 1,
+                        minWidth: "33%",
+                    }}
+                >
+                    {Object.values(Stat).map(stat => {
+                        return (
+                            <FormLabel label={stat} key={stat}>
+                                <FormInput
+                                    min={0}
+                                    max={31}
+                                    type="number"
+                                    fieldName={`stats.${stat}`}
+                                    placeholder="0"
+                                />
+                            </FormLabel>
+                        );
+                    })}
                 </FormRow>
             </Form>
         </FormikProvider>

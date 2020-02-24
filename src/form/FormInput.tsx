@@ -39,7 +39,8 @@ export const inputCSS: CssType = {
     borderWidth: 2,
     borderColor: colorBorder.string(),
     transition: "all ease 0.2s",
-    minWidth: 320,
+    minWidth: 200,
+    width: "100%",
     color: colorText.string(),
     [`&:hover, &:focus, &.active`]: {
         background: colorInputState.string(),
@@ -93,6 +94,14 @@ export function FormInput(_props: IProps) {
                         );
                         if (Number.isNaN(number)) {
                             number = null;
+                        }
+
+                        if (typeof props.max === "number" && number !== null) {
+                            number = Math.min(props.max, number);
+                        }
+
+                        if (typeof props.min === "number" && number !== null) {
+                            number = Math.max(props.min, number);
                         }
 
                         fieldHelpers.setValue(number);
