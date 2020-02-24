@@ -5,7 +5,8 @@
 
 import React from "react";
 import makeAnimated from "react-select/animated";
-import Select from "react-select/async";
+import AsyncSelect, { Props as AsyncProps } from "react-select/async";
+import Select, { Props as SelectProps } from "react-select";
 import {
     colorPrimaryState,
     colorPrimary,
@@ -14,10 +15,16 @@ import {
     colorBorder,
     colorInputState,
 } from "@pokemmo/styles/variables";
+import { useInputID, useLabelID } from "@pokemmo/form/FormLabel";
+import { useField, useFormikContext } from "formik";
+import { inputFocusCSS, inputCSS } from "@pokemmo/form/FormInput";
 
 const animatedComponents = makeAnimated();
 
-interface IProps extends React.ComponentProps<typeof Select> {}
+export interface FormSelectProps<T> extends Partial<AsyncProps<T>> {
+    options?: SelectProps<T>["options"];
+    fieldName: string;
+}
 
 const indicatorStyles = {
     color: colorPrimaryState.string(),
@@ -26,10 +33,24 @@ const indicatorStyles = {
     },
 };
 
-export function FormSelect(props: IProps) {
+export function FormSelect<T>(_props: FormSelectProps<T>) {
+    const { fieldName, ...props } = _props;
+    const { setFieldValue } = useFormikContext();
+    const [field, meta] = useField({ name: fieldName, type: "select" });
+    const inputID = useInputID();
+    const labelID = useLabelID();
+
+    const SelectComponent = props.loadOptions
+        ? AsyncSelect
+        : ((Select as any) as typeof AsyncSelect);
+
     return (
-        <Select
-            {...props}
+        <SelectComponent
+            {...(props as any)}
+            {...field}
+            onChange={value => setFieldValue(fieldName, value)}
+            id={inputID}
+            aria-labelledby={labelID}
             cacheOptions
             components={animatedComponents}
             css={{
@@ -65,29 +86,10 @@ export function FormSelect(props: IProps) {
                 control: (provided, state) => {
                     return {
                         ...provided,
-                        // Clear builtin "border".
-                        boxShadow: "none",
-                        background: colorInput.string(),
-                        border: makeSingleBorder(2),
-                        borderWidth: 2,
-                        borderColor: colorBorder.string(),
-                        [`&:hover, &:focus, &.active`]: {
-                            background: colorInputState.string(),
-                            borderColor: colorPrimaryState.string(),
-                        },
-                        ["&&"]: state.isFocused
-                            ? {
-                                  background: "#fff",
-                                  borderColor: colorPrimary
-                                      .lighten(0.6)
-                                      .string(),
-                              }
-                            : {},
+                        ...inputCSS,
+                        ["&&"]: state.isFocused ? inputFocusCSS : {},
                     };
                 },
-            }}
-            getOptionValue={option => {
-                return option.value;
             }}
         />
     );

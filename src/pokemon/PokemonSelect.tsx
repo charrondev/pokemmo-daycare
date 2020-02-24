@@ -4,19 +4,19 @@
  */
 
 import React from "react";
-import { FormSelect } from "@pokemmo/form/FormSelect";
+import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
 import {
     pokedexOptions,
     loadPokedexOptions,
     makeSpriteUrl,
+    PokedexMon,
+    PokeDexMonOptionType,
 } from "@pokemmo/data/pokedex";
 import { OptionTypeBase, FormatOptionLabelMeta } from "react-select";
 
-interface IProps
-    extends Omit<
-        React.ComponentProps<typeof FormSelect>,
-        "defaultOptions" | "loadOptions" | "formatOptionLabel"
-    > {}
+export type PokemonSelectOptionType = PokeDexMonOptionType;
+
+interface IProps extends FormSelectProps<PokemonSelectOptionType> {}
 
 export function PokemonSelect(props: IProps) {
     return (

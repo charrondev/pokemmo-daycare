@@ -12,14 +12,22 @@ interface IProps
     description?: React.ReactNode;
 }
 
-export function FormHeading(props: IProps) {
+export function FormHeading(_props: IProps) {
+    const { title, actions, description, ...props } = _props;
     return (
-        <div css={{ display: "flex", alignItems: "flex-start", width: "100%" }}>
+        <div
+            {...props}
+            css={{ display: "flex", alignItems: "flex-start", width: "100%" }}
+        >
             <div css={{ flex: 1 }}>
-                <h2 tabIndex={0}>{props.title}</h2>
-                {props.description && <p>{props.description}</p>}
+                <h2>{title}</h2>
+                {description && (
+                    <p css={{ marginTop: -12, marginBottom: 24 }}>
+                        {description}
+                    </p>
+                )}
             </div>
-            {props.actions && (
+            {actions && (
                 <div
                     css={{
                         "& > *": {
@@ -27,7 +35,7 @@ export function FormHeading(props: IProps) {
                         },
                     }}
                 >
-                    {props.actions}
+                    {actions}
                 </div>
             )}
         </div>

@@ -15,10 +15,15 @@ import {
 } from "@pokemmo/pokemon/IVUtils";
 import { uuidv4 } from "@pokemmo/utils";
 
+export enum OwnershipStatus {
+    BOUGHT = "bought",
+    BRED = "bred",
+    CAUGHT = "caught",
+}
+
 export enum PokemonStatus {
     USED = "used",
     EGG = "egg",
-    READY = "ready",
     NONE = "none",
 }
 

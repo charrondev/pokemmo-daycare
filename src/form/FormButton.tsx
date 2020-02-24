@@ -37,9 +37,14 @@ const buttonCommon: CssType = {
     transition: "all 0.2s ease",
 };
 
+export const colorPrimaryButton = colorPrimary.lighten(0.2);
+export const primaryButtonFocusBoxShadow = `0 0 0 3px ${colorPrimary.lighten(
+    0.7,
+)}`;
+
 const primaryCSS: CssType = {
-    ...mixinBorder(colorPrimaryState),
-    background: colorPrimaryState.string(),
+    ...mixinBorder(colorPrimaryButton),
+    background: colorPrimaryButton.string(),
     borderWidth: 2,
     color: "#fff",
 
@@ -49,7 +54,7 @@ const primaryCSS: CssType = {
         borderWidth: 2,
     },
     "&.focus-visible": {
-        boxShadow: `0 0 0 3px ${colorPrimary.lighten(0.7)}`,
+        boxShadow: primaryButtonFocusBoxShadow,
     },
 };
 

@@ -19,7 +19,7 @@ const SpriteImg = StyledFactory(
         height: "100%",
         objectFit: "contain",
         objectPosition: "center, center",
-        transform: "scale(1.5)",
+        transform: "scale(1.2)",
     },
     "SpriteImage",
 );

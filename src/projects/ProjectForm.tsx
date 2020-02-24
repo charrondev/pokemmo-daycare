@@ -595,16 +595,6 @@ import React, { useCallback, useState } from "react";
 //     );
 // }
 
-// const formatNatureLabel = (
-//     option: NatureOptionType,
-//     { context }: FormatOptionLabelMeta<OptionType>,
-// ) => {
-//     if (context === "menu") {
-//         return <NatureView nature={option.nature} />;
-//     }
-//     return option.label;
-// };
-
 // function eventValueToNumber(event: any): number | string {
 //     return event.target.value ? parseInt(event.target.value, 10) : "";
 // }

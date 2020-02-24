@@ -19,7 +19,10 @@ export const allEggGroups = allPokemon.reduce(
     new Set<string>(),
 );
 
-export function getPokemon(input: string | number) {
+export function getPokemon(input?: string | number) {
+    if (input === undefined) {
+        return undefined;
+    }
     return allPokemon.find(pokemon => {
         if (typeof input === "number" && Number.isInteger(input)) {
             return pokemon.speciesID === input;

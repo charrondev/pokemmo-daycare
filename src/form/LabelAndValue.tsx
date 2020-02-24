@@ -5,11 +5,13 @@
 
 import React from "react";
 import { fontSizeSmall, fontSizeNormal } from "@pokemmo/styles/variables";
+import { Dirent } from "fs";
 
 interface IProps extends React.HTMLAttributes<HTMLLabelElement> {
     children: React.ReactNode;
     label: string;
     inline?: boolean;
+    vertical?: boolean;
 }
 
 export function LabelAndValue(_props: IProps) {
@@ -22,6 +24,11 @@ export function LabelAndValue(_props: IProps) {
                 props.inline && {
                     display: "inline-block",
                 },
+                props.vertical && {
+                    display: "flex",
+                    flexDirection: "column",
+                    marginBottom: 0,
+                },
             ]}
         >
             <strong
@@ -30,9 +37,14 @@ export function LabelAndValue(_props: IProps) {
                         fontWeight: "bold",
                         marginRight: 6,
                     },
+                    props.vertical && {
+                        marginRight: 0,
+                        marginBottom: 6,
+                    },
                 ]}
             >
-                {label}:
+                {label}
+                {props.vertical ? "" : ":"}
             </strong>
             <span>{props.children}</span>
         </label>
