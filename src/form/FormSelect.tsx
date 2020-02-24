@@ -5,8 +5,8 @@
 
 import React from "react";
 import makeAnimated from "react-select/animated";
-import AsyncSelect, { Props as AsyncProps } from "react-select/async";
-import Select, { Props as SelectProps } from "react-select";
+import AsyncSelect, { AsyncProps } from "react-select/async";
+import Select, { Props as SelectProps, ValueType } from "react-select";
 import {
     colorPrimaryState,
     colorPrimary,
@@ -18,12 +18,15 @@ import {
 import { useInputID, useLabelID } from "@pokemmo/form/FormLabel";
 import { useField, useFormikContext } from "formik";
 import { inputFocusCSS, inputCSS } from "@pokemmo/form/FormInput";
+import { BaseFormSelectProps } from "@pokemmo/form/FormSelectProps";
 
 const animatedComponents = makeAnimated();
 
-export interface FormSelectProps<T> extends Partial<AsyncProps<T>> {
-    options?: SelectProps<T>["options"];
+export interface FormSelectProps<T>
+    extends BaseFormSelectProps<T>,
+        Partial<AsyncProps<T>> {
     fieldName: string;
+    makeOptionFromValue: (value: string | null) => ValueType<T> | null;
 }
 
 const indicatorStyles = {
@@ -33,8 +36,10 @@ const indicatorStyles = {
     },
 };
 
-export function FormSelect<T>(_props: FormSelectProps<T>) {
-    const { fieldName, ...props } = _props;
+export function FormSelect<T extends { value: string }>(
+    _props: FormSelectProps<T>,
+) {
+    const { fieldName, makeOptionFromValue, ...props } = _props;
     const [field, meta, fieldHelpers] = useField({
         name: fieldName,
         type: "select",
@@ -50,9 +55,10 @@ export function FormSelect<T>(_props: FormSelectProps<T>) {
         <SelectComponent
             {...(props as any)}
             {...field}
-            onChange={value => {
+            value={makeOptionFromValue(field.value)}
+            onChange={(value: T) => {
                 fieldHelpers.setTouched(true);
-                fieldHelpers.setValue(value);
+                fieldHelpers.setValue(value.value);
             }}
             id={inputID}
             aria-labelledby={labelID}

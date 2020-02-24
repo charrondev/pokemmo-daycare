@@ -27,10 +27,7 @@ import {
     FormToggleButton,
     IToggleButtonOption,
 } from "@pokemmo/form/FormToggleButton";
-import {
-    PokemonStatus,
-    OwnershipStatus,
-} from "@pokemmo/pokemon/PokemonFactory";
+import { OwnershipStatus } from "@pokemmo/pokemon/PokemonFactory";
 import { uppercaseFirst } from "@pokemmo/utils";
 import { FormInput } from "@pokemmo/form/FormInput";
 import { Stat } from "@pokemmo/pokemon/IVUtils";
@@ -41,8 +38,8 @@ interface IProps extends React.ComponentProps<typeof Dialog> {
 }
 
 interface IPokemonForm {
-    pokemon: PokemonSelectOptionType | null;
-    nature: NatureSelectOptionType | null;
+    pokemon: string | null;
+    nature: string | null;
     ownershipStatus: OwnershipStatus;
     cost: number | null;
     stats: Record<Stat, number>;
@@ -82,7 +79,7 @@ export function PokemonForm(_props: IProps) {
 
     const { asModal, pokemonID, ...props } = _props;
     const title = pokemonID == null ? "Create Pokemon" : "Edit Pokemon";
-    const dexMon = getPokemon(form.values.pokemon?.value);
+    const dexMon = getPokemon(form.values.pokemon);
 
     const content = (
         <FormikProvider value={form}>

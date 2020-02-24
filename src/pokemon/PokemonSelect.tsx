@@ -11,12 +11,18 @@ import {
     makeSpriteUrl,
     PokedexMon,
     PokeDexMonOptionType,
+    getPokemon,
+    mapDexMonToItem,
 } from "@pokemmo/data/pokedex";
 import { OptionTypeBase, FormatOptionLabelMeta } from "react-select";
 
 export type PokemonSelectOptionType = PokeDexMonOptionType;
 
-interface IProps extends FormSelectProps<PokemonSelectOptionType> {}
+interface IProps
+    extends Omit<
+        FormSelectProps<PokemonSelectOptionType>,
+        "formatOptionsLabel" | "options" | "makeOptionFromValue"
+    > {}
 
 export function PokemonSelect(props: IProps) {
     return (
@@ -26,6 +32,17 @@ export function PokemonSelect(props: IProps) {
             defaultOptions={pokedexOptions.slice(0, 20)}
             loadOptions={loadPokedexOptions}
             formatOptionLabel={formatPokemonLabel}
+            makeOptionFromValue={value => {
+                if (!value) {
+                    return null;
+                }
+                const pokemon = getPokemon(value);
+                if (!pokemon) {
+                    return null;
+                } else {
+                    return mapDexMonToItem(pokemon);
+                }
+            }}
         />
     );
 }

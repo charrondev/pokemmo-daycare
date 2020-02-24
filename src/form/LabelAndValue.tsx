@@ -15,16 +15,16 @@ interface IProps extends React.HTMLAttributes<HTMLLabelElement> {
 }
 
 export function LabelAndValue(_props: IProps) {
-    const { label, ...props } = _props;
+    const { label, vertical, inline, ...props } = _props;
     return (
         <label
             {...props}
             css={[
                 { fontSize: fontSizeNormal, display: "block", marginBottom: 9 },
-                props.inline && {
+                inline && {
                     display: "inline-block",
                 },
-                props.vertical && {
+                vertical && {
                     display: "flex",
                     flexDirection: "column",
                     marginBottom: 0,
@@ -37,14 +37,14 @@ export function LabelAndValue(_props: IProps) {
                         fontWeight: "bold",
                         marginRight: 6,
                     },
-                    props.vertical && {
+                    vertical && {
                         marginRight: 0,
                         marginBottom: 6,
                     },
                 ]}
             >
                 {label}
-                {props.vertical ? "" : ":"}
+                {vertical ? "" : ":"}
             </strong>
             <span>{props.children}</span>
         </label>

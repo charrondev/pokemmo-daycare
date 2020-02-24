@@ -7,6 +7,12 @@ import { useDispatch } from "react-redux";
 import { bindActionCreators, ActionCreatorsMapObject } from "@reduxjs/toolkit";
 import { useMemo } from "react";
 
+export function notEmpty<TValue>(
+    value: TValue | null | undefined,
+): value is TValue {
+    return value !== null && value !== undefined;
+}
+
 /**
  * Set a piece of metadata. This will override what was passed from the server.
  *

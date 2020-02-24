@@ -125,8 +125,45 @@ export const Careful: Nature = {
     positiveStat: Stat.SPECIAL_DEFENSE,
     negativeStat: Stat.SPECIAL_ATTACK,
 };
-export const Quirk: Nature = {
-    name: "Quirk",
+export const Quirky: Nature = {
+    name: "Quirky",
     positiveStat: null,
     negativeStat: null,
 };
+
+export const allNatures = {
+    Hardy,
+    Lonely,
+    Brave,
+    Adamant,
+    Naughty,
+    Bold,
+    Docile,
+    Relaxed,
+    Impish,
+    Lax,
+    Timid,
+    Hasty,
+    Serious,
+    Jolly,
+    Naive,
+    Modest,
+    Mild,
+    Quiet,
+    Bashful,
+    Rash,
+    Calm,
+    Gentle,
+    Sassy,
+    Careful,
+    Quirky,
+};
+
+export function getNature(
+    natureName: string | undefined | null,
+): Nature | null {
+    if (natureName && !(natureName in allNatures)) {
+        return null;
+    }
+    return allNatures[natureName as keyof typeof allNatures];
+}
