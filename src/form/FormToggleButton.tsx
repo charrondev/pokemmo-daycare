@@ -13,6 +13,8 @@ import {
     borderRadius,
     colorInputState,
     colorBorder,
+    fontSizeSmall,
+    fontSizeNormal,
 } from "@pokemmo/styles/variables";
 import { useLabelID, useInputID } from "@pokemmo/form/FormLabel";
 import {
@@ -41,8 +43,7 @@ var KEYCODE = {
 export function FormToggleButton(props: IProps) {
     const inputID = useInputID();
     const labelID = useLabelID();
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [field] = useField(props.fieldName);
+    const [field, meta, fieldHelpers] = useField(props.fieldName);
     const [needsSelfFocus, setNeedsSelfFocus] = useState(false);
     const currentRef = useRef<HTMLButtonElement>(null);
 
@@ -95,11 +96,8 @@ export function FormToggleButton(props: IProps) {
 
                             if (targetOption) {
                                 event.preventDefault();
-                                setFieldTouched(props.fieldName);
-                                setFieldValue(
-                                    props.fieldName,
-                                    targetOption.value,
-                                );
+                                fieldHelpers.setTouched(true);
+                                fieldHelpers.setValue(targetOption.value);
                                 setNeedsSelfFocus(true);
                             }
                         }}
@@ -113,6 +111,8 @@ export function FormToggleButton(props: IProps) {
                                 transition: "all ease 0.2s",
                                 padding: "9px 24px",
                                 fontWeight: "bold",
+                                fontSize: fontSizeNormal,
+                                lineHeight: "22px",
                                 border: "none",
                                 cursor: "pointer",
                                 "&:after": {
@@ -130,13 +130,13 @@ export function FormToggleButton(props: IProps) {
                                 ["&:active, &:focus, &:hover"]: {
                                     background: colorInputState.string(),
                                 },
-                                "&:first-child": {
-                                    borderTopLeftRadius: borderRadius,
-                                    borderBottomLeftRadius: borderRadius,
+                                "&:first-of-type": {
+                                    borderTopLeftRadius: 4,
+                                    borderBottomLeftRadius: 4,
                                 },
-                                "&:last-child": {
-                                    borderTopRightRadius: borderRadius,
-                                    borderBottomRightRadius: borderRadius,
+                                "&:last-of-type": {
+                                    borderTopRightRadius: 4,
+                                    borderBottomRightRadius: 4,
                                     "&:after": {
                                         display: "none",
                                     },
@@ -165,8 +165,8 @@ export function FormToggleButton(props: IProps) {
                         aria-label={option.label}
                         onClick={() => {
                             if (!isPressed) {
-                                setFieldTouched(props.fieldName);
-                                setFieldValue(props.fieldName, option.value);
+                                fieldHelpers.setTouched(true);
+                                fieldHelpers.setValue(option.value);
                             }
                         }}
                     >

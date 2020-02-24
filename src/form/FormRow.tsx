@@ -14,6 +14,7 @@ export function FormRow(
             css={{
                 display: "flex",
                 flexWrap: "wrap",
+                marginBottom: 32,
                 "& > *": {
                     flex: 1,
                     minWidth: 400,

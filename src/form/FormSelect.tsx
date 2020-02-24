@@ -35,8 +35,10 @@ const indicatorStyles = {
 
 export function FormSelect<T>(_props: FormSelectProps<T>) {
     const { fieldName, ...props } = _props;
-    const { setFieldValue } = useFormikContext();
-    const [field, meta] = useField({ name: fieldName, type: "select" });
+    const [field, meta, fieldHelpers] = useField({
+        name: fieldName,
+        type: "select",
+    });
     const inputID = useInputID();
     const labelID = useLabelID();
 
@@ -48,7 +50,10 @@ export function FormSelect<T>(_props: FormSelectProps<T>) {
         <SelectComponent
             {...(props as any)}
             {...field}
-            onChange={value => setFieldValue(fieldName, value)}
+            onChange={value => {
+                fieldHelpers.setTouched(true);
+                fieldHelpers.setValue(value);
+            }}
             id={inputID}
             aria-labelledby={labelID}
             cacheOptions
@@ -87,6 +92,7 @@ export function FormSelect<T>(_props: FormSelectProps<T>) {
                     return {
                         ...provided,
                         ...inputCSS,
+                        width: "100%",
                         ["&&"]: state.isFocused ? inputFocusCSS : {},
                     };
                 },

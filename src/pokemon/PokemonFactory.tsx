@@ -16,9 +16,9 @@ import {
 import { uuidv4 } from "@pokemmo/utils";
 
 export enum OwnershipStatus {
-    BOUGHT = "bought",
-    BRED = "bred",
     CAUGHT = "caught",
+    BRED = "bred",
+    BOUGHT = "bought",
 }
 
 export enum PokemonStatus {

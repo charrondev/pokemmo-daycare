@@ -117,8 +117,13 @@ export function PokemonForm(_props: IProps) {
                         />
                     </FormLabel>
                     {form.values.ownershipStatus === OwnershipStatus.BOUGHT && (
-                        <FormLabel label="Price">
-                            <FormInput fieldName="ownershipStatus" />
+                        <FormLabel label="Cost">
+                            <FormInput
+                                beforeNode="¥"
+                                type="number"
+                                fieldName="cost"
+                                placeholder="10,000"
+                            />
                         </FormLabel>
                     )}
                 </FormRow>
@@ -157,7 +162,7 @@ function PokemonFormPreview(props: { dexMon: PokedexMon }) {
     return (
         <div
             css={{
-                padding: "32px 0",
+                marginBottom: 32,
                 display: "flex",
                 alignItems: "center",
             }}
