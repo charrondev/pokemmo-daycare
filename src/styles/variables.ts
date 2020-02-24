@@ -10,11 +10,11 @@ export type CssType = ObjectInterpolation<any>;
 // Colors
 export const colorBG = Color("#F9FAFF");
 export const colorPrimary = Color("#4A4F73");
-export const colorPrimaryState = colorPrimary.lighten(0.18);
+export const colorPrimaryState = colorPrimary.lighten(0.6);
 export const colorSecondary = Color("#B9787A");
 export const colorSecondaryState = colorSecondary.darken(0.18);
 export const colorInput = Color("#FAFBFC");
-export const colorInputState = colorInput.darken(0.18);
+export const colorInputState = colorInput.darken(0.02);
 export const colorBorder = Color("#DEE0E6");
 export const colorText = colorPrimary;
 

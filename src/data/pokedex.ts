@@ -5,7 +5,7 @@
 
 import { uppercaseFirst } from "@pokemmo/utils";
 import { memoize } from "lodash-es";
-import { OptionsType } from "react-select";
+import { OptionsType, OptionTypeBase } from "react-select";
 const allPokemon: PokedexMon[] = require("@pokemmo/data/pokemon.csv");
 
 export const allEggGroups = allPokemon.reduce(
@@ -18,8 +18,6 @@ export const allEggGroups = allPokemon.reduce(
     },
     new Set<string>(),
 );
-
-console.log({ allEggGroups });
 
 export function getPokemon(input: string | number) {
     return allPokemon.find(pokemon => {
@@ -76,7 +74,7 @@ export function makeSpriteUrl(pokemon: PokedexMon, animated?: boolean) {
     }normal/${pokemon.identifier}.${animated ? "gif" : "png"}`;
 }
 
-export interface PokeDexMonOptionType {
+export interface PokeDexMonOptionType extends OptionTypeBase {
     pokedexMon: PokedexMon;
     label: string;
     value: string;
@@ -96,8 +94,10 @@ export const pokedexOptions: OptionsType<PokeDexMonOptionType> = allPokemon.map(
 
 export const loadPokedexOptions = memoize(
     async (input: string): Promise<OptionsType<PokeDexMonOptionType>> => {
-        return allPokemon
-            .filter(poke => poke.identifier.includes(input.toLowerCase()))
-            .map(mapDexMonToItem);
+        return pokedexOptions
+            .filter(poke =>
+                poke.pokedexMon.identifier.includes(input.toLowerCase()),
+            )
+            .slice(0, 20);
     },
 );

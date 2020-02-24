@@ -13,10 +13,12 @@ import {
     colorPrimaryState,
     colorInputState,
 } from "@pokemmo/styles/variables";
+import Color from "color";
 
 export enum ButtonType {
     PRIMARY = "primary",
     STANDARD = "standard",
+    SUBMIT = "submit",
 }
 
 interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -51,21 +53,25 @@ const primaryCSS: CssType = {
     },
 };
 
+const standardColor = Color("#F4F5F7");
+const standardColorState = standardColor.darken(0.05);
+
 const standardCSS: CssType = {
-    ...mixinBorder(colorInput),
-    background: colorInput.string(),
+    ...mixinBorder(standardColor),
+    background: standardColor.string(),
     borderWidth: 2,
     color: colorText.string(),
 
     [`&:focus, &:hover, &:active`]: {
-        ...mixinBorder(colorInputState),
-        background: colorInputState.string(),
+        ...mixinBorder(standardColorState),
+        background: standardColorState.string(),
         borderWidth: 2,
     },
 };
 
 export function cssForButtonType(buttonType?: ButtonType): CssType {
     switch (buttonType) {
+        case ButtonType.SUBMIT:
         case ButtonType.PRIMARY:
             return primaryCSS;
         case ButtonType.STANDARD:
@@ -84,6 +90,7 @@ export const FormButton = React.forwardRef(function FormButton(
     return (
         <button
             {...props}
+            type={buttonType === ButtonType.SUBMIT ? "submit" : "button"}
             ref={ref}
             css={[props.className, buttonCommon, cssForButtonType(buttonType)]}
         />

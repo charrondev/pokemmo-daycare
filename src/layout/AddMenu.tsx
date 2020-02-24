@@ -31,7 +31,10 @@ export function AddMenu(props: IProps) {
                 </MenuList>
             </Menu>
             {showPokemonModal && (
-                <PokemonForm onDismiss={() => setShowPokemonModal(false)} />
+                <PokemonForm
+                    asModal
+                    onDismiss={() => setShowPokemonModal(false)}
+                />
             )}
         </>
     );

@@ -595,41 +595,6 @@ import React, { useCallback, useState } from "react";
 //     );
 // }
 
-// const formatPokemonLabel = (
-//     option: PokeDexMonOptionType,
-//     { context }: FormatOptionLabelMeta<OptionType>,
-// ) => {
-//     if (context === "menu") {
-//         return (
-//             <div
-//                 style={{
-//                     display: "flex",
-//                     alignItems: "center",
-//                     justifyContent: "flex-start",
-//                 }}
-//             >
-//                 <span>
-//                     <img
-//                         src={makeSpriteUrl(option.pokedexMon)}
-//                         alt={option.label + " sprite"}
-//                         height="24"
-//                         width="24"
-//                     />
-//                 </span>
-//                 <span
-//                     style={{
-//                         paddingLeft: 8,
-//                         paddingBottom: 0,
-//                     }}
-//                 >
-//                     {option.label}
-//                 </span>
-//             </div>
-//         );
-//     }
-//     return option.label;
-// };
-
 // const formatNatureLabel = (
 //     option: NatureOptionType,
 //     { context }: FormatOptionLabelMeta<OptionType>,
