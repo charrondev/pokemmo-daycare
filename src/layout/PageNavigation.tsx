@@ -12,6 +12,7 @@ import IconProjects from "@pokemmo/icons/IconProjects.svg";
 import IconQuestion from "@pokemmo/icons/IconQuestion.svg";
 import { colorPrimary, CssType } from "@pokemmo/styles/variables";
 import { NavLink } from "react-router-dom";
+import { AddMenu } from "@pokemmo/layout/AddMenu";
 
 const navListStyles: CssType = {
     listStyle: "none",
@@ -28,6 +29,24 @@ const navListItemStyles: CssType = {
     padding: "10px 0",
 };
 
+const navButtonLinkStyles: CssType = {
+    appearance: "none",
+    background: "transparent",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+    borderRadius: 100,
+    [`&:focus, &:hover, &[aria-expanded=true]`]: {
+        background: "rgba(255, 255, 255, 0.2)",
+    },
+    "&.focus-visible, &[aria-expanded=true]": {
+        boxShadow: "0 0 0 2px #fff",
+    },
+    "& > svg": {
+        height: 46,
+    },
+};
+
 function PageNavigationLink(props: {
     to: string;
     children: React.ReactNode;
@@ -36,7 +55,7 @@ function PageNavigationLink(props: {
 }) {
     return (
         <li css={navListItemStyles}>
-            <NavLink css={[props.className]} to={props.to}>
+            <NavLink css={[props.className, navButtonLinkStyles]} to={props.to}>
                 {props.children}
             </NavLink>
         </li>
@@ -64,9 +83,9 @@ export function PageNavigation(props: { className?: string }) {
                 <PageNavigationLink label="Home" to="/">
                     <IconPokeball />
                 </PageNavigationLink>
-                <PageNavigationLink label="Create" to="/">
-                    <IconAdd />
-                </PageNavigationLink>
+                <li css={navListItemStyles}>
+                    <AddMenu css={navButtonLinkStyles} />
+                </li>
                 <PageNavigationLink label="Projects" to="/projects">
                     <IconProjects />
                 </PageNavigationLink>

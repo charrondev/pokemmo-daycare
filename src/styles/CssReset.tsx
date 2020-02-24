@@ -15,6 +15,8 @@ import {
     colorBG,
 } from "@pokemmo/styles/variables";
 import "focus-visible";
+import "@reach/menu-button/styles.css";
+import "@reach/dialog/styles.css";
 
 export function CssReset() {
     return (
