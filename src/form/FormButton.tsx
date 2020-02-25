@@ -24,8 +24,6 @@ interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     buttonType?: ButtonType;
 }
 
-const t: IProps = {} as any;
-
 const buttonCommon: CssType = {
     appearance: "none",
     padding: "4px 12px",

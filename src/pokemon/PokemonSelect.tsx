@@ -3,18 +3,17 @@
  * @license MIT
  */
 
-import React from "react";
-import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
 import {
-    pokedexOptions,
+    getPokemon,
     loadPokedexOptions,
     makeSpriteUrl,
-    PokedexMon,
-    PokeDexMonOptionType,
-    getPokemon,
     mapDexMonToItem,
+    PokeDexMonOptionType,
+    pokedexOptions,
 } from "@pokemmo/data/pokedex";
-import { OptionTypeBase, FormatOptionLabelMeta } from "react-select";
+import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
+import React from "react";
+import { FormatOptionLabelMeta, OptionTypeBase } from "react-select";
 
 export type PokemonSelectOptionType = PokeDexMonOptionType;
 

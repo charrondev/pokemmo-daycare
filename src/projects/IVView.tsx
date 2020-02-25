@@ -5,9 +5,9 @@
 
 import React from "react";
 import styled from "@emotion/styled";
-import { IVRequirements, Stat } from "@pokemmo/pokemon/IVUtils";
 import { labelStyle } from "@pokemmo/form/LabelAndValue";
 import { fontSizeSmall } from "@pokemmo/styles/variables";
+import { IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
 
 const statMargin = 4;
 

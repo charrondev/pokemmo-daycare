@@ -3,14 +3,10 @@
  * @license MIT
  */
 
-import React from "react";
-import { Dialog } from "@reach/dialog";
-import {
-    CssType,
-    mixinAbsoluteFull,
-    makeSingleBorder,
-} from "@pokemmo/styles/variables";
+import { makeSingleBorder, mixinAbsoluteFull } from "@pokemmo/styles/variables";
 import { useUniqueID } from "@pokemmo/utils";
+import { Dialog } from "@reach/dialog";
+import React from "react";
 
 interface IProps extends React.ComponentProps<typeof Dialog> {
     title: string;

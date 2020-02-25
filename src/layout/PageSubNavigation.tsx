@@ -3,9 +3,8 @@
  * @license MIT
  */
 
-import React from "react";
 import { colorBG } from "@pokemmo/styles/variables";
-import { Card } from "@pokemmo/styles/Card";
+import React from "react";
 
 interface IProps {
     className?: string;

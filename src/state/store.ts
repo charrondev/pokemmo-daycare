@@ -5,15 +5,15 @@
 
 import { configureStore, Store } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
-import { rootReducer } from "@pokemmo/state/reducers";
+import { rootReducer, RootState } from "@pokemmo/state/reducers";
 
-let storeCache: Store | null = null;
+let storeCache: Store<RootState> | null = null;
 
 export function getStore() {
     if (storeCache) {
         return storeCache;
     }
-    const store = configureStore({
+    const store = configureStore<RootState>({
         reducer: rootReducer,
         middleware: [save({ debounce: 500 })],
         preloadedState: load(),

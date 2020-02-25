@@ -3,7 +3,6 @@
  * @license MIT
  */
 
-import React from "react";
 import styled from "@emotion/styled";
 import { containerSize } from "@pokemmo/styles/variables";
 

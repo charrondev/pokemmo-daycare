@@ -5,7 +5,7 @@
 
 import React from "react";
 import styled from "@emotion/styled";
-import { Nature } from "@pokemmo/pokemon/IVUtils";
+import { Nature } from "@pokemmo/pokemon/PokemonTypes";
 
 const NatureViewWrapper = styled.span<{ isVertical?: boolean }>`
     display: flex;

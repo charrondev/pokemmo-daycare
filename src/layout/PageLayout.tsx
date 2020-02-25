@@ -3,10 +3,10 @@
  * @license MIT
  */
 
-import React from "react";
-import { PageNavigation } from "@pokemmo/layout/PageNavigation";
 import { PageContent } from "@pokemmo/layout/PageContent";
+import { PageNavigation } from "@pokemmo/layout/PageNavigation";
 import { PageSubNavigation } from "@pokemmo/layout/PageSubNavigation";
+import React from "react";
 
 interface IProps {
     content: React.ReactNode;
@@ -43,7 +43,9 @@ export function PageLayout(props: IProps) {
                         zIndex: 1,
                         order: 1,
                         margin: "0 auto",
-                        "@media (min-width: ${1300 + pageNavWidth + pageSubNavWidth}px)": {
+                        [`@media (min-width: ${1300 +
+                            pageNavWidth +
+                            pageSubNavWidth}px)`]: {
                             flex: 1,
                             minWidth: 1300 - pageNavWidth - pageSubNavWidth,
                         },

@@ -3,9 +3,9 @@
  * @license MIT
  */
 
-import React from "react";
-import { boxShadowCard, containerSize } from "@pokemmo/styles/variables";
 import { PageContainer } from "@pokemmo/layout/PageContainer";
+import { boxShadowCard } from "@pokemmo/styles/variables";
+import React from "react";
 
 interface IProps {
     children: React.ReactNode;

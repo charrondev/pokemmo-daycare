@@ -3,16 +3,16 @@
  * @license MIT
  */
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PokemonType, PokemonStatus } from "@pokemmo/pokemon/PokemonFactory";
+import { BreedStatus, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
 import { useStateSelector } from "@pokemmo/state/reducers";
 import { useActions } from "@pokemmo/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type PokemonByID = Record<string, PokemonType>;
+export type PokemonByID = Record<string, IPokemon>;
 
 interface IPokemonState {
     pokemonByID: {
-        [key: string]: PokemonType;
+        [key: string]: IPokemon;
     };
 }
 
@@ -26,10 +26,10 @@ export const pokemonSlice = createSlice({
     reducers: {
         addPokemon: (
             state: IPokemonState,
-            action: PayloadAction<PokemonType[]>,
+            action: PayloadAction<IPokemon[]>,
         ) => {
             action.payload.forEach(pokemon => {
-                state.pokemonByID[pokemon.uuid] = pokemon;
+                state.pokemonByID[pokemon.id] = pokemon;
             });
         },
         clearPokemonAndChildren: (
@@ -48,10 +48,10 @@ export const pokemonSlice = createSlice({
 
                 if (
                     pokemon.projectIDs.includes(projectID) &&
-                    [PokemonStatus.NONE].includes(pokemon.status)
+                    [BreedStatus.NONE].includes(pokemon.breedStatus)
                 ) {
                     const { parentIDs } = pokemon;
-                    delete state.pokemonByID[pokemon.uuid];
+                    delete state.pokemonByID[pokemon.id];
 
                     parentIDs &&
                         Object.values(parentIDs).forEach(
@@ -61,15 +61,15 @@ export const pokemonSlice = createSlice({
             }
             clearPokemonAndChildren(pokemonID);
         },
-        setPokemonStatus: (
+        setBreedStatus: (
             state,
             action: PayloadAction<{
-                pokemon: PokemonType;
-                status: PokemonStatus;
+                pokemon: IPokemon;
+                status: BreedStatus;
             }>,
         ) => {
             const { pokemon, status } = action.payload;
-            function setStatus(pokemonID: string, status: PokemonStatus) {
+            function setStatus(pokemonID: string, status: BreedStatus) {
                 const pokemon = state.pokemonByID[pokemonID];
                 if (!pokemon) {
                     console.warn(
@@ -78,10 +78,10 @@ export const pokemonSlice = createSlice({
                 }
 
                 switch (status) {
-                    case PokemonStatus.USED:
+                    case BreedStatus.USED:
                         if (pokemon.parentIDs) {
                             Object.values(pokemon.parentIDs).forEach(id =>
-                                setStatus(id, PokemonStatus.USED),
+                                setStatus(id, BreedStatus.USED),
                             );
                         }
                         break;
@@ -89,10 +89,10 @@ export const pokemonSlice = createSlice({
                         break;
                 }
 
-                pokemon.status = status;
+                pokemon.breedStatus = status;
             }
 
-            setStatus(pokemon.uuid, status);
+            setStatus(pokemon.id, status);
         },
     },
 });
@@ -101,15 +101,10 @@ export function useAllPokemon() {
     return useStateSelector(state => state.pokemon.pokemonByID);
 }
 
-export function usePokemon(pokemonID: string | null): PokemonType | null {
+export function usePokemon(pokemonID: string | null): IPokemon | null {
     return useStateSelector(state => {
         return pokemonID !== null ? state.pokemon.pokemonByID[pokemonID] : null;
     });
-}
-
-export function usePokemonCosts(pokemonID: string | null) {
-    const allPokemon = useAllPokemon();
-    const pokemon = usePokemon(pokemonID);
 }
 
 export function usePokemonActions() {

@@ -3,16 +3,14 @@
  * @license MIT
  */
 
-import React from "react";
-
-import IconAdd from "@pokemmo/icons/IconAdd.svg";
 import IconPokeball from "@pokemmo/icons/IconPokeball.svg";
 import IconPokedex from "@pokemmo/icons/IconPokedex.svg";
 import IconProjects from "@pokemmo/icons/IconProjects.svg";
 import IconQuestion from "@pokemmo/icons/IconQuestion.svg";
-import { colorPrimary, CssType } from "@pokemmo/styles/variables";
-import { NavLink } from "react-router-dom";
 import { AddMenu } from "@pokemmo/layout/AddMenu";
+import { colorPrimary, CssType } from "@pokemmo/styles/variables";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 const navListStyles: CssType = {
     listStyle: "none",
@@ -101,49 +99,4 @@ export function PageNavigation(props: { className?: string }) {
             </ul>
         </nav>
     );
-}
-
-function InnerNav() {
-    return <nav>Hello Nav</nav>;
-    // return (
-    //     <NavigationProvider>
-    //         <LayoutManagerWithViewController
-    //             // showContextualNavigation={true}
-    //             // experimental_flyoutOnHover={true}
-    //             globalNavigation={() => (
-    //                 <GlobalNav
-    //                     primaryItems={[
-    //                         {
-    //                             id: "projects",
-    //                             icon: () => (
-    //                                 <FolderIcon
-    //                                     label="Projects"
-    //                                     size="medium"
-    //                                 />
-    //                             ),
-    //                             tooltip: "Projects",
-    //                             onClick: () => {
-    //                                 console.log("on project");
-    //                             },
-    //                         },
-    //                         {
-    //                             id: "pokemon",
-    //                             icon: () => (
-    //                                 <EditorEmojiIcon
-    //                                     label="Pokemon"
-    //                                     size="large"
-    //                                 />
-    //                             ),
-    //                             tooltip: "Pokemon",
-    //                             label: "Pokemon",
-    //                         },
-    //                     ]}
-    //                     secondaryItems={[]}
-    //                 />
-    //             )}
-    //         >
-    //             <div></div>
-    //         </LayoutManagerWithViewController>
-    //     </NavigationProvider>
-    // );
 }

@@ -4,20 +4,19 @@
  */
 
 import { getPokemon } from "@pokemmo/data/pokedex";
-import { usePokemon } from "@pokemmo/pokemon/pokemonSlice";
+import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
 import { ProjectDataType } from "@pokemmo/projects/projectsSlice";
 import { Card } from "@pokemmo/styles/Card";
 import { fontSizeLarge } from "@pokemmo/styles/variables";
 import React from "react";
-import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 
 interface IProps {
     project: ProjectDataType;
 }
 
 export function ProjectListItem(props: IProps) {
-    let pokemon = usePokemon(props.project.pokemonID);
+    // let pokemon = usePokemon(props.project.pokemonID);
 
     // if (!pokemon) {
     //     pokemon = getPokemon("charmander");

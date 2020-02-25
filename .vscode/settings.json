@@ -2,5 +2,12 @@
     "files.exclude": {
         "node_modules": true
     },
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "source.fixAll.eslint": true
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "eslint.alwaysShowStatus": true,
+    "eslint.lintTask.enable": true,
+    "eslint.enable": true
 }

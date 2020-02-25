@@ -3,42 +3,36 @@
  * @license MIT
  */
 
+import { getPokemon, PokedexMon } from "@pokemmo/data/pokedex";
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
+import { FormInput } from "@pokemmo/form/FormInput";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { FormRow } from "@pokemmo/form/FormRow";
-import {
-    NatureSelect,
-    NatureSelectOptionType,
-} from "@pokemmo/pokemon/NatureSelect";
-import {
-    PokemonSelect,
-    PokemonSelectOptionType,
-} from "@pokemmo/pokemon/PokemonSelect";
-import { Form, FormikProvider, useFormik } from "formik";
-import React from "react";
-import { getPokemon, PokedexMon } from "@pokemmo/data/pokedex";
-import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
-import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
-import { CssType } from "@pokemmo/styles/variables";
 import {
     FormToggleButton,
     IToggleButtonOption,
 } from "@pokemmo/form/FormToggleButton";
-import {
-    OwnershipStatus,
-    PokemonType,
-    PokemonFactory,
-} from "@pokemmo/pokemon/PokemonFactory";
-import { uppercaseFirst } from "@pokemmo/utils";
-import { FormInput } from "@pokemmo/form/FormInput";
-import { Stat, IVRequirements, Gender } from "@pokemmo/pokemon/IVUtils";
-import { getNature } from "@pokemmo/pokemon/natures";
-import { usePokemonActions } from "@pokemmo/pokemon/pokemonSlice";
+import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { Modal } from "@pokemmo/layout/Modal";
-import { Dialog } from "@reach/dialog";
-import * as Yup from "yup";
+import { NatureSelect } from "@pokemmo/pokemon/NatureSelect";
+import { PokemonBuilder } from "@pokemmo/pokemon/PokemonBuilder";
+import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
+import { usePokemonActions } from "@pokemmo/pokemon/pokemonSlice";
+import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
+import {
+    Gender,
+    IVRequirements,
+    OwnershipStatus,
+    Stat,
+} from "@pokemmo/pokemon/PokemonTypes";
 import { DecoratedCard } from "@pokemmo/styles/Card";
+import { CssType } from "@pokemmo/styles/variables";
+import { uppercaseFirst } from "@pokemmo/utils";
+import { Dialog } from "@reach/dialog";
+import { Form, FormikProvider, useFormik } from "formik";
+import React from "react";
+import * as Yup from "yup";
 
 interface IProps extends React.ComponentProps<typeof Dialog> {
     pokemonID?: string;
@@ -101,18 +95,11 @@ export function PokemonForm(_props: IProps) {
             if (!values.pokemon || !values.nature) {
                 return;
             }
-
-            const { pokemon } = PokemonFactory.create(
-                values.pokemon,
-                values.stats,
-                values.gender,
-                getNature(values.nature),
-                null,
-                [],
-                [],
-                true,
-                true,
-            );
+            const pokemon = PokemonBuilder.create(values.pokemon)
+                .ivs(values.stats)
+                .gender(values.gender)
+                .nature(values.nature)
+                .result();
 
             addPokemon([pokemon]);
             props.onDismiss?.();

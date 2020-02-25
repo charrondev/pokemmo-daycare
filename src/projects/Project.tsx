@@ -3,26 +3,19 @@
  * @license MIT
  */
 
-import { usePokemonActions } from "@pokemmo/pokemon/pokemonSlice";
 import { PokemonTree } from "@pokemmo/projects/PokemonTree";
-import {
-    useProject,
-    useProjectActions,
-    useProjectPokemon,
-} from "@pokemmo/projects/projectsSlice";
+import { useProject, useProjectPokemon } from "@pokemmo/projects/projectsSlice";
 import React from "react";
 import { useParams } from "react-router-dom";
 
 interface IProps {}
 
-const UNTITLED = "(Untitled)";
-
 export function Project(props: IProps) {
     const { projectID } = useParams<{ projectID: string }>();
     const project = useProject(projectID);
     const projectPokemon = useProjectPokemon(projectID);
-    const { addPokemon, clearPokemonAndChildren } = usePokemonActions();
-    const { setPokemon, stashFormValues } = useProjectActions();
+    // const { addPokemon, clearPokemonAndChildren } = usePokemonActions();
+    // const { setPokemon, stashFormValues } = useProjectActions();
 
     if (projectID && !project) {
         return <div>Project Not Found</div>;

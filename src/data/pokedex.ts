@@ -20,7 +20,7 @@ export const allEggGroups = allPokemon.reduce(
 );
 
 export function getPokemon(input?: string | number | null) {
-    if (input == undefined) {
+    if (input == null) {
         return input;
     }
     return allPokemon.find(pokemon => {
@@ -72,9 +72,20 @@ export const pokemonForEggGroup = memoize(
 );
 
 export function makeSpriteUrl(pokemon: PokedexMon, animated?: boolean) {
-    return `https://img.pokemondb.net/sprites/black-white/${
-        animated ? "anim/" : ""
-    }normal/${pokemon.identifier}.${animated ? "gif" : "png"}`;
+    let id = pokemon.speciesID.toString();
+    if (id.length === 1) {
+        id = "00" + id;
+    }
+
+    if (id.length === 2) {
+        id = "0" + id;
+    }
+    return `https://assets.pokemon.com/assets/cms2/img/pokedex/${
+        animated ? "full" : "detail"
+    }/${id}.png`;
+    // return `https://img.pokemondb.net/sprites/black-white/${
+    //     animated ? "anim/" : ""
+    // }normal/${pokemon.identifier}.${animated ? "gif" : "png"}`;
 }
 
 export interface PokeDexMonOptionType extends OptionTypeBase {

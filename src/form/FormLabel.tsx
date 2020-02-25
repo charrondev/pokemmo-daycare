@@ -3,10 +3,9 @@
  * @license MIT
  */
 
-import React, { useContext, useMemo } from "react";
-import { uniqueId } from "lodash-es";
-import { useId } from "@reach/auto-id";
 import { fontSizeSmall } from "@pokemmo/styles/variables";
+import { uniqueId } from "lodash-es";
+import React, { useContext, useMemo } from "react";
 
 const LabelContext = React.createContext({
     getLabelID: () => uniqueId("defaultLabelID") as string | undefined,

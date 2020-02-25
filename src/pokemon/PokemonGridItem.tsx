@@ -5,25 +5,24 @@
 
 import React from "react";
 import { DecoratedCard } from "@pokemmo/styles/Card";
-import { PokemonType } from "@pokemmo/pokemon/PokemonFactory";
 import { getPokemon } from "@pokemmo/data/pokedex";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { IVView } from "@pokemmo/projects/IVView";
-import { Gender } from "@pokemmo/pokemon/IVUtils";
 import { uppercaseFirst } from "@pokemmo/utils";
+import { IPokemon, Gender } from "@pokemmo/pokemon/PokemonTypes";
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
-    pokemon: PokemonType;
+    pokemon: IPokemon;
 }
 
 export function PokemonGridItem(_props: IProps) {
     const { pokemon, ...props } = _props;
 
-    const dexMon = getPokemon(pokemon.name);
+    const dexMon = getPokemon(pokemon.identifier);
 
     let hasStats = false;
-    Object.values(pokemon.ivRequirements).forEach(stat => {
+    Object.values(pokemon.ivs).forEach(stat => {
         if (stat?.value !== 0) {
             hasStats = true;
         }
@@ -53,7 +52,7 @@ export function PokemonGridItem(_props: IProps) {
                             padding: "6px 0",
                         }}
                     >
-                        {pokemon.nature.name}
+                        {pokemon.nature}
                     </LabelAndValue>
                 )}
                 <LabelAndValue
@@ -78,7 +77,7 @@ export function PokemonGridItem(_props: IProps) {
                             marginBottom: 3,
                             marginTop: -6,
                         }}
-                        ivRequirements={pokemon.ivRequirements}
+                        ivRequirements={pokemon.ivs}
                     />
                 ) : (
                     <LabelAndValue

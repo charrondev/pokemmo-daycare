@@ -3,23 +3,16 @@
  * @license MIT
  */
 
+import { FormError } from "@pokemmo/form/FormError";
+import { inputCSS, inputFocusCSS } from "@pokemmo/form/FormInput";
+import { useInputID, useLabelID } from "@pokemmo/form/FormLabel";
+import { BaseFormSelectProps } from "@pokemmo/form/FormSelectProps";
+import { colorPrimary, colorPrimaryState } from "@pokemmo/styles/variables";
+import { useField } from "formik";
 import React from "react";
+import Select, { ValueType } from "react-select";
 import makeAnimated from "react-select/animated";
 import AsyncSelect, { AsyncProps } from "react-select/async";
-import Select, { Props as SelectProps, ValueType } from "react-select";
-import {
-    colorPrimaryState,
-    colorPrimary,
-    colorInput,
-    makeSingleBorder,
-    colorBorder,
-    colorInputState,
-} from "@pokemmo/styles/variables";
-import { useInputID, useLabelID } from "@pokemmo/form/FormLabel";
-import { useField, useFormikContext } from "formik";
-import { inputFocusCSS, inputCSS } from "@pokemmo/form/FormInput";
-import { BaseFormSelectProps } from "@pokemmo/form/FormSelectProps";
-import { FormError } from "@pokemmo/form/FormError";
 
 const animatedComponents = makeAnimated();
 
@@ -101,7 +94,7 @@ export function FormSelect<T extends { value: string }>(
                             ...provided,
                             ...inputCSS,
                             width: "100%",
-                            ["&&"]: state.isFocused ? inputFocusCSS : {},
+                            "&&": state.isFocused ? inputFocusCSS : {},
                         };
                     },
                 }}

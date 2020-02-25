@@ -31,7 +31,7 @@ export function PokemonPage() {
                                 <PokemonGridItem
                                     css={{ margin: gridItemPadding }}
                                     pokemon={pokemon}
-                                    key={pokemon.uuid}
+                                    key={pokemon.id}
                                 />
                             );
                         })}

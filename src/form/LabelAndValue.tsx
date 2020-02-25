@@ -3,13 +3,8 @@
  * @license MIT
  */
 
+import { CssType, fontSizeNormal } from "@pokemmo/styles/variables";
 import React from "react";
-import {
-    fontSizeSmall,
-    fontSizeNormal,
-    CssType,
-} from "@pokemmo/styles/variables";
-import { Dirent } from "fs";
 
 interface IProps extends React.HTMLAttributes<HTMLLabelElement> {
     children: React.ReactNode;

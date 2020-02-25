@@ -5,11 +5,17 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { pokemonSlice, usePokemon } from "@pokemmo/pokemon/pokemonSlice";
-import { PokemonStatus, PokemonType } from "@pokemmo/pokemon/PokemonFactory";
 import { useActions } from "@pokemmo/utils";
 import { useStateSelector } from "@pokemmo/state/reducers";
 import { PokeDexMonOptionType } from "@pokemmo/data/pokedex";
-import { Nature, Stat, IVRequirements, Gender } from "@pokemmo/pokemon/IVUtils";
+import {
+    Nature,
+    Stat,
+    IVRequirements,
+    Gender,
+    BreedStatus,
+    IPokemon,
+} from "@pokemmo/pokemon/PokemonTypes";
 
 export interface ProjectFormValues {
     pokemon: PokeDexMonOptionType | null;
@@ -103,14 +109,14 @@ export const projectsSlice = createSlice({
     },
     extraReducers: builder =>
         builder.addCase(
-            pokemonSlice.actions.setPokemonStatus,
+            pokemonSlice.actions.setBreedStatus,
             (state, action) => {
                 const { pokemon, status } = action.payload;
 
-                if (status === PokemonStatus.USED) {
+                if (status === BreedStatus.USED) {
                     const projects = pokemon.projectIDs.map(id => state[id]);
                     projects.forEach(proj => {
-                        proj.expandedPokemonIDs[pokemon.uuid] = false;
+                        proj.expandedPokemonIDs[pokemon.id] = false;
                     });
                 }
             },
@@ -125,7 +131,7 @@ export function useProject(projectID: string): ProjectDataType | null {
     return useStateSelector(state => state.projects[projectID]);
 }
 
-export function useProjectPokemon(projectID: string): PokemonType | null {
+export function useProjectPokemon(projectID: string): IPokemon | null {
     const project = useProject(projectID);
     return usePokemon(project?.pokemonID ?? null);
 }

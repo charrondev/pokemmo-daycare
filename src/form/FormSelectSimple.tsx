@@ -4,3 +4,7 @@
  */
 
 import React from "react";
+
+export function FormSelectSimple() {
+    return <div>Form Select Simple</div>;
+}

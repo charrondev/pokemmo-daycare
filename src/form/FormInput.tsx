@@ -3,20 +3,21 @@
  * @license MIT
  */
 
-import React, { useState } from "react";
-import { useField } from "formik";
-import { useLabelID, useLabeledInputProps } from "@pokemmo/form/FormLabel";
+import { FormError } from "@pokemmo/form/FormError";
+import { useLabeledInputProps } from "@pokemmo/form/FormLabel";
 import {
-    makeSingleBorder,
-    colorPrimary,
-    colorInput,
-    CssType,
-    colorBorder,
-    colorInputState,
-    colorPrimaryState,
     borderRadius,
+    colorBorder,
+    colorInput,
+    colorInputState,
+    colorPrimary,
+    colorPrimaryState,
     colorText,
+    CssType,
+    makeSingleBorder,
 } from "@pokemmo/styles/variables";
+import { useField } from "formik";
+import React, { useState } from "react";
 
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     fieldName: string;
@@ -46,7 +47,7 @@ export const inputCSS: CssType = {
         background: colorInputState.string(),
         borderColor: colorPrimaryState.string(),
     },
-    ["&&:focus"]: inputFocusCSS,
+    "&&:focus": inputFocusCSS,
 };
 
 export function FormInput(_props: IProps) {
@@ -61,70 +62,81 @@ export function FormInput(_props: IProps) {
     }
 
     return (
-        <span
-            css={[
-                inputCSS,
-                {
-                    paddingTop: 9,
-                    paddingBottom: 9,
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                },
-                hasFocus && { "&&": inputFocusCSS },
-            ]}
-        >
-            {beforeNode && <span css={{ marginRight: 6 }}>{beforeNode}</span>}
-            <input
-                {...idProps}
-                {...props}
-                {...field}
-                value={value}
-                type="text"
-                onChange={event => {
-                    event.preventDefault();
-                    fieldHelpers.setTouched(true);
-                    if (props.type === "number") {
-                        const commasStripped = event.target.value.replace(
-                            /,/g,
-                            "",
-                        );
-                        let number: number | null = parseInt(
-                            commasStripped,
-                            10,
-                        );
-                        if (Number.isNaN(number)) {
-                            number = null;
-                        }
+        <>
+            <span
+                css={[
+                    inputCSS,
+                    {
+                        paddingTop: 9,
+                        paddingBottom: 9,
+                        paddingLeft: 12,
+                        paddingRight: 12,
+                    },
+                    hasFocus && { "&&": inputFocusCSS },
+                ]}
+            >
+                {beforeNode && (
+                    <span css={{ marginRight: 6 }}>{beforeNode}</span>
+                )}
+                <input
+                    {...idProps}
+                    {...props}
+                    {...field}
+                    value={value}
+                    type="text"
+                    onChange={event => {
+                        event.preventDefault();
+                        fieldHelpers.setTouched(true);
+                        if (props.type === "number") {
+                            const commasStripped = event.target.value.replace(
+                                /,/g,
+                                "",
+                            );
+                            let number: number | null = parseInt(
+                                commasStripped,
+                                10,
+                            );
+                            if (Number.isNaN(number)) {
+                                number = null;
+                            }
 
-                        if (typeof props.max === "number" && number !== null) {
-                            number = Math.min(props.max, number);
-                        }
+                            if (
+                                typeof props.max === "number" &&
+                                number !== null
+                            ) {
+                                number = Math.min(props.max, number);
+                            }
 
-                        if (typeof props.min === "number" && number !== null) {
-                            number = Math.max(props.min, number);
-                        }
+                            if (
+                                typeof props.min === "number" &&
+                                number !== null
+                            ) {
+                                number = Math.max(props.min, number);
+                            }
 
-                        fieldHelpers.setValue(number);
-                    } else {
-                        fieldHelpers.setValue(event.target.value);
-                    }
-                }}
-                onFocus={() => setHasFocus(true)}
-                onBlur={e => {
-                    setHasFocus(false);
-                    field.onBlur(e);
-                }}
-                css={{
-                    appearance: "none",
-                    background: "none",
-                    border: "none",
-                    outline: "none",
-                    boxShadow: "none",
-                    flex: 1,
-                    color: "inherit",
-                }}
-            />
-        </span>
+                            fieldHelpers.setValue(number);
+                        } else {
+                            fieldHelpers.setValue(event.target.value);
+                        }
+                    }}
+                    onFocus={() => setHasFocus(true)}
+                    onBlur={e => {
+                        setHasFocus(false);
+                        field.onBlur(e);
+                    }}
+                    css={{
+                        appearance: "none",
+                        background: "none",
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                        flex: 1,
+                        color: "inherit",
+                    }}
+                />
+            </span>
+            {meta.touched && meta.error && <FormError>{meta.error}</FormError>}
+        </>
     );
 }
 

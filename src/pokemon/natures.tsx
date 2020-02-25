@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-import { Nature, Stat } from "@pokemmo/pokemon/IVUtils";
+import { Nature, Stat } from "@pokemmo/pokemon/PokemonTypes";
 
 export const Hardy: Nature = {
     name: "Hardy",

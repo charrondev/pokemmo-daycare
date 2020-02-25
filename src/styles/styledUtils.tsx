@@ -3,9 +3,8 @@
  * @license MIT
  */
 
-import React from "react";
-import { ObjectInterpolation } from "@emotion/core";
 import { CssType } from "@pokemmo/styles/variables";
+import React from "react";
 
 export type StyledHTML<T extends HTMLElement> = React.HTMLAttributes<T> & {
     children?: React.ReactNode;
