@@ -110,6 +110,13 @@ export function PokemonForm(_props: IProps) {
     const title = pokemonID == null ? "Create Pokemon" : "Edit Pokemon";
     const dexMon = getPokemon(form.values.pokemon);
 
+    let forceGender: Gender | undefined;
+    if (dexMon?.percentageMale === 100) {
+        forceGender = Gender.MALE;
+    } else if (dexMon?.percentageMale === 0) {
+        forceGender = Gender.FEMALE;
+    }
+
     const content = (
         <>
             <FormHeading
@@ -134,6 +141,7 @@ export function PokemonForm(_props: IProps) {
                             { label: "Female", value: Gender.FEMALE },
                         ]}
                         fieldName="gender"
+                        forceValue={forceGender}
                     />
                 </FormLabel>
             </FormRow>

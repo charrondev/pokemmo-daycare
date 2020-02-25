@@ -27,6 +27,7 @@ export interface IToggleButtonOption {
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
     options: IToggleButtonOption[];
     fieldName: string;
+    forceValue?: string;
 }
 
 var KEYCODE = {
@@ -44,6 +45,15 @@ export function FormToggleButton(props: IProps) {
     const [needsSelfFocus, setNeedsSelfFocus] = useState(false);
     const currentRef = useRef<HTMLButtonElement>(null);
 
+    const { forceValue } = props;
+
+    useEffect(() => {
+        if (forceValue) {
+            fieldHelpers.setValue(forceValue);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [forceValue]);
+
     useEffect(() => {
         if (needsSelfFocus) {
             if (currentRef.current !== document.activeElement) {
@@ -59,23 +69,27 @@ export function FormToggleButton(props: IProps) {
                 id={inputID}
                 aria-labelledby={labelID}
                 role="radiogroup"
-                css={{
-                    background: colorInput.string(),
-                    border: makeSingleBorder(2),
-                    display: "inline-flex",
-                    alignItems: "stretch",
-                    borderRadius: borderRadius,
+                css={[
+                    {
+                        background: colorInput.string(),
+                        border: makeSingleBorder(2),
+                        display: "inline-flex",
+                        alignItems: "stretch",
+                        borderRadius: borderRadius,
 
-                    // Adjust offset for slightly changed.
-                    margin: "1px 0",
-                    marginBottom: 3,
-                }}
+                        // Adjust offset for slightly changed.
+                        margin: "1px 0",
+                        marginBottom: 3,
+                    },
+                    forceValue && { opacity: 0.7, pointerEvents: "none" },
+                ]}
             >
                 {props.options.map((option, index) => {
                     const isPressed = field.value === option.value;
                     return (
                         <React.Fragment key={option.value}>
                             <button
+                                disabled={!!forceValue}
                                 type="button"
                                 onKeyDown={event => {
                                     const firstOption =
