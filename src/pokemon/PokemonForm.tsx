@@ -15,6 +15,7 @@ import {
 } from "@pokemmo/form/FormToggleButton";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { Modal } from "@pokemmo/layout/Modal";
+import { nameForStat } from "@pokemmo/pokemon/IVUtils";
 import { NatureSelect } from "@pokemmo/pokemon/NatureSelect";
 import { PokemonBuilder } from "@pokemmo/pokemon/PokemonBuilder";
 import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
@@ -84,6 +85,7 @@ export function PokemonForm(_props: IProps) {
             nature: Yup.mixed().required("Required"),
         }),
         onSubmit: (values, { setFieldError }) => {
+            console.log(values);
             if (!values.pokemon) {
                 setFieldError("pokemon", "Pokemon is Required.");
             }
@@ -185,7 +187,7 @@ export function PokemonForm(_props: IProps) {
             >
                 {Object.values(Stat).map(stat => {
                     return (
-                        <FormLabel label={stat} key={stat}>
+                        <FormLabel label={nameForStat(stat)} key={stat}>
                             <FormInput
                                 min={0}
                                 max={31}

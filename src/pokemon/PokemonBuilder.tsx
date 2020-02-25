@@ -161,16 +161,18 @@ export class PokemonBuilder {
      * Calculate the pokemon's ID based on it's info.
      */
     private calculateID() {
-        const id = `${this._identifier}-${this._gender}-${
-            this.ivRequirementsAsString
-        }-${this._nature ? this._nature + "-" : ""}${this._uuid}`;
+        const id = `${this._identifier}-${
+            this._gender
+        }-${this.ivRequirementsAsString()}-${
+            this._nature ? this._nature + "-" : ""
+        }${this._uuid}`;
         this._id = id;
         return id;
     }
 
     private ivRequirementsAsString(): string {
         const statNum = (stat: Stat) => {
-            const statInfo = this._ivs[stat];
+            const statInfo = this._ivs?.[stat];
             if (!statInfo) {
                 return 0;
             } else {

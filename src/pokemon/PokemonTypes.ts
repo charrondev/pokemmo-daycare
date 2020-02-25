@@ -4,12 +4,12 @@
  */
 
 export enum Stat {
-    HP = "HP",
-    ATTACK = "Atk",
-    DEFENSE = "Def",
-    SPECIAL_ATTACK = "Sp. Atk",
-    SPECIAL_DEFENSE = "Sp. Def",
-    SPEED = "Speed",
+    HP = "hp",
+    ATTACK = "atk",
+    DEFENSE = "def",
+    SPECIAL_ATTACK = "spAtk",
+    SPECIAL_DEFENSE = "spDef",
+    SPEED = "speed",
 }
 
 export interface Nature {

@@ -3,10 +3,10 @@
  * @license MIT
  */
 
-import React from "react";
+import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { PageLayout } from "@pokemmo/layout/PageLayout";
+import React from "react";
 import { clear } from "redux-localstorage-simple";
-import { FormButton, ButtonType } from "@pokemmo/form/FormButton";
 
 export function HelpPage() {
     return (
@@ -26,7 +26,7 @@ export function HelpPage() {
                             window.location.href = "/";
                         }}
                     >
-                        Clear App Cache
+                        Clear All Data
                     </FormButton>
                 </div>
             }

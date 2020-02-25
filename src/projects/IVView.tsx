@@ -3,11 +3,12 @@
  * @license MIT
  */
 
-import React from "react";
 import styled from "@emotion/styled";
 import { labelStyle } from "@pokemmo/form/LabelAndValue";
-import { fontSizeSmall } from "@pokemmo/styles/variables";
+import { nameForStat } from "@pokemmo/pokemon/IVUtils";
 import { IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
+import { fontSizeSmall } from "@pokemmo/styles/variables";
+import React from "react";
 
 const statMargin = 4;
 
@@ -92,7 +93,7 @@ function StatView(props: { stat: Stat; points: number }) {
     return (
         <li css={{ listStyle: "none", margin: "8px 4px 0" }}>
             <Lozenge style={{ backgroundColor: color }}>
-                <StatName>{props.stat} </StatName>
+                <StatName>{nameForStat(props.stat)} </StatName>
                 <StatPoints>{props.points}</StatPoints>
             </Lozenge>
         </li>

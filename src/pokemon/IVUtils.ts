@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-import { IVRequirements, Stat, Gender } from "@pokemmo/pokemon/PokemonTypes";
+import { Gender, IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
 
 export const EMPTY_IV = Object.freeze({
     value: 0,
@@ -39,4 +39,21 @@ export function subtractIVRequirement(
     }
 
     return newRequirements;
+}
+
+export function nameForStat(stat: Stat): string {
+    switch (stat) {
+        case Stat.HP:
+            return "HP";
+        case Stat.ATTACK:
+            return "Atk";
+        case Stat.DEFENSE:
+            return "Def";
+        case Stat.SPECIAL_ATTACK:
+            return "Sp. Atk";
+        case Stat.SPECIAL_DEFENSE:
+            return "Sp. Def";
+        case Stat.SPEED:
+            return "Speed";
+    }
 }
