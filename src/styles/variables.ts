@@ -44,3 +44,13 @@ export const mixinBorder = (color = colorBorder): CssType => ({
 
 export const makeSingleBorder = (width: number) =>
     `${width}px solid ${colorBorder.string()}`;
+
+export const mixinAbsoluteFull = (): CssType => {
+    return {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    };
+};

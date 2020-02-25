@@ -60,6 +60,7 @@ export class PokemonFactory {
         projectIDs: string[] = [],
         allowedAlternatives?: string[],
         forceName?: boolean,
+        noParents?: boolean,
     ) {
         let finalName = name;
         if (!forceName && allowedAlternatives && gender !== Gender.FEMALE) {
@@ -79,6 +80,13 @@ export class PokemonFactory {
             status: PokemonStatus.NONE,
             projectIDs: projectIDs,
         };
+
+        if (noParents) {
+            return {
+                pokemon,
+                allParents: [],
+            };
+        }
 
         const { parentIDs, allParents } = this.calculateParents(
             pokemon,

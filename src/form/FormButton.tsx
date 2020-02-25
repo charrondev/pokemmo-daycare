@@ -3,17 +3,15 @@
  * @license MIT
  */
 
-import React from "react";
 import {
-    mixinBorder,
-    colorInput,
+    colorBorder,
     colorPrimary,
     colorText,
     CssType,
-    colorPrimaryState,
-    colorInputState,
+    mixinBorder,
 } from "@pokemmo/styles/variables";
 import Color from "color";
+import React from "react";
 
 export enum ButtonType {
     PRIMARY = "primary",
@@ -62,13 +60,13 @@ const standardColor = Color("#F4F5F7");
 const standardColorState = standardColor.darken(0.05);
 
 const standardCSS: CssType = {
-    ...mixinBorder(standardColor),
+    ...mixinBorder(colorBorder),
     background: standardColor.string(),
     borderWidth: 2,
     color: colorText.string(),
 
     [`&:focus, &:hover, &:active`]: {
-        ...mixinBorder(standardColorState),
+        ...mixinBorder(colorBorder),
         background: standardColorState.string(),
         borderWidth: 2,
     },

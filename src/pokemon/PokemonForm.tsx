@@ -15,22 +15,30 @@ import {
     PokemonSelect,
     PokemonSelectOptionType,
 } from "@pokemmo/pokemon/PokemonSelect";
-import { Dialog } from "@reach/dialog";
 import { Form, FormikProvider, useFormik } from "formik";
 import React from "react";
 import { getPokemon, PokedexMon } from "@pokemmo/data/pokedex";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
-import { LabelCard } from "@pokemmo/styles/LabelCard";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { CssType } from "@pokemmo/styles/variables";
 import {
     FormToggleButton,
     IToggleButtonOption,
 } from "@pokemmo/form/FormToggleButton";
-import { OwnershipStatus } from "@pokemmo/pokemon/PokemonFactory";
+import {
+    OwnershipStatus,
+    PokemonType,
+    PokemonFactory,
+} from "@pokemmo/pokemon/PokemonFactory";
 import { uppercaseFirst } from "@pokemmo/utils";
 import { FormInput } from "@pokemmo/form/FormInput";
-import { Stat } from "@pokemmo/pokemon/IVUtils";
+import { Stat, IVRequirements, Gender } from "@pokemmo/pokemon/IVUtils";
+import { getNature } from "@pokemmo/pokemon/natures";
+import { usePokemonActions } from "@pokemmo/pokemon/pokemonSlice";
+import { Modal } from "@pokemmo/layout/Modal";
+import { Dialog } from "@reach/dialog";
+import * as Yup from "yup";
+import { DecoratedCard } from "@pokemmo/styles/Card";
 
 interface IProps extends React.ComponentProps<typeof Dialog> {
     pokemonID?: string;
@@ -39,24 +47,26 @@ interface IProps extends React.ComponentProps<typeof Dialog> {
 
 interface IPokemonForm {
     pokemon: string | null;
+    gender: Gender;
     nature: string | null;
     ownershipStatus: OwnershipStatus;
     cost: number | null;
-    stats: Record<Stat, number>;
+    stats: IVRequirements;
 }
 
 const INITIAL_FORM: IPokemonForm = {
     pokemon: null,
+    gender: Gender.MALE,
     nature: null,
     ownershipStatus: OwnershipStatus.CAUGHT,
     cost: null,
     stats: {
-        [Stat.HP]: 0,
-        [Stat.ATTACK]: 0,
-        [Stat.DEFENSE]: 0,
-        [Stat.SPECIAL_ATTACK]: 0,
-        [Stat.SPECIAL_DEFENSE]: 0,
-        [Stat.SPEED]: 0,
+        [Stat.HP]: { value: 0, prices: {} },
+        [Stat.ATTACK]: { value: 0, prices: {} },
+        [Stat.DEFENSE]: { value: 0, prices: {} },
+        [Stat.SPECIAL_ATTACK]: { value: 0, prices: {} },
+        [Stat.SPECIAL_DEFENSE]: { value: 0, prices: {} },
+        [Stat.SPEED]: { value: 0, prices: {} },
     },
 };
 
@@ -70,10 +80,42 @@ const ownershipOptions: IToggleButtonOption[] = Object.values(
 });
 
 export function PokemonForm(_props: IProps) {
+    const { addPokemon } = usePokemonActions();
+
     const form = useFormik({
         initialValues: INITIAL_FORM,
-        onSubmit: values => {
-            console.log(values);
+        validateOnMount: false,
+        validationSchema: Yup.object().shape({
+            pokemon: Yup.mixed().required("Required"),
+            nature: Yup.mixed().required("Required"),
+        }),
+        onSubmit: (values, { setFieldError }) => {
+            if (!values.pokemon) {
+                setFieldError("pokemon", "Pokemon is Required.");
+            }
+
+            if (!values.nature) {
+                setFieldError("nature", "Nature is Required");
+            }
+
+            if (!values.pokemon || !values.nature) {
+                return;
+            }
+
+            const { pokemon } = PokemonFactory.create(
+                values.pokemon,
+                values.stats,
+                values.gender,
+                getNature(values.nature),
+                null,
+                [],
+                [],
+                true,
+                true,
+            );
+
+            addPokemon([pokemon]);
+            props.onDismiss?.();
         },
     });
 
@@ -82,86 +124,85 @@ export function PokemonForm(_props: IProps) {
     const dexMon = getPokemon(form.values.pokemon);
 
     const content = (
-        <FormikProvider value={form}>
-            <Form>
-                <FormHeading
-                    tabIndex={0}
-                    title={title}
-                    description={
-                        "Add an existing pokemon that you’ve either bought, bred, or caught."
-                    }
-                    actions={
-                        <>
-                            <FormButton>Delete</FormButton>
-                            <FormButton buttonType={ButtonType.SUBMIT}>
-                                Save
-                            </FormButton>
-                        </>
-                    }
-                />
-                <FormHeading title="Pokemon" />
-                <FormRow>
-                    <FormLabel label="Pokemon Name">
-                        <PokemonSelect fieldName="pokemon" />
-                    </FormLabel>
-                    <FormLabel label="Nature">
-                        <NatureSelect fieldName="nature" />
-                    </FormLabel>
-                </FormRow>
-                {dexMon && <PokemonFormPreview dexMon={dexMon} />}
-                <FormHeading
-                    title="Status & Price"
-                    description="Input price and current status of your pokemon"
-                />
-                <FormRow
-                    firstItemStyles={{
-                        flex: "initial",
-                        minWidth: 0,
-                    }}
-                >
-                    <FormLabel label="Status">
-                        <FormToggleButton
-                            options={ownershipOptions}
-                            fieldName="ownershipStatus"
+        <>
+            <FormHeading
+                title="Pokemon"
+                description="Add an existing pokemon that you’ve either bought, bred, or caught."
+            />
+            <FormRow
+                itemStyles={{
+                    minWidth: 0,
+                }}
+            >
+                <FormLabel label="Pokemon Name">
+                    <PokemonSelect fieldName="pokemon" />
+                </FormLabel>
+                <FormLabel label="Nature">
+                    <NatureSelect fieldName="nature" />
+                </FormLabel>
+                <FormLabel label="Gender" css={{ flex: "initial" }}>
+                    <FormToggleButton
+                        options={[
+                            { label: "Male", value: Gender.MALE },
+                            { label: "Female", value: Gender.FEMALE },
+                        ]}
+                        fieldName="gender"
+                    />
+                </FormLabel>
+            </FormRow>
+            {dexMon && <PokemonFormPreview dexMon={dexMon} />}
+            <FormHeading
+                title="Status & Price"
+                description="Input price and current status of your pokemon"
+            />
+            <FormRow
+                firstItemStyles={{
+                    flex: "initial",
+                    minWidth: 0,
+                }}
+            >
+                <FormLabel label="Status">
+                    <FormToggleButton
+                        options={ownershipOptions}
+                        fieldName="ownershipStatus"
+                    />
+                </FormLabel>
+                {form.values.ownershipStatus === OwnershipStatus.BOUGHT && (
+                    <FormLabel label="Cost">
+                        <FormInput
+                            beforeNode="¥"
+                            type="number"
+                            fieldName="cost"
+                            placeholder="10,000"
                         />
                     </FormLabel>
-                    {form.values.ownershipStatus === OwnershipStatus.BOUGHT && (
-                        <FormLabel label="Cost">
+                )}
+            </FormRow>
+            <FormHeading
+                title="Stats"
+                description="Add the stats for your Pokemon."
+            />
+            <FormRow
+                itemStyles={{
+                    flex: 1,
+                    minWidth: "33%",
+                }}
+            >
+                {Object.values(Stat).map(stat => {
+                    return (
+                        <FormLabel label={stat} key={stat}>
                             <FormInput
-                                beforeNode="¥"
+                                min={0}
+                                max={31}
                                 type="number"
-                                fieldName="cost"
-                                placeholder="10,000"
+                                fieldName={`stats.${stat}.value`}
+                                placeholder="0"
                             />
                         </FormLabel>
-                    )}
-                </FormRow>
-                <FormHeading
-                    title="Stats"
-                    description="Add the stats for your Pokemon."
-                />
-                <FormRow
-                    itemStyles={{
-                        flex: 1,
-                        minWidth: "33%",
-                    }}
-                >
-                    {Object.values(Stat).map(stat => {
-                        return (
-                            <FormLabel label={stat} key={stat}>
-                                <FormInput
-                                    min={0}
-                                    max={31}
-                                    type="number"
-                                    fieldName={`stats.${stat}`}
-                                    placeholder="0"
-                                />
-                            </FormLabel>
-                        );
-                    })}
-                </FormRow>
-            </Form>
-        </FormikProvider>
+                    );
+                })}
+            </FormRow>
+        </>
     );
 
     if (!asModal) {
@@ -169,17 +210,28 @@ export function PokemonForm(_props: IProps) {
     }
 
     return (
-        <Dialog
-            {...props}
-            aria-label={title}
-            css={{
-                borderRadius: 9,
-                width: "100%",
-                maxWidth: 1000,
-            }}
-        >
-            {content}
-        </Dialog>
+        <FormikProvider value={form}>
+            <Modal
+                {...props}
+                InnerWrap={Form}
+                title={title}
+                body={content}
+                footer={
+                    <>
+                        <FormButton
+                            onClick={() => {
+                                props.onDismiss?.();
+                            }}
+                        >
+                            Close
+                        </FormButton>
+                        <FormButton buttonType={ButtonType.SUBMIT}>
+                            Save
+                        </FormButton>
+                    </>
+                }
+            />
+        </FormikProvider>
     );
 }
 
@@ -208,21 +260,21 @@ function PokemonFormPreview(props: { dexMon: PokedexMon }) {
                     padding: "0 40px",
                 }}
             >
-                <LabelCard css={previewCardCSS}>
+                <DecoratedCard css={previewCardCSS}>
                     <LabelAndValue label="Egg Group 1" vertical>
                         {props.dexMon.eggGroup1}
                     </LabelAndValue>
-                </LabelCard>
-                <LabelCard css={previewCardCSS}>
+                </DecoratedCard>
+                <DecoratedCard css={previewCardCSS}>
                     <LabelAndValue label="Egg Group 1" vertical>
                         {props.dexMon.eggGroup2 ?? "(N/A)"}
                     </LabelAndValue>
-                </LabelCard>
-                <LabelCard css={previewCardCSS}>
+                </DecoratedCard>
+                <DecoratedCard css={previewCardCSS}>
                     <LabelAndValue label="Percentage Male" vertical>
                         {props.dexMon.percentageMale}%
                     </LabelAndValue>
-                </LabelCard>
+                </DecoratedCard>
             </div>
         </div>
     );

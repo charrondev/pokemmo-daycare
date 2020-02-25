@@ -6,6 +6,7 @@
 import { useDispatch } from "react-redux";
 import { bindActionCreators, ActionCreatorsMapObject } from "@reduxjs/toolkit";
 import { useMemo } from "react";
+import { uniqueId } from "lodash-es";
 
 export function notEmpty<TValue>(
     value: TValue | null | undefined,
@@ -89,4 +90,10 @@ export function useActions<A, M extends ActionCreatorsMapObject<A>>(
 
 export function uppercaseFirst(text: string): string {
     return text.charAt(0).toUpperCase() + text.substring(1);
+}
+
+export function useUniqueID(prefix: string) {
+    return useMemo(() => {
+        return uniqueId(prefix);
+    }, [prefix]);
 }

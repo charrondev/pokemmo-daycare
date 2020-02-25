@@ -55,7 +55,7 @@ export function CssReset() {
                 }
 
                 .focus-visible {
-                    box-shadow: 0 0 0 3px ${colorPrimary.string()};
+                    box-shadow: 0 0 0 3px ${colorPrimary.lighten(0.7).string()};
                 }
 
                 h1,

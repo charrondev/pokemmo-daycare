@@ -43,9 +43,9 @@ export function PageLayout(props: IProps) {
                         zIndex: 1,
                         order: 1,
                         margin: "0 auto",
-                        "@media (min-width: 1300px)": {
+                        "@media (min-width: ${1300 + pageNavWidth + pageSubNavWidth}px)": {
                             flex: 1,
-                            minWidth: 1300,
+                            minWidth: 1300 - pageNavWidth - pageSubNavWidth,
                         },
                     }}
                 >

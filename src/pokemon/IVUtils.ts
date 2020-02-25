@@ -34,7 +34,7 @@ export function ivRequirementsAsString(reqs: IVRequirements): string {
         if (!statInfo) {
             return 0;
         } else {
-            return statInfo.value || 31;
+            return statInfo.value ?? 31;
         }
     };
     return `${statNum(Stat.HP)}_${statNum(Stat.ATTACK)}_${statNum(

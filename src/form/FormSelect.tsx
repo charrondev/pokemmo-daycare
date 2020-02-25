@@ -19,6 +19,7 @@ import { useInputID, useLabelID } from "@pokemmo/form/FormLabel";
 import { useField, useFormikContext } from "formik";
 import { inputFocusCSS, inputCSS } from "@pokemmo/form/FormInput";
 import { BaseFormSelectProps } from "@pokemmo/form/FormSelectProps";
+import { FormError } from "@pokemmo/form/FormError";
 
 const animatedComponents = makeAnimated();
 
@@ -52,57 +53,60 @@ export function FormSelect<T extends { value: string }>(
         : ((Select as any) as typeof AsyncSelect);
 
     return (
-        <SelectComponent
-            {...(props as any)}
-            {...field}
-            value={makeOptionFromValue(field.value)}
-            onChange={(value: T) => {
-                fieldHelpers.setTouched(true);
-                fieldHelpers.setValue(value.value);
-            }}
-            id={inputID}
-            aria-labelledby={labelID}
-            cacheOptions
-            components={animatedComponents}
-            css={{
-                "& input": {
-                    boxShadow: "none !important",
-                },
-            }}
-            styles={{
-                valueContainer: provided => ({
-                    ...provided,
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                }),
-                dropdownIndicator: provided => {
-                    return {
+        <>
+            <SelectComponent
+                {...(props as any)}
+                {...field}
+                value={makeOptionFromValue(field.value)}
+                onChange={(value: T | null) => {
+                    fieldHelpers.setTouched(true);
+                    fieldHelpers.setValue(value?.value ?? value);
+                }}
+                id={inputID}
+                aria-labelledby={labelID}
+                cacheOptions
+                components={animatedComponents}
+                css={{
+                    "& input": {
+                        boxShadow: "none !important",
+                    },
+                }}
+                styles={{
+                    valueContainer: provided => ({
                         ...provided,
-                        ...indicatorStyles,
-                    };
-                },
-                indicatorSeparator: provided => {
-                    return {
-                        ...provided,
-                        ...indicatorStyles,
-                        width: 2,
-                    };
-                },
-                clearIndicator: provided => {
-                    return {
-                        ...provided,
-                        ...indicatorStyles,
-                    };
-                },
-                control: (provided, state) => {
-                    return {
-                        ...provided,
-                        ...inputCSS,
-                        width: "100%",
-                        ["&&"]: state.isFocused ? inputFocusCSS : {},
-                    };
-                },
-            }}
-        />
+                        paddingLeft: 12,
+                        paddingRight: 12,
+                    }),
+                    dropdownIndicator: provided => {
+                        return {
+                            ...provided,
+                            ...indicatorStyles,
+                        };
+                    },
+                    indicatorSeparator: provided => {
+                        return {
+                            ...provided,
+                            ...indicatorStyles,
+                            width: 2,
+                        };
+                    },
+                    clearIndicator: provided => {
+                        return {
+                            ...provided,
+                            ...indicatorStyles,
+                        };
+                    },
+                    control: (provided, state) => {
+                        return {
+                            ...provided,
+                            ...inputCSS,
+                            width: "100%",
+                            ["&&"]: state.isFocused ? inputFocusCSS : {},
+                        };
+                    },
+                }}
+            />
+            {meta.touched && meta.error && <FormError>{meta.error}</FormError>}
+        </>
     );
 }

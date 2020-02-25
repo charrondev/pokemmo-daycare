@@ -6,72 +6,69 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { IVRequirements, Stat } from "@pokemmo/pokemon/IVUtils";
-export function IVView(props: { ivRequirements: IVRequirements }) {
+import { labelStyle } from "@pokemmo/form/LabelAndValue";
+import { fontSizeSmall } from "@pokemmo/styles/variables";
+
+const statMargin = 4;
+
+interface IProps extends React.OlHTMLAttributes<HTMLUListElement> {
+    ivRequirements: IVRequirements;
+    withLabel?: string;
+    showEmpties?: boolean;
+}
+
+export function IVView(_props: IProps) {
+    const { ivRequirements, withLabel, showEmpties, ...props } = _props;
     return (
         <ul
-            style={{
-                display: "flex",
-                alignItems: "center",
+            {...props}
+            css={{
+                display: "inline-flex",
                 flexWrap: "wrap",
+                alignItems: "center",
                 padding: 0,
                 margin: 0,
+                marginLeft: -statMargin,
+                maxWidth: `calc(100% + ${statMargin * 2}px)`,
             }}
         >
-            {props.ivRequirements[Stat.HP] && (
-                <StatView
-                    stat={Stat.HP}
-                    points={props.ivRequirements[Stat.HP]!.value ?? 31}
-                />
+            {withLabel && (
+                <li css={{ listStyle: "none", margin: "8px 4px 0" }}>
+                    <label css={labelStyle}>{withLabel}:</label>
+                </li>
             )}
-            {props.ivRequirements[Stat.ATTACK] && (
-                <StatView
-                    stat={Stat.ATTACK}
-                    points={props.ivRequirements[Stat.ATTACK]!.value ?? 31}
-                />
-            )}
-            {props.ivRequirements[Stat.DEFENSE] && (
-                <StatView
-                    stat={Stat.DEFENSE}
-                    points={props.ivRequirements[Stat.DEFENSE]!.value ?? 31}
-                />
-            )}
-            {props.ivRequirements[Stat.SPECIAL_ATTACK] && (
-                <StatView
-                    stat={Stat.SPECIAL_ATTACK}
-                    points={
-                        props.ivRequirements[Stat.SPECIAL_ATTACK]!.value ?? 31
-                    }
-                />
-            )}
-            {props.ivRequirements[Stat.SPECIAL_DEFENSE] && (
-                <StatView
-                    stat={Stat.SPECIAL_DEFENSE}
-                    points={
-                        props.ivRequirements[Stat.SPECIAL_DEFENSE]!.value ?? 31
-                    }
-                />
-            )}
-            {props.ivRequirements[Stat.SPEED] && (
-                <StatView
-                    stat={Stat.SPEED}
-                    points={props.ivRequirements[Stat.SPEED]!.value ?? 31}
-                />
-            )}
+            {Object.entries(ivRequirements).map(([stat, data], i) => {
+                if (!showEmpties && data?.value === 0) {
+                    return <React.Fragment key={i}></React.Fragment>;
+                }
+                return (
+                    <StatView
+                        stat={stat as Stat}
+                        points={data?.value ?? 31}
+                        key={i}
+                    />
+                );
+            })}
         </ul>
     );
 }
 
 const StatName = styled.strong`
     color: white;
+    font-weight: bold;
 `;
 
 const StatPoints = styled.span`
     color: white;
+    font-weight: bold;
 `;
 
 const Lozenge = styled.span`
     display: inline-block;
     height: 24;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: ${fontSizeSmall}px;
 `;
 
 function StatView(props: { stat: Stat; points: number }) {
@@ -93,7 +90,7 @@ function StatView(props: { stat: Stat; points: number }) {
     })();
 
     return (
-        <li style={{ listStyle: "none", margin: 4 }}>
+        <li css={{ listStyle: "none", margin: "8px 4px 0" }}>
             <Lozenge style={{ backgroundColor: color }}>
                 <StatName>{props.stat} </StatName>
                 <StatPoints>{props.points}</StatPoints>

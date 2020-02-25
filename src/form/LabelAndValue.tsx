@@ -4,7 +4,11 @@
  */
 
 import React from "react";
-import { fontSizeSmall, fontSizeNormal } from "@pokemmo/styles/variables";
+import {
+    fontSizeSmall,
+    fontSizeNormal,
+    CssType,
+} from "@pokemmo/styles/variables";
 import { Dirent } from "fs";
 
 interface IProps extends React.HTMLAttributes<HTMLLabelElement> {
@@ -14,13 +18,20 @@ interface IProps extends React.HTMLAttributes<HTMLLabelElement> {
     vertical?: boolean;
 }
 
+export const labelStyle: CssType = {
+    fontSize: fontSizeNormal,
+    marginBottom: 9,
+    fontWeight: "bold",
+    marginRight: 6,
+};
+
 export function LabelAndValue(_props: IProps) {
     const { label, vertical, inline, ...props } = _props;
     return (
         <label
             {...props}
             css={[
-                { fontSize: fontSizeNormal, display: "block", marginBottom: 9 },
+                { display: "block", fontSize: fontSizeNormal },
                 inline && {
                     display: "inline-block",
                 },
@@ -33,10 +44,7 @@ export function LabelAndValue(_props: IProps) {
         >
             <strong
                 css={[
-                    {
-                        fontWeight: "bold",
-                        marginRight: 6,
-                    },
+                    labelStyle,
                     vertical && {
                         marginRight: 0,
                         marginBottom: 6,
