@@ -22,7 +22,13 @@ export function FormHeading(_props: IProps) {
             <div css={{ flex: 1 }}>
                 <h2>{title}</h2>
                 {description && (
-                    <p css={{ marginTop: -12, marginBottom: 24 }}>
+                    <p
+                        css={{
+                            marginTop: -12,
+                            marginBottom: 24,
+                            lineHeight: 1.4,
+                        }}
+                    >
                         {description}
                     </p>
                 )}

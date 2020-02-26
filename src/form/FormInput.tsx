@@ -16,6 +16,7 @@ import {
     CssType,
     makeSingleBorder,
 } from "@pokemmo/styles/variables";
+import { numberWithCommas } from "@pokemmo/utils";
 import { useField } from "formik";
 import React, { useState } from "react";
 
@@ -138,8 +139,4 @@ export function FormInput(_props: IProps) {
             {meta.touched && meta.error && <FormError>{meta.error}</FormError>}
         </>
     );
-}
-
-function numberWithCommas(x: string | number) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

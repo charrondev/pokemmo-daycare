@@ -3,10 +3,10 @@
  * @license MIT
  */
 
-import { useDispatch } from "react-redux";
-import { bindActionCreators, ActionCreatorsMapObject } from "@reduxjs/toolkit";
-import { useMemo } from "react";
+import { ActionCreatorsMapObject, bindActionCreators } from "@reduxjs/toolkit";
 import { uniqueId } from "lodash-es";
+import { useMemo } from "react";
+import { useDispatch } from "react-redux";
 
 export function notEmpty<TValue>(
     value: TValue | null | undefined,
@@ -96,4 +96,8 @@ export function useUniqueID(prefix: string) {
     return useMemo(() => {
         return uniqueId(prefix);
     }, [prefix]);
+}
+
+export function numberWithCommas(x: string | number) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

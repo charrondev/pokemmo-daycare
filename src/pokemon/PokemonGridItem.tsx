@@ -3,21 +3,35 @@
  * @license MIT
  */
 
-import React from "react";
-import { DecoratedCard } from "@pokemmo/styles/Card";
+import { css } from "@emotion/core";
 import { getPokemon } from "@pokemmo/data/pokedex";
-import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
+import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
+import {
+    Gender,
+    IPokemon,
+    OwnershipStatus,
+} from "@pokemmo/pokemon/PokemonTypes";
 import { IVView } from "@pokemmo/projects/IVView";
-import { uppercaseFirst } from "@pokemmo/utils";
-import { IPokemon, Gender } from "@pokemmo/pokemon/PokemonTypes";
+import { DecoratedCard } from "@pokemmo/styles/Card";
+import { colorPrimary } from "@pokemmo/styles/variables";
+import { numberWithCommas, uppercaseFirst } from "@pokemmo/utils";
+import React from "react";
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
     pokemon: IPokemon;
+    isSelected?: boolean;
 }
 
+const standardGridLabelStyle = css({
+    flex: 1,
+    minWidth: "50%",
+    marginBottom: 3,
+    padding: "6px 0",
+});
+
 export function PokemonGridItem(_props: IProps) {
-    const { pokemon, ...props } = _props;
+    const { pokemon, isSelected, ...props } = _props;
 
     const dexMon = getPokemon(pokemon.identifier);
 
@@ -29,7 +43,17 @@ export function PokemonGridItem(_props: IProps) {
     });
 
     return (
-        <DecoratedCard {...props}>
+        <DecoratedCard
+            {...props}
+            css={
+                isSelected && {
+                    boxShadow: `0 0 0 4px ${colorPrimary.string()} !important`,
+                }
+            }
+            hoverable
+            role="button"
+            decorationColor={isSelected ? colorPrimary : undefined}
+        >
             <h4
                 css={{
                     marginBottom: 9,
@@ -45,12 +69,7 @@ export function PokemonGridItem(_props: IProps) {
                     <LabelAndValue
                         label="Nature"
                         inline
-                        css={{
-                            flex: 1,
-                            minWidth: "50%",
-                            marginBottom: 3,
-                            padding: "6px 0",
-                        }}
+                        css={standardGridLabelStyle}
                     >
                         {pokemon.nature}
                     </LabelAndValue>
@@ -58,37 +77,29 @@ export function PokemonGridItem(_props: IProps) {
                 <LabelAndValue
                     label="Gender"
                     inline
-                    css={{
-                        flex: 1,
-                        minWidth: "50%",
-                        marginBottom: 3,
-                        padding: "6px 0",
-                    }}
+                    css={standardGridLabelStyle}
                 >
                     {uppercaseFirst(pokemon.gender)}
                     {pokemon.gender === Gender.MALE ? "♂" : "♀"}
                 </LabelAndValue>
+                {pokemon.ownershipStatus === OwnershipStatus.BOUGHT && (
+                    <LabelAndValue css={standardGridLabelStyle} label="Bought">
+                        ¥{numberWithCommas(pokemon.boughtPrice)}
+                    </LabelAndValue>
+                )}
                 {hasStats ? (
                     <IVView
                         withLabel="Stats"
                         css={{
                             flex: 1,
-                            minWidth: "50%",
+                            minWidth: "100%",
                             marginBottom: 3,
                             marginTop: -6,
                         }}
                         ivRequirements={pokemon.ivs}
                     />
                 ) : (
-                    <LabelAndValue
-                        css={{
-                            flex: 1,
-                            minWidth: "50%",
-                            marginBottom: 3,
-                            padding: "6px 0",
-                        }}
-                        label="Stats"
-                    >
+                    <LabelAndValue css={standardGridLabelStyle} label="Stats">
                         (N/A)
                     </LabelAndValue>
                 )}

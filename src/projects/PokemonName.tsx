@@ -3,20 +3,17 @@
  * @license MIT
  */
 
-import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 import { getPokemon, makeSpriteUrl } from "@pokemmo/data/pokedex";
 import { uppercaseFirst } from "@pokemmo/utils";
+import React, { useMemo } from "react";
 
 const TitleCell = styled.span`
     display: flex;
     align-items: center;
 `;
 
-export function PokemonName(props: {
-    name?: string | number;
-    withSprite?: boolean;
-}) {
+export function PokemonName(props: { name?: string; withSprite?: boolean }) {
     const { name } = props;
 
     const pokemon = useMemo(() => {

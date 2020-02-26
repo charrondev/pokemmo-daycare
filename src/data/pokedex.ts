@@ -19,17 +19,16 @@ export const allEggGroups = allPokemon.reduce(
     new Set<string>(),
 );
 
-export function getPokemon(input?: string | number | null) {
+const allPokemonByIdentifier: Record<string, PokedexMon> = {};
+allPokemon.forEach(mon => {
+    allPokemonByIdentifier[mon.identifier] = mon;
+});
+
+export function getPokemon(input?: string | null) {
     if (input == null) {
         return input;
     }
-    return allPokemon.find(pokemon => {
-        if (typeof input === "number" && Number.isInteger(input)) {
-            return pokemon.speciesID === input;
-        } else {
-            return pokemon.identifier === input;
-        }
-    });
+    return allPokemonByIdentifier[input];
 }
 
 export interface PokedexMon {

@@ -18,6 +18,7 @@ export function PageSubNavigation(props: IProps) {
             css={{
                 background: colorBG.string(),
                 padding: 16,
+                paddingTop: 46,
                 overflow: "auto",
             }}
         >

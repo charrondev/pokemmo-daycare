@@ -50,8 +50,6 @@ export function AddMenu(props: IProps) {
                             minWidth: 160,
                         };
                     }}
-                    // style={{ left: "red" }}
-                    // css={{ left: "100% !important", top: 0 }}
                 >
                     <div
                         css={{

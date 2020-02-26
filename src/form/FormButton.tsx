@@ -17,6 +17,7 @@ export enum ButtonType {
     PRIMARY = "primary",
     STANDARD = "standard",
     SUBMIT = "submit",
+    TRANSLUSCENT = "transcluscent",
 }
 
 interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -28,7 +29,7 @@ const buttonCommon: CssType = {
     appearance: "none",
     padding: "4px 12px",
     minHeight: 36,
-    minWidth: 60,
+    minWidth: 80,
     cursor: "pointer",
     transition: "all 0.2s ease",
 };
@@ -70,11 +71,25 @@ const standardCSS: CssType = {
     },
 };
 
+const white = Color("#fff");
+
+const translucentCSS: CssType = {
+    ...mixinBorder(white),
+    background: white.alpha(0.08).string(),
+    color: white.string(),
+
+    [`&:focus, &:hover, &:active`]: {
+        background: white.alpha(0.12).string(),
+    },
+};
+
 export function cssForButtonType(buttonType?: ButtonType): CssType {
     switch (buttonType) {
         case ButtonType.SUBMIT:
         case ButtonType.PRIMARY:
             return primaryCSS;
+        case ButtonType.TRANSLUSCENT:
+            return translucentCSS;
         case ButtonType.STANDARD:
             return standardCSS;
         default:

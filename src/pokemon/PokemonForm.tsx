@@ -101,6 +101,7 @@ export function PokemonForm(_props: IProps) {
                 .ivs(values.stats)
                 .gender(values.gender)
                 .nature(values.nature)
+                .ownershipStatus(values.ownershipStatus, values.cost ?? 0)
                 .result();
 
             addPokemon([pokemon]);

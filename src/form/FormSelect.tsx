@@ -45,15 +45,28 @@ export function FormSelect<T extends { value: string }>(
         ? AsyncSelect
         : ((Select as any) as typeof AsyncSelect);
 
+    let value: any = null;
+    if (Array.isArray(field.value)) {
+        value = field.value.map(val => makeOptionFromValue(val));
+    } else {
+        value = makeOptionFromValue(field.value);
+    }
+
     return (
         <>
             <SelectComponent
                 {...(props as any)}
                 {...field}
-                value={makeOptionFromValue(field.value)}
+                value={value}
                 onChange={(value: T | null) => {
                     fieldHelpers.setTouched(true);
-                    fieldHelpers.setValue(value?.value ?? value);
+                    if (Array.isArray(value)) {
+                        fieldHelpers.setValue(
+                            value.map(val => val?.value ?? value),
+                        );
+                    } else {
+                        fieldHelpers.setValue(value?.value ?? value);
+                    }
                 }}
                 id={inputID}
                 aria-labelledby={labelID}
@@ -95,6 +108,13 @@ export function FormSelect<T extends { value: string }>(
                             ...inputCSS,
                             width: "100%",
                             "&&": state.isFocused ? inputFocusCSS : {},
+                            ...(props.isMulti
+                                ? {
+                                      "& > *:first-child": {
+                                          padding: "4px 8px",
+                                      },
+                                  }
+                                : {}),
                         };
                     },
                 }}

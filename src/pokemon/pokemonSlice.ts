@@ -32,6 +32,15 @@ export const pokemonSlice = createSlice({
                 state.pokemonByID[pokemon.id] = pokemon;
             });
         },
+        deletePokemon: (
+            state: IPokemonState,
+            action: PayloadAction<{ pokemonID: string }>,
+        ) => {
+            const { pokemonID } = action.payload;
+            if (state.pokemonByID[pokemonID]) {
+                delete state.pokemonByID[pokemonID];
+            }
+        },
         clearPokemonAndChildren: (
             state,
             action: PayloadAction<{ pokemonID: string; projectID: string }>,

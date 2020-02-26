@@ -48,7 +48,12 @@ export function FormLabel(props: IProps) {
         <LabelContext.Provider
             value={{ getLabelID: () => labelID, getInputID: () => inputID }}
         >
-            <label htmlFor={inputID} id={labelID} {...props}>
+            <label
+                htmlFor={inputID}
+                id={labelID}
+                css={{ display: "block" }}
+                {...props}
+            >
                 <div
                     css={{
                         fontWeight: "bold",

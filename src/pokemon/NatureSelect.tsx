@@ -4,12 +4,12 @@
  */
 
 import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
+import { allNatures, getNature } from "@pokemmo/pokemon/natures";
+import { Nature } from "@pokemmo/pokemon/PokemonTypes";
 import { NatureView } from "@pokemmo/projects/NatureView";
+import { notEmpty } from "@pokemmo/utils";
 import React from "react";
 import { FormatOptionLabelMeta, OptionTypeBase } from "react-select";
-import { allNatures, getNature } from "@pokemmo/pokemon/natures";
-import { notEmpty } from "@pokemmo/utils";
-import { Nature } from "@pokemmo/pokemon/PokemonTypes";
 
 export interface NatureSelectOptionType extends OptionTypeBase {
     nature: Nature;
