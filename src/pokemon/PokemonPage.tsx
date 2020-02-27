@@ -13,6 +13,7 @@ import {
 import { PageLayout } from "@pokemmo/layout/PageLayout";
 import {
     DEFAULT_POKEMON_FILTERS,
+    IPokemonFilters,
     PokemonFilters,
 } from "@pokemmo/pokemon/PokemonFilters";
 import { PokemonGridItem } from "@pokemmo/pokemon/PokemonGridItem";
@@ -35,8 +36,13 @@ enum PokemonSort {
 
 export function PokemonPage() {
     const [sortValue, setSortValue] = useState(PokemonSort.NAME);
-    const sortedPokemon = useSortedPokemon(sortValue);
-    const [selectedPokemon, setSelectedPokemon] = useState<IPokemon[]>([]);
+    const [filters, setFilters] = useState<IPokemonFilters>(
+        DEFAULT_POKEMON_FILTERS,
+    );
+    const sortedPokemon = useSortedPokemon(sortValue, filters);
+    const [_selectedPokemon, setSelectedPokemon] = useState<IPokemon[]>([]);
+    const selectedPokemon = filterPokemon(_selectedPokemon, filters);
+
     return (
         <PageLayout
             content={
@@ -83,10 +89,8 @@ export function PokemonPage() {
             }
             subNav={
                 <PokemonFilters
-                    filterValues={DEFAULT_POKEMON_FILTERS}
-                    onFilterValuesChange={values => {
-                        console.log(values);
-                    }}
+                    filterValues={filters}
+                    onFilterValuesChange={setFilters}
                 />
             }
         />
@@ -259,13 +263,43 @@ type ISortedPokemon = Record<
     }
 >;
 
-function useSortedPokemon(sortValue: PokemonSort): ISortedPokemon {
-    const allPokemon = useAllPokemon();
+function filterPokemon(
+    pokemon: IPokemon[],
+    filters: IPokemonFilters,
+): IPokemon[] {
+    return pokemon.filter(poke => {
+        if (
+            filters.pokemonIdentifiers &&
+            filters.pokemonIdentifiers.length > 0
+        ) {
+            if (!filters.pokemonIdentifiers.includes(poke.identifier)) {
+                return false;
+            }
+        }
+
+        if (filters.natures && filters.natures.length > 0) {
+            if (!poke.nature || !filters.natures.includes(poke.nature)) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+}
+
+function useSortedPokemon(
+    sortValue: PokemonSort,
+    filters: IPokemonFilters,
+): ISortedPokemon {
+    const allPokemonByID = useAllPokemon();
+    const allPokemon = filterPokemon(Object.values(allPokemonByID), filters);
+
+    // Apply sorting
 
     switch (sortValue) {
         case PokemonSort.EGG_GROUP: {
             const pokemonByEggGroup: ISortedPokemon = {};
-            Object.values(allPokemon).forEach(pokemon => {
+            allPokemon.forEach(pokemon => {
                 const dexMon = getPokemon(pokemon.identifier);
                 if (!dexMon) {
                     return;
@@ -293,7 +327,7 @@ function useSortedPokemon(sortValue: PokemonSort): ISortedPokemon {
         case PokemonSort.NAME:
         default: {
             const pokemonByName: ISortedPokemon = {};
-            Object.values(allPokemon).forEach(pokemon => {
+            allPokemon.forEach(pokemon => {
                 const dexMon = getPokemon(pokemon.identifier);
                 if (!dexMon) {
                     return;

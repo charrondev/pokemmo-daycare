@@ -5,6 +5,8 @@
 
 import {
     getPokemon,
+    loadOwnPokemonOptions,
+    loadOwnPokemonOptionsSync,
     loadPokedexOptions,
     makeSpriteUrl,
     mapDexMonToItem,
@@ -21,15 +23,24 @@ interface IProps
     extends Omit<
         FormSelectProps<PokemonSelectOptionType>,
         "formatOptionsLabel" | "options" | "makeOptionFromValue"
-    > {}
+    > {
+    onlyOwnedPokemon?: boolean;
+}
 
-export function PokemonSelect(props: IProps) {
+export function PokemonSelect(_props: IProps) {
+    const { onlyOwnedPokemon, ...props } = _props;
     return (
         <FormSelect
             isClearable
             {...props}
-            defaultOptions={pokedexOptions.slice(0, 20)}
-            loadOptions={loadPokedexOptions}
+            defaultOptions={
+                onlyOwnedPokemon
+                    ? loadOwnPokemonOptionsSync(null)
+                    : pokedexOptions.slice(0, 20)
+            }
+            loadOptions={
+                onlyOwnedPokemon ? loadOwnPokemonOptions : loadPokedexOptions
+            }
             formatOptionLabel={formatPokemonLabel}
             makeOptionFromValue={value => {
                 if (!value) {

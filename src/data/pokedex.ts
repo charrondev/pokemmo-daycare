@@ -3,6 +3,7 @@
  * @license MIT
  */
 
+import { getStore } from "@pokemmo/state/store";
 import { uppercaseFirst } from "@pokemmo/utils";
 import { memoize } from "lodash-es";
 import { OptionsType, OptionTypeBase } from "react-select";
@@ -114,3 +115,34 @@ export const loadPokedexOptions = memoize(
             .slice(0, 20);
     },
 );
+
+export const loadOwnPokemonOptionsSync = (filter: string | null) => {
+    const ownPokemon = getStore().getState().pokemon.pokemonByID;
+    const results: PokeDexMonOptionType[] = [];
+
+    const alreadyFound: string[] = [];
+    for (const pokemon of Object.values(ownPokemon)) {
+        if (alreadyFound.includes(pokemon.identifier)) {
+            continue;
+        }
+
+        if (filter !== null && !pokemon.identifier.includes(filter)) {
+            continue;
+        }
+
+        if (results.length >= 20) {
+            break;
+        }
+
+        alreadyFound.push(pokemon.identifier);
+        results.push(
+            mapDexMonToItem(allPokemonByIdentifier[pokemon.identifier]),
+        );
+    }
+
+    return results;
+};
+
+export const loadOwnPokemonOptions = (filter: string | null) => {
+    return Promise.resolve(loadOwnPokemonOptionsSync(filter));
+};
