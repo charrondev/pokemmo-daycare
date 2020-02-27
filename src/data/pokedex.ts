@@ -3,21 +3,21 @@
  * @license MIT
  */
 
+import { useAllPokemon } from "@pokemmo/pokemon/pokemonSlice";
 import { getStore } from "@pokemmo/state/store";
 import { uppercaseFirst } from "@pokemmo/utils";
 import { memoize } from "lodash-es";
 import { OptionsType, OptionTypeBase } from "react-select";
 const allPokemon: PokedexMon[] = require("@pokemmo/data/pokemon.csv");
 
-export const allEggGroups = allPokemon.reduce(
-    (eggGroups: Set<string>, pokemon) => {
+export const allEggGroups = Array.from(
+    allPokemon.reduce((eggGroups: Set<string>, pokemon) => {
         eggGroups.add(pokemon.eggGroup1);
         if (pokemon.eggGroup2) {
             eggGroups.add(pokemon.eggGroup2);
         }
         return eggGroups;
-    },
-    new Set<string>(),
+    }, new Set<string>()),
 );
 
 const allPokemonByIdentifier: Record<string, PokedexMon> = {};
@@ -102,6 +102,8 @@ export function mapDexMonToItem(pokedexMon: PokedexMon): PokeDexMonOptionType {
     };
 }
 
+// Dex options
+
 export const pokedexOptions: OptionsType<PokeDexMonOptionType> = allPokemon.map(
     mapDexMonToItem,
 );
@@ -122,16 +124,16 @@ export const loadOwnPokemonOptionsSync = (filter: string | null) => {
 
     const alreadyFound: string[] = [];
     for (const pokemon of Object.values(ownPokemon)) {
+        if (results.length >= 20) {
+            break;
+        }
+
         if (alreadyFound.includes(pokemon.identifier)) {
             continue;
         }
 
         if (filter !== null && !pokemon.identifier.includes(filter)) {
             continue;
-        }
-
-        if (results.length >= 20) {
-            break;
         }
 
         alreadyFound.push(pokemon.identifier);
@@ -146,3 +148,34 @@ export const loadOwnPokemonOptionsSync = (filter: string | null) => {
 export const loadOwnPokemonOptions = (filter: string | null) => {
     return Promise.resolve(loadOwnPokemonOptionsSync(filter));
 };
+
+// Egg Group Options
+
+export function useOwnEggGroups() {
+    // Purely for refresh on change.
+    useAllPokemon();
+
+    // Actual filtering.
+    const ownPokemonOptions = loadOwnPokemonOptionsSync(null);
+    const results: string[] = [];
+
+    for (const option of Object.values(ownPokemonOptions)) {
+        const { pokedexMon } = option;
+        if (!results.includes(pokedexMon.eggGroup1)) {
+            results.push(pokedexMon.eggGroup1);
+        }
+
+        if (pokedexMon.eggGroup2 && !results.includes(pokedexMon.eggGroup2)) {
+            results.push(pokedexMon.eggGroup2);
+        }
+    }
+
+    return results;
+}
+
+export function stringToOption(str: string) {
+    return {
+        label: str,
+        value: str,
+    };
+}

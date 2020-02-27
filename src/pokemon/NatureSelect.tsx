@@ -5,6 +5,7 @@
 
 import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
 import { allNatures, getNature } from "@pokemmo/pokemon/natures";
+import { useAllPokemon } from "@pokemmo/pokemon/pokemonSlice";
 import { Nature } from "@pokemmo/pokemon/PokemonTypes";
 import { NatureView } from "@pokemmo/projects/NatureView";
 import { notEmpty } from "@pokemmo/utils";
@@ -27,22 +28,45 @@ function natureToOption(nature: Nature | null) {
         nature,
     };
 }
-const natureOptions = Object.values(allNatures)
+const allNatureOptions = Object.values(allNatures)
     .map(natureToOption)
     .filter(notEmpty);
+
+function useOwnedNatureOptions() {
+    // Purely for refresh on change.
+    useAllPokemon();
+
+    // Actual filtering.
+    const allPokemon = useAllPokemon();
+    const natureNames: string[] = [];
+
+    for (const pokemon of Object.values(allPokemon)) {
+        if (pokemon.nature && !natureNames.includes(pokemon.nature)) {
+            natureNames.push(pokemon.nature);
+        }
+    }
+
+    return natureNames
+        .map(natureName => natureToOption(getNature(natureName)))
+        .filter(notEmpty);
+}
 
 interface IProps
     extends Omit<
         FormSelectProps<NatureSelectOptionType>,
         "formatOptionsLabel" | "options" | "makeOptionFromValue"
-    > {}
+    > {
+    onlyOwned?: boolean;
+}
 
-export function NatureSelect(props: IProps) {
+export function NatureSelect(_props: IProps) {
+    const { onlyOwned, ...props } = _props;
+    const ownedNatures = useOwnedNatureOptions();
     return (
         <FormSelect<NatureSelectOptionType>
             isClearable
             {...props}
-            options={natureOptions}
+            options={onlyOwned ? ownedNatures : allNatureOptions}
             formatOptionLabel={formatNatureLabel}
             makeOptionFromValue={value => {
                 return natureToOption(getNature(value));

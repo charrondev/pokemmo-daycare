@@ -13,6 +13,7 @@ import {
 import { PageLayout } from "@pokemmo/layout/PageLayout";
 import {
     DEFAULT_POKEMON_FILTERS,
+    filterPokemon,
     IPokemonFilters,
     PokemonFilters,
 } from "@pokemmo/pokemon/PokemonFilters";
@@ -53,10 +54,11 @@ export function PokemonPage() {
                                 setSelectedPokemon={setSelectedPokemon}
                                 selectedPokemon={selectedPokemon}
                             />
-                            <div css={{ marginTop: -56 }}></div>
+                            <div css={{ marginTop: -24 }}></div>
                         </>
                     )}
                     <PokemonSortHeader
+                        isHidden={selectedPokemon.length > 0}
                         sortValue={sortValue}
                         onSortValueChange={setSortValue}
                     />
@@ -146,23 +148,29 @@ function PokemonGrid(props: { pokemon: IPokemon[] } & ISelectionManager) {
 }
 
 function PokemonSortHeader(props: {
+    isHidden?: boolean;
     sortValue: PokemonSort;
     onSortValueChange: (newSort: PokemonSort) => void;
 }) {
     return (
         <header
-            css={{
-                marginTop: -pageContainerPadding,
-                marginLeft: -pageContainerPadding,
-                height: 56,
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                width: `calc(100% + ${pageContainerPadding * 2}px)`,
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
-            }}
+            css={[
+                {
+                    marginLeft: -pageContainerPadding,
+                    height: 56,
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    width: `calc(100% + ${pageContainerPadding * 2}px)`,
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                },
+                props.isHidden && {
+                    opacity: 0,
+                    pointerEvents: "none",
+                },
+            ]}
         >
             <PageContainer css={{ display: "flex", alignItems: "center" }}>
                 <FormSelectSimple
@@ -263,30 +271,6 @@ type ISortedPokemon = Record<
     }
 >;
 
-function filterPokemon(
-    pokemon: IPokemon[],
-    filters: IPokemonFilters,
-): IPokemon[] {
-    return pokemon.filter(poke => {
-        if (
-            filters.pokemonIdentifiers &&
-            filters.pokemonIdentifiers.length > 0
-        ) {
-            if (!filters.pokemonIdentifiers.includes(poke.identifier)) {
-                return false;
-            }
-        }
-
-        if (filters.natures && filters.natures.length > 0) {
-            if (!poke.nature || !filters.natures.includes(poke.nature)) {
-                return false;
-            }
-        }
-
-        return true;
-    });
-}
-
 function useSortedPokemon(
     sortValue: PokemonSort,
     filters: IPokemonFilters,
@@ -304,22 +288,38 @@ function useSortedPokemon(
                 if (!dexMon) {
                     return;
                 }
-                const existingEgg1 = pokemonByEggGroup[dexMon.eggGroup1] ?? {
-                    title: dexMon.eggGroup1,
-                    pokemon: [],
-                };
-                existingEgg1.pokemon.push(pokemon);
-                pokemonByEggGroup[dexMon.eggGroup1] = existingEgg1;
 
-                if (dexMon.eggGroup2) {
-                    const existingEgg2 = pokemonByEggGroup[
-                        dexMon.eggGroup2
+                if (
+                    !filters.eggGroups ||
+                    filters.eggGroups.length === 0 ||
+                    filters.eggGroups.includes(dexMon.eggGroup1)
+                ) {
+                    const existingEgg1 = pokemonByEggGroup[
+                        dexMon.eggGroup1
                     ] ?? {
-                        title: dexMon.eggGroup2,
+                        title: dexMon.eggGroup1,
                         pokemon: [],
                     };
-                    existingEgg2.pokemon.push(pokemon);
-                    pokemonByEggGroup[dexMon.eggGroup2] = existingEgg2;
+
+                    existingEgg1.pokemon.push(pokemon);
+                    pokemonByEggGroup[dexMon.eggGroup1] = existingEgg1;
+                }
+
+                if (dexMon.eggGroup2) {
+                    if (
+                        !filters.eggGroups ||
+                        filters.eggGroups.length === 0 ||
+                        filters.eggGroups.includes(dexMon.eggGroup2)
+                    ) {
+                        const existingEgg2 = pokemonByEggGroup[
+                            dexMon.eggGroup2
+                        ] ?? {
+                            title: dexMon.eggGroup2,
+                            pokemon: [],
+                        };
+                        existingEgg2.pokemon.push(pokemon);
+                        pokemonByEggGroup[dexMon.eggGroup2] = existingEgg2;
+                    }
                 }
             });
             return sortObjectByKey(pokemonByEggGroup);
