@@ -24,6 +24,8 @@ import {
 } from "@pokemmo/pokemon/pokemonSlice";
 import { IPokemon } from "@pokemmo/pokemon/PokemonTypes";
 import { colorPrimary, fontSizeLarge } from "@pokemmo/styles/variables";
+import { useQueryParamsSync } from "@pokemmo/utils";
+import queryString from "query-string";
 import React, { useState } from "react";
 
 interface IProps {}
@@ -37,9 +39,13 @@ enum PokemonSort {
 
 export function PokemonPage() {
     const [sortValue, setSortValue] = useState(PokemonSort.NAME);
-    const [filters, setFilters] = useState<IPokemonFilters>(
-        DEFAULT_POKEMON_FILTERS,
-    );
+    const [filters, setFilters] = useState<IPokemonFilters>({
+        ...DEFAULT_POKEMON_FILTERS,
+        ...queryString.parse(window.location.search),
+    });
+
+    useQueryParamsSync(filters, DEFAULT_POKEMON_FILTERS);
+
     const sortedPokemon = useSortedPokemon(sortValue, filters);
     const [_selectedPokemon, setSelectedPokemon] = useState<IPokemon[]>([]);
     const selectedPokemon = filterPokemon(_selectedPokemon, filters);
@@ -117,6 +123,17 @@ function PokemonGrid(props: { pokemon: IPokemon[] } & ISelectionManager) {
             }}
         >
             {props.pokemon.map(pokemon => {
+                const handleClick = () => {
+                    if (selectedPokemon.includes(pokemon)) {
+                        setSelectedPokemon(
+                            selectedPokemon.filter(
+                                selected => selected !== pokemon,
+                            ),
+                        );
+                    } else {
+                        setSelectedPokemon([...selectedPokemon, pokemon]);
+                    }
+                };
                 return (
                     <PokemonGridItem
                         css={{
@@ -126,18 +143,12 @@ function PokemonGrid(props: { pokemon: IPokemon[] } & ISelectionManager) {
                         pokemon={pokemon}
                         key={pokemon.id}
                         isSelected={selectedPokemon.includes(pokemon)}
-                        onClick={() => {
-                            if (selectedPokemon.includes(pokemon)) {
-                                setSelectedPokemon(
-                                    selectedPokemon.filter(
-                                        selected => selected !== pokemon,
-                                    ),
-                                );
-                            } else {
-                                setSelectedPokemon([
-                                    ...selectedPokemon,
-                                    pokemon,
-                                ]);
+                        onClick={handleClick}
+                        onKeyDown={e => {
+                            if (e.key === " ") {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleClick();
                             }
                         }}
                     />

@@ -45,13 +45,23 @@ export function PokemonGridItem(_props: IProps) {
     return (
         <DecoratedCard
             {...props}
-            css={
+            css={[
+                {
+                    cursor: "pointer",
+                    "& *": {
+                        cursor: "pointer",
+                    },
+                },
                 isSelected && {
                     boxShadow: `0 0 0 4px ${colorPrimary.string()} !important`,
-                }
-            }
+                    "&.focus-visible, &:hover": {
+                        boxShadow: `0 0 0 4px ${colorPrimary.string()}, 0 8px 40px 0 rgba(0, 0, 0, 0.15) !important`,
+                    },
+                },
+            ]}
             hoverable
             role="button"
+            tabIndex={0}
             decorationColor={isSelected ? colorPrimary : undefined}
         >
             <h4

@@ -13,7 +13,7 @@ export interface ISelectSimpleOption extends OptionTypeBase {
 }
 
 interface IProps
-    extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+    extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
     label: string;
     options: ISelectSimpleOption[];
     value: string;
@@ -25,19 +25,18 @@ export function FormSelectSimple(_props: IProps) {
     const labelID = useUniqueID("selectSimpleLabel");
     const inputID = useUniqueID("selectSimpleDropdown");
 
-    const selectedValue = options.find(option => option.value === value);
-
     return (
-        <div
+        <label
             {...props}
             css={{
                 display: "flex",
                 alignItems: "center",
+                cursor: "pointer",
             }}
+            id={labelID}
+            htmlFor={inputID}
         >
-            <label id={labelID} htmlFor={inputID}>
-                {label}:
-            </label>
+            <span>{label}:</span>
             <select
                 css={{
                     appearance: "none",
@@ -46,6 +45,7 @@ export function FormSelectSimple(_props: IProps) {
                     color: "inherit",
                     fontWeight: "bold",
                     paddingLeft: 6,
+                    cursor: "pointer",
                     "::after": {
                         content: "'▾'",
                     },
@@ -76,6 +76,6 @@ export function FormSelectSimple(_props: IProps) {
             >
                 ▾
             </span>
-        </div>
+        </label>
     );
 }

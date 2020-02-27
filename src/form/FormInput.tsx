@@ -9,7 +9,6 @@ import {
     borderRadius,
     colorBorder,
     colorInput,
-    colorInputState,
     colorPrimary,
     colorPrimaryState,
     colorText,
@@ -45,7 +44,6 @@ export const inputCSS: CssType = {
     width: "100%",
     color: colorText.string(),
     [`&:hover, &:focus, &.active`]: {
-        background: colorInputState.string(),
         borderColor: colorPrimaryState.string(),
     },
     "&&:focus": inputFocusCSS,

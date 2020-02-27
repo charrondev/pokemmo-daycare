@@ -4,9 +4,11 @@
  */
 
 import { ActionCreatorsMapObject, bindActionCreators } from "@reduxjs/toolkit";
-import { uniqueId } from "lodash-es";
-import { useMemo } from "react";
+import { debounce, uniqueId } from "lodash-es";
+import queryString from "query-string";
+import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 export function notEmpty<TValue>(
     value: TValue | null | undefined,
@@ -100,4 +102,55 @@ export function useUniqueID(prefix: string) {
 
 export function numberWithCommas(x: string | number) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
+ * Get a version of the query string object with only keys that have values.
+ */
+function getFilteredValue<T extends object>(
+    inputValue: T,
+    defaults: T,
+): Partial<T> {
+    let filteredValue: Partial<T> = {};
+
+    for (const [key, value] of Object.entries(inputValue)) {
+        if (value === null || value === undefined || value === "") {
+            continue;
+        }
+
+        if ((defaults as any)[key] === value) {
+            continue;
+        }
+
+        (filteredValue as any)[key] = value;
+    }
+
+    return filteredValue;
+}
+export function useQueryParamsSync<T extends Object>(
+    currentValue: T,
+    defaults: T,
+) {
+    const history = useHistory();
+
+    const tryUpdateQuery = useCallback(
+        debounce((currentValue: T) => {
+            const currentQueryString = history.location.search;
+            // debugger;
+            const filteredQueryObj = getFilteredValue(currentValue, defaults);
+            const filteredQueryString = queryString.stringify(filteredQueryObj);
+
+            if (currentQueryString !== "?" + filteredQueryString) {
+                history.replace({
+                    ...history.location,
+                    search: filteredQueryString,
+                });
+            }
+        }, 150),
+        [history, defaults],
+    );
+
+    useEffect(() => {
+        tryUpdateQuery(currentValue);
+    });
 }
