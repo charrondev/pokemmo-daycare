@@ -4,11 +4,16 @@
  */
 
 import { ActionCreatorsMapObject, bindActionCreators } from "@reduxjs/toolkit";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { debounce, uniqueId } from "lodash-es";
 import queryString from "query-string";
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+
+export function relativeTime(date: string | Date) {
+    return formatDistanceToNow(new Date(date));
+}
 
 export function notEmpty<TValue>(
     value: TValue | null | undefined,

@@ -36,6 +36,7 @@ export enum OwnershipStatus {
     CAUGHT = "caught",
     BRED = "bred",
     BOUGHT = "bought",
+    PROJECT = "project",
 }
 
 export enum BreedStatus {

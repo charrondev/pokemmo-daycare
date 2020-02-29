@@ -21,6 +21,7 @@ import React from "react";
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
     pokemon: IPokemon;
     isSelected?: boolean;
+    nameOverride?: string;
 }
 
 const standardGridLabelStyle = css({
@@ -31,7 +32,7 @@ const standardGridLabelStyle = css({
 });
 
 export function PokemonGridItem(_props: IProps) {
-    const { pokemon, isSelected, ...props } = _props;
+    const { pokemon, isSelected, nameOverride, ...props } = _props;
 
     const dexMon = getPokemon(pokemon.identifier);
 
@@ -72,7 +73,9 @@ export function PokemonGridItem(_props: IProps) {
                 }}
             >
                 <PokemonSprite dexMon={dexMon} />
-                <span css={{ marginLeft: 12 }}>{dexMon?.displayName}</span>
+                <span css={{ marginLeft: 12 }}>
+                    {nameOverride ?? dexMon?.displayName}
+                </span>
             </h4>
             <div css={{ display: "flex", flexWrap: "wrap" }}>
                 {pokemon.nature && (

@@ -16,13 +16,8 @@ import {
     makeSingleBorder,
 } from "@pokemmo/styles/variables";
 import { numberWithCommas } from "@pokemmo/utils";
-import { useField } from "formik";
+import { FieldMetaProps, useField } from "formik";
 import React, { useState } from "react";
-
-interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    fieldName: string;
-    beforeNode?: React.ReactNode;
-}
 
 export const inputFocusCSS: CssType = {
     background: "#fff",
@@ -49,13 +44,26 @@ export const inputCSS: CssType = {
     "&&:focus": inputFocusCSS,
 };
 
-export function FormInput(_props: IProps) {
+interface IProps<ValueType extends string | number>
+    extends Omit<
+        React.InputHTMLAttributes<HTMLInputElement>,
+        "onChange" | "value"
+    > {
+    beforeNode?: React.ReactNode;
+    value?: ValueType;
+    onChange?: (value: ValueType) => void;
+    onTouched?: (isTouched: boolean) => void;
+    meta?: FieldMetaProps<ValueType>;
+}
+
+export function FormInput<ValueType extends string | number = string>(
+    _props: IProps<ValueType>,
+) {
     const idProps = useLabeledInputProps();
-    const { fieldName, beforeNode, ...props } = _props;
-    const [field, meta, fieldHelpers] = useField(fieldName);
+    const { beforeNode, meta, onTouched, ...props } = _props;
     const [hasFocus, setHasFocus] = useState(false);
 
-    let value = field.value ?? "";
+    let value = props.value ? props.value.toString() : "";
     if (props.type === "number") {
         value = numberWithCommas(value);
     }
@@ -80,12 +88,11 @@ export function FormInput(_props: IProps) {
                 <input
                     {...idProps}
                     {...props}
-                    {...field}
                     value={value}
                     type="text"
                     onChange={event => {
+                        onTouched?.(true);
                         event.preventDefault();
-                        fieldHelpers.setTouched(true);
                         if (props.type === "number") {
                             const commasStripped = event.target.value.replace(
                                 /,/g,
@@ -113,15 +120,15 @@ export function FormInput(_props: IProps) {
                                 number = Math.max(props.min, number);
                             }
 
-                            fieldHelpers.setValue(number);
+                            props.onChange?.(number as any);
                         } else {
-                            fieldHelpers.setValue(event.target.value);
+                            props.onChange?.(event.target.value as any);
                         }
                     }}
                     onFocus={() => setHasFocus(true)}
                     onBlur={e => {
                         setHasFocus(false);
-                        field.onBlur(e);
+                        props.onBlur?.(e);
                     }}
                     css={{
                         appearance: "none",
@@ -134,7 +141,26 @@ export function FormInput(_props: IProps) {
                     }}
                 />
             </span>
-            {meta.touched && meta.error && <FormError>{meta.error}</FormError>}
+            {meta?.touched && meta.error && <FormError>{meta.error}</FormError>}
         </>
+    );
+}
+
+export function FormInputField<ValueType extends string | number = string>(
+    _props: Omit<IProps<ValueType>, "meta" | "onTouched"> & {
+        fieldName: string;
+    },
+) {
+    const { fieldName, ...props } = _props;
+    const [field, meta, helpers] = useField(fieldName);
+
+    return (
+        <FormInput
+            {...props}
+            {...field}
+            meta={meta}
+            onChange={helpers.setValue}
+            onTouched={helpers.setTouched}
+        />
     );
 }

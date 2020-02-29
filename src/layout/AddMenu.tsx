@@ -6,6 +6,7 @@
 import { css } from "@emotion/core";
 import IconAdd from "@pokemmo/icons/IconAdd.svg";
 import { PokemonForm } from "@pokemmo/pokemon/PokemonForm";
+import { ProjectForm } from "@pokemmo/projects/ProjectForm";
 import {
     borderRadius,
     fontSizeLarge,
@@ -34,6 +35,7 @@ const menuItemStyles = css({
 
 export function AddMenu(props: IProps) {
     const [showPokemonModal, setShowPokemonModal] = useState(false);
+    const [showProjectModal, setShowProjectModal] = useState(false);
 
     return (
         <>
@@ -74,7 +76,7 @@ export function AddMenu(props: IProps) {
                         }}
                     >
                         <MenuItem
-                            onSelect={() => alert("Add project")}
+                            onSelect={() => setShowProjectModal(true)}
                             css={menuItemStyles}
                         >
                             Add Project
@@ -89,10 +91,10 @@ export function AddMenu(props: IProps) {
                 </MenuPopover>
             </Menu>
             {showPokemonModal && (
-                <PokemonForm
-                    asModal
-                    onDismiss={() => setShowPokemonModal(false)}
-                />
+                <PokemonForm onDismiss={() => setShowPokemonModal(false)} />
+            )}
+            {showProjectModal && (
+                <ProjectForm onDismiss={() => setShowProjectModal(false)} />
             )}
         </>
     );

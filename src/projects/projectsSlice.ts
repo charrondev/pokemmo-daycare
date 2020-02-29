@@ -10,14 +10,13 @@ export interface IProject {
     projectName: string;
     projectID: string;
     targetPokemonID: string;
-    allPokemonIDs: string[];
-    pokemonID: string | null;
+    breederPokemonIDs: string[];
     dateCreated: string;
     dateUpdated: string;
 }
 
 interface IProjectsState {
-    [projectID: string]: IProject;
+    projectsByID: Record<string, IProject>;
 }
 
 type StateWithProject<T extends string> = IProjectsState &
@@ -29,23 +28,53 @@ type ProjectPayload<T> = PayloadAction<
     }
 >;
 
-function ensureProject(
+function ensureProject<T>(
     data: IProjectsState,
-    id: string,
-): data is StateWithProject<typeof id> {
-    return id in data;
+    action: ProjectPayload<T>,
+): data is StateWithProject<typeof action["payload"]["projectID"]> {
+    return action.payload.projectID in data;
+}
+
+function handleDates(data: IProjectsState, action: ProjectPayload<any>) {
+    const { projectID } = action.payload;
+    const project = data.projectsByID[projectID];
+    if (project) {
+        project.dateUpdated = new Date().toISOString();
+    }
 }
 
 export const UNTITLED_PROJECT = "(Untitled Project)";
 
 export const projectsSlice = createSlice({
     name: "projects",
-    initialState: {} as IProjectsState,
+    initialState: {
+        projectsByID: {},
+    } as IProjectsState,
     reducers: {
+        addProject: (state, action: PayloadAction<{ project: IProject }>) => {
+            const { project } = action.payload;
+            state.projectsByID[project.projectID] = project;
+        },
+        updateProject: (state, action: ProjectPayload<Partial<IProject>>) => {
+            ensureProject(state, action);
+            handleDates(state, action);
+            state.projectsByID[action.payload.projectID] = {
+                ...state.projectsByID[action.payload.projectID],
+                ...action.payload,
+            };
+        },
+        deleteProject: (
+            state,
+            action: PayloadAction<{ project: IProject }>,
+        ) => {
+            const { project } = action.payload;
+            delete state.projectsByID[project.projectID];
+        },
         setPokemon: (state, action: ProjectPayload<{ pokemonID: string }>) => {
+            ensureProject(state, action);
+            handleDates(state, action);
             const { projectID, pokemonID } = action.payload;
-            ensureProject(state as IProjectsState, projectID);
-            state[projectID].pokemonID = pokemonID;
+            state.projectsByID[projectID].targetPokemonID = pokemonID;
         },
     },
     extraReducers: builder =>

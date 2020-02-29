@@ -8,16 +8,35 @@ import { IPokemon } from "@pokemmo/pokemon/PokemonTypes";
 import { IProject, projectsSlice } from "@pokemmo/projects/projectsSlice";
 import { useStateSelector } from "@pokemmo/state/reducers";
 import { useActions } from "@pokemmo/utils";
+import { useDebugValue } from "react";
 
 export function useProjectActions() {
     return useActions(projectsSlice.actions);
 }
 
-export function useProject(projectID: string): IProject | null {
-    return useStateSelector(state => state.projects[projectID]);
+export function useAllProjects() {
+    return useStateSelector(state => state.projects.projectsByID);
+}
+
+export function useProject(projectID?: string | null): IProject | null {
+    const project = useStateSelector(state =>
+        projectID ? state.projects.projectsByID[projectID] : null,
+    );
+
+    useDebugValue({ project });
+    return project;
 }
 
 export function useProjectPokemon(projectID: string): IPokemon | null {
     const project = useProject(projectID);
-    return usePokemon(project?.pokemonID ?? null);
+    const pokemon = usePokemon(project?.targetPokemonID ?? null);
+    console.log(project);
+    useDebugValue({ project, pokemon });
+    return pokemon;
+}
+
+export function useProjectCount() {
+    return useStateSelector(state => {
+        return Object.keys(state.projects.projectsByID).length;
+    });
 }

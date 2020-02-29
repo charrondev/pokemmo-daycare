@@ -6,7 +6,7 @@
 import { getPokemon, PokedexMon } from "@pokemmo/data/pokedex";
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
-import { FormInput } from "@pokemmo/form/FormInput";
+import { FormInputField } from "@pokemmo/form/FormInput";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { FormRow } from "@pokemmo/form/FormRow";
 import {
@@ -23,6 +23,7 @@ import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
 import {
     Gender,
+    IPokemon,
     IVRequirements,
     OwnershipStatus,
     Stat,
@@ -36,8 +37,8 @@ import React from "react";
 import * as Yup from "yup";
 
 interface IProps extends React.ComponentProps<typeof Dialog> {
-    pokemonID?: string;
-    asModal?: boolean;
+    isProject?: boolean;
+    afterSubmit?: (pokemon: IPokemon) => void;
 }
 
 interface IPokemonForm {
@@ -76,6 +77,7 @@ const ownershipOptions: IToggleButtonOption[] = Object.values(
 
 export function PokemonForm(_props: IProps) {
     const { addPokemon } = usePokemonActions();
+    const { afterSubmit, isProject, ...props } = _props;
 
     const form = useFormik({
         initialValues: INITIAL_FORM,
@@ -106,11 +108,11 @@ export function PokemonForm(_props: IProps) {
 
             addPokemon([pokemon]);
             props.onDismiss?.();
+            afterSubmit?.(pokemon);
         },
     });
 
-    const { asModal, pokemonID, ...props } = _props;
-    const title = pokemonID == null ? "Create Pokemon" : "Edit Pokemon";
+    const title = isProject ? "Start Project" : "Add Pokemon";
     const dexMon = getPokemon(form.values.pokemon);
 
     let forceGender: Gender | undefined;
@@ -124,7 +126,11 @@ export function PokemonForm(_props: IProps) {
         <>
             <FormHeading
                 title="Pokemon"
-                description="Add an existing pokemon that you’ve either bought, bred, or caught."
+                description={
+                    isProject
+                        ? "Add information on your desired project pokemon."
+                        : "Add an existing pokemon that you’ve either bought, bred, or caught."
+                }
             />
             <FormRow
                 itemStyles={{
@@ -160,14 +166,33 @@ export function PokemonForm(_props: IProps) {
                 }}
             >
                 <FormLabel label="Status">
+                    {/* Projects get forced into the project status. */}
                     <FormToggleButton
-                        options={ownershipOptions}
+                        forceValue={
+                            isProject ||
+                            form.values.ownershipStatus ===
+                                OwnershipStatus.PROJECT
+                                ? OwnershipStatus.PROJECT
+                                : undefined
+                        }
+                        options={ownershipOptions.filter(option => {
+                            if (
+                                !isProject &&
+                                form.values.ownershipStatus !==
+                                    OwnershipStatus.PROJECT &&
+                                option.value === OwnershipStatus.PROJECT
+                            ) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        })}
                         fieldName="ownershipStatus"
                     />
                 </FormLabel>
                 {form.values.ownershipStatus === OwnershipStatus.BOUGHT && (
                     <FormLabel label="Cost">
-                        <FormInput
+                        <FormInputField
                             beforeNode="¥"
                             type="number"
                             fieldName="cost"
@@ -189,7 +214,7 @@ export function PokemonForm(_props: IProps) {
                 {Object.values(Stat).map(stat => {
                     return (
                         <FormLabel label={nameForStat(stat)} key={stat}>
-                            <FormInput
+                            <FormInputField
                                 min={0}
                                 max={31}
                                 type="number"
@@ -202,10 +227,6 @@ export function PokemonForm(_props: IProps) {
             </FormRow>
         </>
     );
-
-    if (!asModal) {
-        return content;
-    }
 
     return (
         <FormikProvider value={form}>

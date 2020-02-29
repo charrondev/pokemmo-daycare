@@ -5,8 +5,7 @@
 
 import { HelpPage } from "@pokemmo/help/HelpPage";
 import { PokemonPage } from "@pokemmo/pokemon/PokemonPage";
-import { Project } from "@pokemmo/projects/Project";
-import { ProjectList } from "@pokemmo/projects/ProjectList";
+import { ProjectPage } from "@pokemmo/projects/ProjectPage";
 import { getStore } from "@pokemmo/state/store";
 import { CssReset } from "@pokemmo/styles/CssReset";
 import React from "react";
@@ -20,11 +19,14 @@ function App() {
             <Provider store={getStore()}>
                 <BrowserRouter>
                     <Switch>
-                        <Route path="/projects" exact component={ProjectList} />
                         <Route
-                            path={["/projects/:projectID", "/projects/new"]}
-                            component={Project}
                             exact
+                            path={[
+                                "/projects",
+                                "/projects/:projectID",
+                                "/projects/add",
+                            ]}
+                            component={ProjectPage}
                         />
                         <Route path="/pokemon" component={PokemonPage} />
                         <Route path="/help" component={HelpPage} />
