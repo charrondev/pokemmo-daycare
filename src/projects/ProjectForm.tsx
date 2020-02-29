@@ -3,6 +3,8 @@
 //  * @license MIT
 //  */
 
+import { useCallback, useState } from "react";
+
 // import Button, { ButtonGroup } from "@atlaskit/button";
 // import { Checkbox } from "@atlaskit/checkbox";
 // import Form, {
@@ -21,7 +23,6 @@
 //     ValueType,
 // } from "@atlaskit/select";
 // import TextField from "@atlaskit/textfield";
-import React, { useCallback, useState } from "react";
 // import styled from "@emotion/styled";
 // import { Nature, Stat, IVRequirements, Gender } from "@pokemmo/pokemon/IVUtils";
 // import {
@@ -41,36 +42,6 @@ import React, { useCallback, useState } from "react";
 // import { PokemonName } from "@pokemmo/projects/PokemonName";
 // import { NatureView } from "@pokemmo/projects/NatureView";
 
-// interface NatureOptionType extends OptionType {
-//     nature: Nature;
-// }
-
-// function mapData(data: any): ProjectFormValues {
-//     const result = {
-//         pokemon: null,
-//         nature: null,
-//         averagePrice: undefined,
-//         activeIVs: [] as any[],
-//         ivRequirements: {} as IVRequirements,
-//         gender: Gender.MALE,
-//         projectName: "",
-//         allowedAlternativeIdentifiers: [],
-//     };
-//     for (const [key, value] of Object.entries(data)) {
-//         setValue(result, key, value, "/");
-//     }
-
-//     const finalRequirements: IVRequirements = {};
-//     for (const [stat, statInfo] of Object.entries(result.ivRequirements)) {
-//         if (result.activeIVs.includes(stat) && stat in result.ivRequirements) {
-//             statInfo!.value = statInfo?.value ?? 31;
-//             finalRequirements[stat as Stat] = statInfo;
-//         }
-//     }
-//     result.ivRequirements = finalRequirements;
-//     return result as ProjectFormValues;
-// }
-
 // const natureOptions: OptionsType<NatureOptionType> = Object.values(natures).map(
 //     nature => {
 //         return {
@@ -81,13 +52,13 @@ import React, { useCallback, useState } from "react";
 //     },
 // );
 
-// export function useForceUpdate() {
-//     const [, setTick] = useState(0);
-//     const update = useCallback(() => {
-//         setTick(tick => tick + 1);
-//     }, []);
-//     return update;
-// }
+export function useForceUpdate() {
+    const [, setTick] = useState(0);
+    const update = useCallback(() => {
+        setTick(tick => tick + 1);
+    }, []);
+    return update;
+}
 
 // const RowWrapper = styled.div`
 //     display: flex;

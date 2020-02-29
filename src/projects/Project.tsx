@@ -3,8 +3,7 @@
  * @license MIT
  */
 
-import { PokemonTree } from "@pokemmo/projects/PokemonTree";
-import { useProject, useProjectPokemon } from "@pokemmo/projects/projectsSlice";
+import { useProject } from "@pokemmo/projects/projectHooks";
 import React from "react";
 import { useParams } from "react-router-dom";
 
@@ -13,7 +12,7 @@ interface IProps {}
 export function Project(props: IProps) {
     const { projectID } = useParams<{ projectID: string }>();
     const project = useProject(projectID);
-    const projectPokemon = useProjectPokemon(projectID);
+    // const projectPokemon = useProjectPokemon(projectID);
     // const { addPokemon, clearPokemonAndChildren } = usePokemonActions();
     // const { setPokemon, stashFormValues } = useProjectActions();
 
@@ -61,10 +60,7 @@ export function Project(props: IProps) {
             //     }}
             //     initialValues={project?.lastFormValues ?? undefined}
             // /> */}
-            Hello Project Form
-            {projectPokemon && project && (
-                <PokemonTree projectID={project.projectID} />
-            )}
+            {/* <ProjectForm /> */}
         </div>
     );
 }

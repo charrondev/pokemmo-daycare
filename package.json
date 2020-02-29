@@ -123,6 +123,7 @@
         "@types/webpack-env": "^1.15.1",
         "@types/yup": "^0.26.32",
         "babel-plugin-emotion": "^10.0.27",
+        "circular-dependency-plugin": "^5.2.0",
         "csv-loader": "^3.0.2",
         "fork-ts-checker-webpack-plugin": "^4.0.4",
         "papaparse": "^4.5.0",

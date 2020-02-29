@@ -7,8 +7,6 @@ import styled from "@emotion/styled";
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { PageLayout } from "@pokemmo/layout/PageLayout";
 import { ProjectListItem } from "@pokemmo/projects/ProjectListitem";
-import { useProjectActions } from "@pokemmo/projects/projectsSlice";
-import { uuidv4 } from "@pokemmo/utils";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
@@ -63,15 +61,15 @@ function ProjectListNav() {
 
 function NewProjectButton() {
     const history = useHistory();
-    const { initProject } = useProjectActions();
+    // const { initProject } = useProjectActions();
 
     return (
         <FormButton
             buttonType={ButtonType.PRIMARY}
             onClick={() => {
-                const projectID = uuidv4();
-                initProject({ projectID });
-                history.push(`/projects/${projectID}`);
+                // const projectID = uuidv4();
+                // initProject({ projectID });
+                history.push(`/projects/new`);
             }}
         >
             New Project

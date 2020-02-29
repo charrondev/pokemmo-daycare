@@ -30,6 +30,7 @@ export function PageContent(props: IProps) {
                         height: "100%",
                         background: "#fff",
                         padding: "32px 0",
+                        paddingTop: 46,
                     },
                 ]}
             >

@@ -4,8 +4,6 @@
  */
 
 import { BreedStatus, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
-import { useStateSelector } from "@pokemmo/state/reducers";
-import { useActions } from "@pokemmo/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type PokemonByID = Record<string, IPokemon>;
@@ -105,17 +103,3 @@ export const pokemonSlice = createSlice({
         },
     },
 });
-
-export function useAllPokemon() {
-    return useStateSelector(state => state.pokemon.pokemonByID);
-}
-
-export function usePokemon(pokemonID: string | null): IPokemon | null {
-    return useStateSelector(state => {
-        return pokemonID !== null ? state.pokemon.pokemonByID[pokemonID] : null;
-    });
-}
-
-export function usePokemonActions() {
-    return useActions(pokemonSlice.actions);
-}

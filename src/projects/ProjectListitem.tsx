@@ -6,13 +6,13 @@
 import { getPokemon } from "@pokemmo/data/pokedex";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
-import { ProjectDataType } from "@pokemmo/projects/projectsSlice";
+import { IProject } from "@pokemmo/projects/projectsSlice";
 import { Card } from "@pokemmo/styles/Card";
 import { fontSizeLarge } from "@pokemmo/styles/variables";
 import React from "react";
 
 interface IProps {
-    project: ProjectDataType;
+    project: IProject;
 }
 
 export function ProjectListItem(props: IProps) {

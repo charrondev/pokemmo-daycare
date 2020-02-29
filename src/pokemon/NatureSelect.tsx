@@ -5,7 +5,7 @@
 
 import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
 import { allNatures, getNature } from "@pokemmo/pokemon/natures";
-import { useAllPokemon } from "@pokemmo/pokemon/pokemonSlice";
+import { useAllPokemon } from "@pokemmo/pokemon/pokemonHooks";
 import { Nature } from "@pokemmo/pokemon/PokemonTypes";
 import { NatureView } from "@pokemmo/projects/NatureView";
 import { notEmpty } from "@pokemmo/utils";

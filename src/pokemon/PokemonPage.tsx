@@ -21,7 +21,7 @@ import { PokemonGridItem } from "@pokemmo/pokemon/PokemonGridItem";
 import {
     useAllPokemon,
     usePokemonActions,
-} from "@pokemmo/pokemon/pokemonSlice";
+} from "@pokemmo/pokemon/pokemonHooks";
 import { IPokemon } from "@pokemmo/pokemon/PokemonTypes";
 import { colorPrimary, fontSizeLarge } from "@pokemmo/styles/variables";
 import { useQueryParamsSync } from "@pokemmo/utils";
@@ -60,7 +60,7 @@ export function PokemonPage() {
                                 setSelectedPokemon={setSelectedPokemon}
                                 selectedPokemon={selectedPokemon}
                             />
-                            <div css={{ marginTop: -24 }}></div>
+                            <div css={{ marginTop: -20 }}></div>
                         </>
                     )}
                     <PokemonSortHeader
@@ -167,6 +167,7 @@ function PokemonSortHeader(props: {
         <header
             css={[
                 {
+                    marginTop: -10,
                     marginLeft: -pageContainerPadding,
                     height: 56,
                     display: "flex",
@@ -218,7 +219,7 @@ function PokemonActionHeader(props: {
             css={{
                 background: colorPrimary.string(),
                 color: "#fff",
-                marginTop: -pageContainerPadding,
+                marginTop: -46,
                 marginLeft: -pageContainerPadding,
                 height: 56,
                 display: "flex",

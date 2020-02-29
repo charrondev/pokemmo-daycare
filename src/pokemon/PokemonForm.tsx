@@ -18,8 +18,8 @@ import { Modal } from "@pokemmo/layout/Modal";
 import { nameForStat } from "@pokemmo/pokemon/IVUtils";
 import { NatureSelect } from "@pokemmo/pokemon/NatureSelect";
 import { PokemonBuilder } from "@pokemmo/pokemon/PokemonBuilder";
+import { usePokemonActions } from "@pokemmo/pokemon/pokemonHooks";
 import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
-import { usePokemonActions } from "@pokemmo/pokemon/pokemonSlice";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
 import {
     Gender,

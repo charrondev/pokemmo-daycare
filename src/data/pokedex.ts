@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-import { useAllPokemon } from "@pokemmo/pokemon/pokemonSlice";
+import { useAllPokemon } from "@pokemmo/pokemon/pokemonHooks";
 import { getStore } from "@pokemmo/state/store";
 import { uppercaseFirst } from "@pokemmo/utils";
 import { memoize } from "lodash-es";
