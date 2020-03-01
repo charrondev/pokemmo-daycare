@@ -4,7 +4,6 @@
  */
 
 import styled from "@emotion/styled";
-import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { PageLayout } from "@pokemmo/layout/PageLayout";
 import { PokemonGridItem } from "@pokemmo/pokemon/PokemonGridItem";
 import {
@@ -71,30 +70,18 @@ function ProjectPreview(props: { project: IProject }) {
     if (!projectPokemon) {
         return null;
     }
+
+    const isSelected = history.location.pathname.includes(
+        props.project.projectID,
+    );
+
     return (
         <PokemonGridItem
+            isSelected={isSelected}
             css={{ marginBottom: 18 }}
             onClick={() => history.push(`/projects/${props.project.projectID}`)}
             pokemon={projectPokemon}
             nameOverride={props.project.projectName || "(Untitled Project)"}
         />
-    );
-}
-
-function NewProjectButton() {
-    const history = useHistory();
-    // const { initProject } = useProjectActions();
-
-    return (
-        <FormButton
-            buttonType={ButtonType.PRIMARY}
-            onClick={() => {
-                // const projectID = uuidv4();
-                // initProject({ projectID });
-                history.push(`/projects/new`);
-            }}
-        >
-            New Project
-        </FormButton>
     );
 }

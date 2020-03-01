@@ -83,7 +83,9 @@ export function FormInput<ValueType extends string | number = string>(
                 ]}
             >
                 {beforeNode && (
-                    <span css={{ marginRight: 6 }}>{beforeNode}</span>
+                    <span css={{ marginRight: 6, userSelect: "none" }}>
+                        {beforeNode}
+                    </span>
                 )}
                 <input
                     {...idProps}

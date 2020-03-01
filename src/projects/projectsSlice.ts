@@ -4,11 +4,14 @@
  */
 
 import { pokemonSlice } from "@pokemmo/pokemon/pokemonSlice";
+import { IVRequirements } from "@pokemmo/pokemon/PokemonTypes";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IProject {
     projectName: string;
     projectID: string;
+    ivPricing: IVRequirements;
+    averagePricing: number;
     targetPokemonID: string;
     breederPokemonIDs: string[];
     dateCreated: string;

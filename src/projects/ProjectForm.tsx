@@ -40,6 +40,8 @@ export function ProjectForm(props: IProps) {
                     breederPokemonIDs: [],
                     dateCreated: new Date().toISOString(),
                     dateUpdated: new Date().toISOString(),
+                    ivPricing: pokemon.ivs,
+                    averagePricing: 10_000,
                 };
                 addProject({ project });
                 history.push(`/projects/${project.projectID}`);
