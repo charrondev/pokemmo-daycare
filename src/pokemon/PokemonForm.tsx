@@ -135,6 +135,7 @@ export function PokemonForm(_props: IProps) {
             <FormRow
                 itemStyles={{
                     minWidth: 0,
+                    flexGrow: 1,
                 }}
             >
                 <FormLabel label="Pokemon Name">
@@ -208,7 +209,7 @@ export function PokemonForm(_props: IProps) {
             <FormRow
                 itemStyles={{
                     flex: 1,
-                    minWidth: "33%",
+                    minWidth: "29%",
                 }}
             >
                 {Object.values(Stat).map(stat => {
