@@ -1,22 +1,22 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
-import React from "react";
-import { Global, css } from "@emotion/core";
-import emotionNormalize from "emotion-normalize";
+import { css, Global } from "@emotion/core";
 import {
-    colorText,
-    colorPrimary,
-    fontSizeTitleLarge,
-    fontSizeTitle,
-    fontSizeLarge,
     colorBG,
+    colorPrimary,
+    colorText,
+    fontSizeLarge,
+    fontSizeTitle,
+    fontSizeTitleLarge,
 } from "@pokemmo/styles/variables";
-import "focus-visible";
-import "@reach/menu-button/styles.css";
 import "@reach/dialog/styles.css";
+import "@reach/menu-button/styles.css";
+import emotionNormalize from "emotion-normalize";
+import "focus-visible";
+import React from "react";
 
 export function CssReset() {
     return (

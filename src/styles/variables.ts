@@ -1,10 +1,10 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
-import Color from "color";
 import { ObjectInterpolation } from "@emotion/core";
+import Color from "color";
 export type CssType = ObjectInterpolation<any>;
 
 // Colors

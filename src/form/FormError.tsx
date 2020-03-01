@@ -1,10 +1,10 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
-import React from "react";
 import { fontSizeSmall } from "@pokemmo/styles/variables";
+import React from "react";
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {}
 

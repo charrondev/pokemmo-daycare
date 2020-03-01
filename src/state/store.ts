@@ -1,11 +1,11 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
-import { configureStore, Store } from "@reduxjs/toolkit";
-import { save, load } from "redux-localstorage-simple";
 import { rootReducer, RootState } from "@pokemmo/state/reducers";
+import { configureStore, Store } from "@reduxjs/toolkit";
+import { load, save } from "redux-localstorage-simple";
 
 let storeCache: Store<RootState> | null = null;
 

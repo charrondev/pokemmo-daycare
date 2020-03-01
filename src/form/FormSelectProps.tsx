@@ -1,27 +1,27 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
+import { FocusEventHandler, KeyboardEventHandler } from "react";
 import {
-    OptionTypeBase,
-    SelectComponentsConfig,
+    ActionMeta,
     FormatOptionLabelMeta,
-    OptionsType,
+    GroupedOptionsType,
+    InputActionMeta,
     MenuPlacement,
     MenuPosition,
-    ValueType,
-    ActionMeta,
-    InputActionMeta,
-    GroupedOptionsType,
+    OptionsType,
+    OptionTypeBase,
+    SelectComponentsConfig,
     StylesConfig,
+    ValueType,
 } from "react-select";
 import {
     formatGroupLabel,
     getOptionLabel,
     getOptionValue,
 } from "react-select/src/builtins";
-import { FocusEventHandler, KeyboardEventHandler } from "react";
 import { ThemeConfig } from "react-select/src/theme";
 
 ///

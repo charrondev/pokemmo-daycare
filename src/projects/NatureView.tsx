@@ -1,11 +1,11 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
-import React from "react";
 import styled from "@emotion/styled";
 import { Nature } from "@pokemmo/pokemon/PokemonTypes";
+import React from "react";
 
 const NatureViewWrapper = styled.span<{ isVertical?: boolean }>`
     display: flex;

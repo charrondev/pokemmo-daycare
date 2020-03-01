@@ -1,6 +1,6 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
 import { Gender, IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";

@@ -1,11 +1,11 @@
 /**
  * @copyright 2020 Adam (charrondev) Charron
- * @license MIT
+ * @license GPL-3.0-only
  */
 
-import React from "react";
 import styled from "@emotion/styled";
 import { getPokemon, makeSpriteUrl } from "@pokemmo/data/pokedex";
+import React from "react";
 
 interface IProps {
     pokemonIdentifier: string;

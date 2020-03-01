@@ -2,6 +2,7 @@
     "name": "pokemmo-breeder",
     "version": "0.1.0",
     "private": true,
+    "license": "GPL-3.0-only",
     "dependencies": {
         "@babel/core": "7.8.4",
         "@emotion/core": "^10.0.27",
