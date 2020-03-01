@@ -11,13 +11,12 @@ import { FormRow } from "@pokemmo/form/FormRow";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { usePokemon } from "@pokemmo/pokemon/pokemonHooks";
 import { PokemonInfoRow } from "@pokemmo/pokemon/PokemonInfoRow";
-import { Gender, IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
-import { StatView } from "@pokemmo/projects/IVView";
 import { ProjectAlternativeBreederForm } from "@pokemmo/projects/ProjectAlternativeBreederForm";
 import { useProjectActions } from "@pokemmo/projects/projectHooks";
+import { ProjectPricingRequirementsForm } from "@pokemmo/projects/ProjectPricingRequirementsForm";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
-import { colorPrimary, makeSingleBorder } from "@pokemmo/styles/variables";
+import { colorPrimary } from "@pokemmo/styles/variables";
 import { relativeTime } from "@pokemmo/utils";
 import React from "react";
 
@@ -63,142 +62,10 @@ export function ProjectView(props: IProps) {
                 description="The pokemon you are trying to breed."
             />
             {projectPokemon && <PokemonInfoRow pokemon={projectPokemon} />}
-            <PricingRequirementsForm
-                onAveragePriceChange={averagePricing => {
-                    updateProject({ projectID, averagePricing });
-                }}
-                averagePrice={project.averagePricing}
-                ivPricing={project.ivPricing}
-                onIVPricingChange={ivPricing => {
-                    updateProject({ projectID, ivPricing });
-                }}
-            />
+            <ProjectPricingRequirementsForm project={project} />
             <ProjectAlternativeBreederForm project={project} />
             <ProjectShoppingList project={project} />
         </div>
-    );
-}
-
-function PricingRequirementsForm(props: {
-    averagePrice: number;
-    onAveragePriceChange: (averagePrice: number) => void;
-    ivPricing: IVRequirements;
-    onIVPricingChange: (value: IVRequirements) => void;
-}) {
-    const {
-        averagePrice,
-        onAveragePriceChange,
-        ivPricing,
-        onIVPricingChange,
-    } = props;
-
-    return (
-        <>
-            <FormHeading
-                title="Pricing Information"
-                description="Add some pricing information from GTL in order to generate a more accurate price estimate."
-            />
-            <FormRow>
-                <FormLabel
-                    css={{ maxWidth: 400 }}
-                    label="Average Price (across all stats)"
-                >
-                    <FormInput
-                        value={averagePrice}
-                        onChange={onAveragePriceChange}
-                    />
-                </FormLabel>
-            </FormRow>
-            <FormRow itemStyles={{ flexGrow: 1 }}>
-                <table
-                    css={{
-                        "& th": {
-                            borderBottom: makeSingleBorder(1),
-                        },
-                        width: "100%",
-                        "& td, & th": {
-                            textAlign: "left",
-                            padding: "6px 12px",
-                        },
-                        "& td:first-of-type, & th:first-of-type": {
-                            fontWeight: "bold",
-                            paddingLeft: 0,
-                        },
-                        "& td:last-of-type, & th:last-of-type": {
-                            fontWeight: "bold",
-                            paddingRight: 0,
-                        },
-                    }}
-                >
-                    <thead>
-                        <th>Stat</th>
-                        <th>Male Price (Avg.)</th>
-                        <th>Female Price (Avg.)</th>
-                    </thead>
-                    <tbody>
-                        {Object.entries(ivPricing).map(([stat, data]) => {
-                            if (data.value === 0) {
-                                return <React.Fragment key={stat} />;
-                            }
-
-                            return (
-                                <tr key={stat}>
-                                    <td>
-                                        <StatView
-                                            stat={stat as Stat}
-                                            points={data.value}
-                                        />
-                                    </td>
-                                    <td>
-                                        <FormInput
-                                            type="number"
-                                            beforeNode="¥"
-                                            value={
-                                                data.prices.male ?? averagePrice
-                                            }
-                                            onChange={malePricing => {
-                                                onIVPricingChange({
-                                                    ...ivPricing,
-                                                    [stat]: {
-                                                        ...data,
-                                                        prices: {
-                                                            ...data.prices,
-                                                            [Gender.MALE]: malePricing,
-                                                        },
-                                                    },
-                                                });
-                                            }}
-                                        />
-                                    </td>
-                                    <td>
-                                        <FormInput
-                                            type="number"
-                                            beforeNode="¥"
-                                            value={
-                                                data.prices.female ??
-                                                averagePrice
-                                            }
-                                            onChange={femalePricing => {
-                                                onIVPricingChange({
-                                                    ...ivPricing,
-                                                    [stat]: {
-                                                        ...data,
-                                                        prices: {
-                                                            ...data.prices,
-                                                            [Gender.FEMALE]: femalePricing,
-                                                        },
-                                                    },
-                                                });
-                                            }}
-                                        />
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </FormRow>
-        </>
     );
 }
 
