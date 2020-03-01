@@ -93,6 +93,23 @@ export const projectsSlice = createSlice({
                 ].altBreederIdentifiers = Array.from(alternativeSet);
             }
         },
+        removeAlternative: (
+            state,
+            action: ProjectPayload<{ alternativeIdentifier: string }>,
+        ) => {
+            if (ensureProject(state, action)) {
+                console.log("found project");
+                handleDates(state, action);
+                const { projectID, alternativeIdentifier } = action.payload;
+                const alternativeSet = new Set(
+                    state.projectsByID[projectID].altBreederIdentifiers,
+                );
+                alternativeSet.delete(alternativeIdentifier);
+                state.projectsByID[
+                    projectID
+                ].altBreederIdentifiers = Array.from(alternativeSet);
+            }
+        },
         clearAlternatives: (state, action: ProjectPayload<{}>) => {
             if (ensureProject(state, action)) {
                 handleDates(state, action);

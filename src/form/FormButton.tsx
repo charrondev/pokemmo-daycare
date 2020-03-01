@@ -18,6 +18,7 @@ export enum ButtonType {
     STANDARD = "standard",
     SUBMIT = "submit",
     TRANSLUSCENT = "transcluscent",
+    ICON = "icon",
 }
 
 interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -33,6 +34,11 @@ const buttonCommon: CssType = {
     cursor: "pointer",
     transition: "all 0.2s ease",
     whiteSpace: "nowrap",
+
+    "&[disabled]": {
+        opacity: 0.6,
+        cursor: "initial",
+    },
 };
 
 export const colorPrimaryButton = colorPrimary.lighten(0.2);
@@ -46,7 +52,7 @@ const primaryCSS: CssType = {
     borderWidth: 2,
     color: "#fff",
 
-    [`&:focus, &:hover, &:active`]: {
+    [`&:not(:disabled):focus, &:not(:disabled):hover, &:not(:disabled):active`]: {
         ...mixinBorder(colorPrimary),
         background: colorPrimary.string(),
         borderWidth: 2,
@@ -65,7 +71,7 @@ const standardCSS: CssType = {
     borderWidth: 2,
     color: colorText.string(),
 
-    [`&:focus, &:hover, &:active`]: {
+    [`&:not(:disabled):focus, &:not(:disabled):hover, &:not(:disabled):active`]: {
         ...mixinBorder(colorBorder),
         background: standardColorState.string(),
         borderWidth: 2,
@@ -79,8 +85,22 @@ const translucentCSS: CssType = {
     background: white.alpha(0.08).string(),
     color: white.string(),
 
-    [`&:focus, &:hover, &:active`]: {
+    [`&:not(:disabled):focus, &:not(:disabled):hover, &:not(:disabled):active`]: {
         background: white.alpha(0.12).string(),
+    },
+};
+
+const buttonIcon: CssType = {
+    border: "none",
+    borderRadius: 6,
+    background: white.alpha(0.08).string(),
+    color: colorPrimary.string(),
+    minWidth: 24,
+    minHeight: 24,
+    padding: "6px 9px",
+
+    [`&:not(:disabled):focus, &:not(:disabled):hover, &:not(:disabled):active`]: {
+        background: colorPrimary.alpha(0.15).string(),
     },
 };
 
@@ -93,6 +113,8 @@ export function cssForButtonType(buttonType?: ButtonType): CssType {
             return translucentCSS;
         case ButtonType.STANDARD:
             return standardCSS;
+        case ButtonType.ICON:
+            return buttonIcon;
         default:
             return standardCSS;
     }

@@ -4,7 +4,8 @@
  */
 
 import { getPokemon, PokedexMon } from "@pokemmo/data/pokedex";
-import { FormButton } from "@pokemmo/form/FormButton";
+import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
+import { FormCheckBox } from "@pokemmo/form/FormCheckBox";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { FormRow } from "@pokemmo/form/FormRow";
@@ -18,11 +19,17 @@ import { DecoratedCard } from "@pokemmo/styles/Card";
 import { colorPrimary } from "@pokemmo/styles/variables";
 import { notEmpty } from "@pokemmo/utils";
 import React from "react";
+import IconClear from "../icons/IconClear.svg";
 
 export function ProjectAlternativeBreederForm(props: { project: IProject }) {
     const { project } = props;
     const { projectID } = project;
-    const { addAlternative, clearAlternatives } = useProjectActions();
+    const {
+        updateProject,
+        addAlternative,
+        removeAlternative,
+        clearAlternatives,
+    } = useProjectActions();
 
     const pokemon = usePokemon(project.targetPokemonID);
     if (!pokemon) {
@@ -46,8 +53,17 @@ export function ProjectAlternativeBreederForm(props: { project: IProject }) {
                     justifyContent: "space-between",
                 }}
             >
-                <div>
-                    <FormLabel label="Add Alternative" css={{ maxWidth: 400 }}>
+                <div
+                    css={{
+                        display: "flex",
+                        alignItems: "center",
+                        flex: 1,
+                    }}
+                >
+                    <FormLabel
+                        label="Add Alternative"
+                        css={{ maxWidth: 400, flex: 1, marginRight: 24 }}
+                    >
                         <PokemonSelect
                             eggGroups={[
                                 dexMon.eggGroup1,
@@ -62,6 +78,21 @@ export function ProjectAlternativeBreederForm(props: { project: IProject }) {
                                 });
                             }}
                             value={null}
+                            allowEvolvedPokemon={
+                                project.allowEvolvedAltBreeders
+                            }
+                        />
+                    </FormLabel>
+                    <FormLabel label="" css={{ paddingTop: 14 }}>
+                        <FormCheckBox
+                            label="Show Evolved Pokemon"
+                            checked={project.allowEvolvedAltBreeders}
+                            onChange={allowEvolvedAltBreeders => {
+                                updateProject({
+                                    allowEvolvedAltBreeders,
+                                    projectID,
+                                });
+                            }}
                         />
                     </FormLabel>
                 </div>
@@ -70,6 +101,7 @@ export function ProjectAlternativeBreederForm(props: { project: IProject }) {
                     onClick={() => {
                         clearAlternatives({ projectID });
                     }}
+                    disabled={project.altBreederIdentifiers.length === 0}
                 >
                     Clear Alternatives
                 </FormButton>
@@ -83,22 +115,39 @@ export function ProjectAlternativeBreederForm(props: { project: IProject }) {
                         flexGrow: 1,
                     }}
                 >
-                    {project.altBreederIdentifiers.map((identifier, i) => {
-                        const dexMon = getPokemon(identifier);
-                        if (!dexMon) {
-                            return <React.Fragment key={i} />;
-                        }
+                    {project.altBreederIdentifiers.map(
+                        (alternativeIdentifier, i) => {
+                            const dexMon = getPokemon(alternativeIdentifier);
+                            if (!dexMon) {
+                                return <React.Fragment key={i} />;
+                            }
 
-                        return <AltBreederCard dexMon={dexMon} key={i} />;
-                    })}
+                            return (
+                                <AltBreederCard
+                                    dexMon={dexMon}
+                                    key={i}
+                                    onDelete={() => {
+                                        removeAlternative({
+                                            projectID,
+                                            alternativeIdentifier,
+                                        });
+                                    }}
+                                />
+                            );
+                        },
+                    )}
                 </FormRow>
             )}
         </>
     );
 }
 
-function AltBreederCard(props: { dexMon: PokedexMon; className?: string }) {
-    const { className, dexMon } = props;
+function AltBreederCard(props: {
+    dexMon: PokedexMon;
+    className?: string;
+    onDelete?: () => void;
+}) {
+    const { className, dexMon, onDelete } = props;
     return (
         <DecoratedCard
             className={className}
@@ -114,9 +163,21 @@ function AltBreederCard(props: { dexMon: PokedexMon; className?: string }) {
                 height={36}
                 width={36}
             />
-            <LabelAndValue vertical label={dexMon.displayName}>
+            <LabelAndValue
+                vertical
+                label={dexMon.displayName}
+                css={{ flex: 1 }}
+            >
                 Percentage Male: {dexMon.percentageMale}%
             </LabelAndValue>
+            <FormButton buttonType={ButtonType.ICON} onClick={onDelete}>
+                <IconClear
+                    css={{
+                        height: 14,
+                        width: 14,
+                    }}
+                />
+            </FormButton>
         </DecoratedCard>
     );
 }

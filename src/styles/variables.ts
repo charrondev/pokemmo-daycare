@@ -54,3 +54,15 @@ export const mixinAbsoluteFull = (): CssType => {
         right: 0,
     };
 };
+
+export const mixinSrOnly = (): CssType => ({
+    border: "0px !important",
+    clip: "rect(0, 0, 0, 0) !important",
+    display: "block !important",
+    height: "1px !important",
+    margin: "-1px !important",
+    overflow: "hidden !important",
+    padding: "0px !important",
+    position: "absolute !important" as any,
+    width: "1px !important",
+});

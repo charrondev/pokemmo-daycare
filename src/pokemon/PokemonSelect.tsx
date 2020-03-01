@@ -42,7 +42,7 @@ export function PokemonSelect(_props: IProps) {
         onlyOwnedPokemon,
         eggGroups,
         excludeIdentifiers,
-        allowEvolvedPokemon,
+        allowEvolvedPokemon = true,
         ...props
     } = _props;
 
