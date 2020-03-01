@@ -24,6 +24,7 @@ export function FormHeading(_props: IProps) {
                 {description && (
                     <p
                         css={{
+                            maxWidth: 700,
                             marginTop: -12,
                             marginBottom: 24,
                             lineHeight: 1.4,

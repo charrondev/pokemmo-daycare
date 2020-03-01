@@ -19,7 +19,7 @@ export function PageContent(props: IProps) {
             css={{
                 maxWidth: 1500,
                 width: "100%",
-                height: "100%",
+                minHeight: "100%",
                 overflow: "auto",
                 boxShadow: boxShadowCard,
             }}
@@ -27,7 +27,7 @@ export function PageContent(props: IProps) {
             <main
                 css={[
                     {
-                        height: "100%",
+                        minHeight: "100%",
                         background: "#fff",
                         padding: "32px 0",
                         paddingTop: 46,

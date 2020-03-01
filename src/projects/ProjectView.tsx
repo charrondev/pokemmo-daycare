@@ -3,16 +3,17 @@
  * @license MIT
  */
 
-import { getPokemon } from "@pokemmo/data/pokedex";
+import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { FormInput } from "@pokemmo/form/FormInput";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { FormRow } from "@pokemmo/form/FormRow";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
-import { nameForStat } from "@pokemmo/pokemon/IVUtils";
 import { usePokemon } from "@pokemmo/pokemon/pokemonHooks";
-import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
+import { PokemonInfoRow } from "@pokemmo/pokemon/PokemonInfoRow";
 import { Gender, IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
+import { StatView } from "@pokemmo/projects/IVView";
+import { ProjectAlternativeBreederForm } from "@pokemmo/projects/ProjectAlternativeBreederForm";
 import { useProjectActions } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
@@ -31,7 +32,6 @@ export function ProjectView(props: IProps) {
     const { project } = props;
     const { projectID } = project;
     const projectPokemon = usePokemon(project.targetPokemonID);
-    const dexMon = getPokemon(projectPokemon?.identifier)!;
 
     return (
         <div>
@@ -62,44 +62,7 @@ export function ProjectView(props: IProps) {
                 title="Goal Pokemon"
                 description="The pokemon you are trying to breed."
             />
-            <FormRow
-                css={{ alignItems: "center " }}
-                itemStyles={{
-                    minWidth: 140,
-                    flex: "auto",
-                    flexGrow: 0,
-                    marginRight: 36,
-                }}
-            >
-                <PokemonSprite
-                    dexMon={dexMon}
-                    height={120}
-                    width={150}
-                    css={{ flexGrow: 0 }}
-                />
-                <DecoratedCard>
-                    <LabelAndValue vertical label="Name">
-                        {dexMon.displayName}
-                    </LabelAndValue>
-                </DecoratedCard>
-                <DecoratedCard>
-                    <LabelAndValue vertical label="Nature">
-                        {projectPokemon?.nature}
-                    </LabelAndValue>
-                </DecoratedCard>
-                <DecoratedCard>
-                    <LabelAndValue vertical label="Egg Group 1">
-                        {dexMon.eggGroup1}
-                    </LabelAndValue>
-                </DecoratedCard>
-                {dexMon.eggGroup2 && (
-                    <DecoratedCard>
-                        <LabelAndValue vertical label="Egg Group 1">
-                            {dexMon.eggGroup2}
-                        </LabelAndValue>
-                    </DecoratedCard>
-                )}
-            </FormRow>
+            {projectPokemon && <PokemonInfoRow pokemon={projectPokemon} />}
             <PricingRequirementsForm
                 onAveragePriceChange={averagePricing => {
                     updateProject({ projectID, averagePricing });
@@ -110,6 +73,8 @@ export function ProjectView(props: IProps) {
                     updateProject({ projectID, ivPricing });
                 }}
             />
+            <ProjectAlternativeBreederForm project={project} />
+            <ProjectShoppingList project={project} />
         </div>
     );
 }
@@ -144,82 +109,126 @@ function PricingRequirementsForm(props: {
                     />
                 </FormLabel>
             </FormRow>
-            <table
-                css={{
-                    "& th": {
-                        borderBottom: makeSingleBorder(1),
-                    },
-                    width: "100%",
-                    "& td:first-of-type": {
-                        fontWeight: "bold",
-                    },
-                    "& td, & th": {
-                        textAlign: "left",
-                        padding: "6px 12px",
-                    },
-                }}
-            >
-                <thead>
-                    <th>IV Name</th>
-                    <th>IV Total</th>
-                    <th>Male Price (Avg.)</th>
-                    <th>Female Price (Avg.)</th>
-                </thead>
-                <tbody>
-                    {Object.entries(ivPricing).map(([stat, data]) => {
-                        if (data.value === 0) {
-                            return <React.Fragment key={stat} />;
-                        }
+            <FormRow itemStyles={{ flexGrow: 1 }}>
+                <table
+                    css={{
+                        "& th": {
+                            borderBottom: makeSingleBorder(1),
+                        },
+                        width: "100%",
+                        "& td, & th": {
+                            textAlign: "left",
+                            padding: "6px 12px",
+                        },
+                        "& td:first-of-type, & th:first-of-type": {
+                            fontWeight: "bold",
+                            paddingLeft: 0,
+                        },
+                        "& td:last-of-type, & th:last-of-type": {
+                            fontWeight: "bold",
+                            paddingRight: 0,
+                        },
+                    }}
+                >
+                    <thead>
+                        <th>Stat</th>
+                        <th>Male Price (Avg.)</th>
+                        <th>Female Price (Avg.)</th>
+                    </thead>
+                    <tbody>
+                        {Object.entries(ivPricing).map(([stat, data]) => {
+                            if (data.value === 0) {
+                                return <React.Fragment key={stat} />;
+                            }
 
-                        return (
-                            <tr key={stat}>
-                                <td>{nameForStat(stat as Stat)}</td>
-                                <td>{data.value}</td>
-                                <td>
-                                    <FormInput
-                                        type="number"
-                                        beforeNode="¥"
-                                        value={data.prices.male ?? averagePrice}
-                                        onChange={malePricing => {
-                                            onIVPricingChange({
-                                                ...ivPricing,
-                                                [stat]: {
-                                                    ...data,
-                                                    prices: {
-                                                        ...data.prices,
-                                                        [Gender.MALE]: malePricing,
+                            return (
+                                <tr key={stat}>
+                                    <td>
+                                        <StatView
+                                            stat={stat as Stat}
+                                            points={data.value}
+                                        />
+                                    </td>
+                                    <td>
+                                        <FormInput
+                                            type="number"
+                                            beforeNode="¥"
+                                            value={
+                                                data.prices.male ?? averagePrice
+                                            }
+                                            onChange={malePricing => {
+                                                onIVPricingChange({
+                                                    ...ivPricing,
+                                                    [stat]: {
+                                                        ...data,
+                                                        prices: {
+                                                            ...data.prices,
+                                                            [Gender.MALE]: malePricing,
+                                                        },
                                                     },
-                                                },
-                                            });
-                                        }}
-                                    />
-                                </td>
-                                <td>
-                                    <FormInput
-                                        type="number"
-                                        beforeNode="¥"
-                                        value={
-                                            data.prices.female ?? averagePrice
-                                        }
-                                        onChange={femalePricing => {
-                                            onIVPricingChange({
-                                                ...ivPricing,
-                                                [stat]: {
-                                                    ...data,
-                                                    prices: {
-                                                        ...data.prices,
-                                                        [Gender.FEMALE]: femalePricing,
+                                                });
+                                            }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <FormInput
+                                            type="number"
+                                            beforeNode="¥"
+                                            value={
+                                                data.prices.female ??
+                                                averagePrice
+                                            }
+                                            onChange={femalePricing => {
+                                                onIVPricingChange({
+                                                    ...ivPricing,
+                                                    [stat]: {
+                                                        ...data,
+                                                        prices: {
+                                                            ...data.prices,
+                                                            [Gender.FEMALE]: femalePricing,
+                                                        },
                                                     },
-                                                },
-                                            });
-                                        }}
-                                    />
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                                                });
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </FormRow>
+        </>
+    );
+}
+
+function ProjectShoppingList(props: { project: IProject }) {
+    return (
+        <>
+            <FormHeading
+                actions={
+                    <FormButton buttonType={ButtonType.PRIMARY}>
+                        Add Pokemon
+                    </FormButton>
+                }
+                title={
+                    <>
+                        Shopping/Catching List{" "}
+                        <span css={{ fontWeight: "normal" }}>(4/31)</span>
+                    </>
+                }
+                description={
+                    <>
+                        In order to breed this pokemon, you will need to
+                        purchase or catch the following pokemon & items. If you
+                        buy or catch a pokemon that is already already has some
+                        desired IVs, just add it to the project.
+                        <strong>
+                            Estimated spread is to reduce purchasing costs.
+                        </strong>
+                    </>
+                }
+            />
         </>
     );
 }

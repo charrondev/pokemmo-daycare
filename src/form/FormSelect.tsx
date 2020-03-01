@@ -5,10 +5,10 @@
 
 import { FormError } from "@pokemmo/form/FormError";
 import { inputCSS, inputFocusCSS } from "@pokemmo/form/FormInput";
-import { useInputID, useLabelID } from "@pokemmo/form/FormLabel";
+import { useLabeledInputProps } from "@pokemmo/form/FormLabel";
 import { BaseFormSelectProps } from "@pokemmo/form/FormSelectProps";
 import { colorPrimary, colorPrimaryState } from "@pokemmo/styles/variables";
-import { useField } from "formik";
+import { FieldMetaProps, useField } from "formik";
 import React from "react";
 import Select, { ValueType } from "react-select";
 import makeAnimated from "react-select/animated";
@@ -17,11 +17,25 @@ import AsyncSelect, { AsyncProps } from "react-select/async";
 const animatedComponents = makeAnimated();
 
 export interface FormSelectProps<T>
-    extends BaseFormSelectProps<T>,
-        Partial<AsyncProps<T>> {
-    fieldName: string;
+    extends Omit<BaseFormSelectProps<any>, "onChange" | "value">,
+        Partial<AsyncProps<any>> {
+    // fieldName: string;
     makeOptionFromValue: (value: string | null) => ValueType<T> | null;
+    meta?: FieldMetaProps<T>;
+    onTouched?: (isTouched: boolean) => void;
+    onChange: (values: string[] | string | null) => void;
+    value: string | string[] | null;
 }
+
+export type FormSelectFieldProps<T> = Omit<
+    FormSelectProps<T>,
+    "onChange" | "value" | "meta" | "onTouched"
+> & { fieldName: string };
+
+export type SpecializedSelect<T> = Omit<
+    T,
+    "formatOptionsLabel" | "options" | "makeOptionFromValue"
+>;
 
 const indicatorStyles = {
     color: colorPrimaryState.string(),
@@ -33,43 +47,42 @@ const indicatorStyles = {
 export function FormSelect<T extends { value: string }>(
     _props: FormSelectProps<T>,
 ) {
-    const { fieldName, makeOptionFromValue, ...props } = _props;
-    const [field, meta, fieldHelpers] = useField({
-        name: fieldName,
-        type: "select",
-    });
-    const inputID = useInputID();
-    const labelID = useLabelID();
+    const {
+        value: propValue,
+        meta,
+        onChange,
+        onTouched,
+        makeOptionFromValue,
+        ...props
+    } = _props;
+
+    const ids = useLabeledInputProps();
 
     const SelectComponent = props.loadOptions
         ? AsyncSelect
         : ((Select as any) as typeof AsyncSelect);
 
     let value: any = null;
-    if (Array.isArray(field.value)) {
-        value = field.value.map(val => makeOptionFromValue(val));
+    if (Array.isArray(propValue)) {
+        value = propValue.map(val => makeOptionFromValue(val));
     } else {
-        value = makeOptionFromValue(field.value);
+        value = makeOptionFromValue(propValue);
     }
 
     return (
         <>
             <SelectComponent
                 {...(props as any)}
-                {...field}
                 value={value}
-                onChange={(value: T | null) => {
-                    fieldHelpers.setTouched(true);
+                onChange={(value: any) => {
+                    onTouched?.(true);
                     if (Array.isArray(value)) {
-                        fieldHelpers.setValue(
-                            value.map(val => val?.value ?? value),
-                        );
+                        onChange(value.map(val => val?.value ?? value));
                     } else {
-                        fieldHelpers.setValue(value?.value ?? value);
+                        onChange(value?.value ?? null);
                     }
                 }}
-                id={inputID}
-                aria-labelledby={labelID}
+                {...ids}
                 cacheOptions
                 components={animatedComponents}
                 css={{
@@ -119,7 +132,30 @@ export function FormSelect<T extends { value: string }>(
                     },
                 }}
             />
-            {meta.touched && meta.error && <FormError>{meta.error}</FormError>}
+            {meta?.touched && meta.error && <FormError>{meta.error}</FormError>}
         </>
+    );
+}
+
+export function FormSelectField<T extends { value: string }>(
+    _props: FormSelectFieldProps<T>,
+) {
+    const { fieldName, ...props } = _props;
+    const [field, meta, fieldHelpers] = useField({
+        name: fieldName,
+        type: "select",
+    });
+
+    return (
+        <FormSelect
+            {...field}
+            onTouched={fieldHelpers.setTouched}
+            {...props}
+            value={field.value}
+            onChange={value => {
+                fieldHelpers.setValue(value);
+            }}
+            meta={meta}
+        />
     );
 }

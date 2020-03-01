@@ -4,57 +4,109 @@
  */
 
 import {
+    filterLoadedDexOptions,
+    filterLoadedDexOptionsSync,
     getPokemon,
     loadOwnPokemonOptions,
     loadOwnPokemonOptionsSync,
     loadPokedexOptions,
+    loadPokedexOptionsSync,
     makeSpriteUrl,
     mapDexMonToItem,
     PokeDexMonOptionType,
-    pokedexOptions,
 } from "@pokemmo/data/pokedex";
-import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
+import {
+    FormSelect,
+    FormSelectField,
+    FormSelectFieldProps,
+    FormSelectProps,
+    SpecializedSelect,
+} from "@pokemmo/form/FormSelect";
 import React from "react";
 import { FormatOptionLabelMeta, OptionTypeBase } from "react-select";
 
 export type PokemonSelectOptionType = PokeDexMonOptionType;
 
-interface IProps
-    extends Omit<
-        FormSelectProps<PokemonSelectOptionType>,
-        "formatOptionsLabel" | "options" | "makeOptionFromValue"
-    > {
+type IProps = (
+    | SpecializedSelect<FormSelectProps<PokemonSelectOptionType>>
+    | SpecializedSelect<FormSelectFieldProps<PokemonSelectOptionType>>
+) & {
     onlyOwnedPokemon?: boolean;
-}
+    eggGroups?: string[];
+    excludeIdentifiers?: string[];
+    allowEvolvedPokemon?: boolean;
+};
 
 export function PokemonSelect(_props: IProps) {
-    const { onlyOwnedPokemon, ...props } = _props;
-    return (
-        <FormSelect
-            isClearable
-            {...props}
-            defaultOptions={
-                onlyOwnedPokemon
-                    ? loadOwnPokemonOptionsSync(null)
-                    : pokedexOptions.slice(0, 20)
+    const {
+        onlyOwnedPokemon,
+        eggGroups,
+        excludeIdentifiers,
+        allowEvolvedPokemon,
+        ...props
+    } = _props;
+
+    let loadOptions = loadPokedexOptions;
+    let loadInitialOptions = loadPokedexOptionsSync;
+
+    if (onlyOwnedPokemon) {
+        loadOptions = loadOwnPokemonOptions;
+        loadInitialOptions = loadOwnPokemonOptionsSync;
+    }
+
+    const filter = (option: PokeDexMonOptionType) => {
+        const { pokedexMon } = option;
+
+        if (
+            excludeIdentifiers &&
+            excludeIdentifiers.includes(pokedexMon.identifier)
+        ) {
+            return false;
+        }
+
+        if (!allowEvolvedPokemon && pokedexMon.evolvesFromSpeciesID != null) {
+            return false;
+        }
+
+        if (eggGroups) {
+            const egg1Match = eggGroups.includes(pokedexMon.eggGroup1);
+            const egg2Match = pokedexMon.eggGroup2
+                ? eggGroups.includes(pokedexMon.eggGroup2)
+                : false;
+
+            if (!(egg1Match || egg2Match)) {
+                return false;
             }
-            loadOptions={
-                onlyOwnedPokemon ? loadOwnPokemonOptions : loadPokedexOptions
+        }
+
+        return true;
+    };
+    loadOptions = filterLoadedDexOptions(filter, loadOptions);
+    loadInitialOptions = filterLoadedDexOptionsSync(filter, loadInitialOptions);
+
+    const finalProps = {
+        ...props,
+        isClearable: true,
+        defaultOptions: loadInitialOptions(null),
+        loadOptions: loadOptions,
+        formatOptionLabel: formatPokemonLabel,
+        makeOptionFromValue: (value: any) => {
+            if (!value) {
+                return null;
             }
-            formatOptionLabel={formatPokemonLabel}
-            makeOptionFromValue={value => {
-                if (!value) {
-                    return null;
-                }
-                const pokemon = getPokemon(value);
-                if (!pokemon) {
-                    return null;
-                } else {
-                    return mapDexMonToItem(pokemon);
-                }
-            }}
-        />
-    );
+            const pokemon = getPokemon(value);
+            if (!pokemon) {
+                return null;
+            } else {
+                return mapDexMonToItem(pokemon);
+            }
+        },
+    };
+    if ("fieldName" in _props) {
+        return <FormSelectField {...finalProps} fieldName={_props.fieldName} />;
+    } else {
+        return <FormSelect {...(finalProps as any)} />;
+    }
 }
 
 const formatPokemonLabel = (

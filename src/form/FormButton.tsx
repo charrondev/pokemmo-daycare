@@ -32,6 +32,7 @@ const buttonCommon: CssType = {
     minWidth: 80,
     cursor: "pointer",
     transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
 };
 
 export const colorPrimaryButton = colorPrimary.lighten(0.2);

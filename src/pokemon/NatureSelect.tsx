@@ -3,7 +3,11 @@
  * @license MIT
  */
 
-import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
+import {
+    FormSelectField,
+    FormSelectFieldProps,
+    SpecializedSelect,
+} from "@pokemmo/form/FormSelect";
 import { allNatures, getNature } from "@pokemmo/pokemon/natures";
 import { useAllPokemon } from "@pokemmo/pokemon/pokemonHooks";
 import { Nature } from "@pokemmo/pokemon/PokemonTypes";
@@ -52,18 +56,16 @@ function useOwnedNatureOptions() {
 }
 
 interface IProps
-    extends Omit<
-        FormSelectProps<NatureSelectOptionType>,
-        "formatOptionsLabel" | "options" | "makeOptionFromValue"
-    > {
+    extends SpecializedSelect<FormSelectFieldProps<NatureSelectOptionType>> {
     onlyOwned?: boolean;
+    fieldName: string;
 }
 
 export function NatureSelect(_props: IProps) {
     const { onlyOwned, ...props } = _props;
     const ownedNatures = useOwnedNatureOptions();
     return (
-        <FormSelect<NatureSelectOptionType>
+        <FormSelectField<NatureSelectOptionType>
             isClearable
             {...props}
             options={onlyOwned ? ownedNatures : allNatureOptions}

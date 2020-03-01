@@ -3,8 +3,8 @@
  * @license MIT
  */
 
-import React from "react";
 import { CssType } from "@pokemmo/styles/variables";
+import React from "react";
 
 export function FormRow(
     _props: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> & {
@@ -29,16 +29,18 @@ export function FormRow(
             css={{
                 display: "flex",
                 flexWrap: "wrap",
+                alignItems: "center",
                 marginBottom: itemXPadding * 2,
                 marginLeft: -itemXPadding,
                 width: `calc(100% + ${itemXPadding * 2}px)`,
                 "& > *": {
                     flex: 1,
+                    flexGrow: 0,
                     minWidth: 400,
-                    paddingLeft: itemXPadding,
-                    paddingRight: itemXPadding,
-                    paddingTop: itemYPadding,
-                    paddingBottom: itemYPadding,
+                    marginLeft: itemXPadding,
+                    marginRight: itemXPadding,
+                    marginTop: itemYPadding,
+                    marginBottom: itemYPadding,
                     ...(itemStyles as any),
                 },
                 "& > *:first-of-type": {

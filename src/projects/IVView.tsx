@@ -57,6 +57,7 @@ export function IVView(_props: IProps) {
 const StatName = styled.strong`
     color: white;
     font-weight: bold;
+    margin-right: 3px;
 `;
 
 const StatPoints = styled.span`
@@ -65,14 +66,14 @@ const StatPoints = styled.span`
 `;
 
 const Lozenge = styled.span`
-    display: inline-block;
+    display: inline-flex;
     height: 24;
     padding: 3px 6px;
     border-radius: 4px;
     font-size: ${fontSizeSmall}px;
 `;
 
-function StatView(props: { stat: Stat; points: number }) {
+export function StatView(props: { stat: Stat; points: number }) {
     const color = (() => {
         switch (props.stat) {
             case Stat.HP:

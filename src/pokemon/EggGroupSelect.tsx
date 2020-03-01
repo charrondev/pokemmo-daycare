@@ -8,7 +8,11 @@ import {
     stringToOption,
     useOwnEggGroups,
 } from "@pokemmo/data/pokedex";
-import { FormSelect, FormSelectProps } from "@pokemmo/form/FormSelect";
+import {
+    FormSelectField,
+    FormSelectFieldProps,
+    SpecializedSelect,
+} from "@pokemmo/form/FormSelect";
 import React from "react";
 
 export interface EggGroupOption {
@@ -17,18 +21,16 @@ export interface EggGroupOption {
 }
 
 interface IProps
-    extends Omit<
-        FormSelectProps<EggGroupOption>,
-        "formatOptionsLabel" | "options" | "makeOptionFromValue"
-    > {
+    extends SpecializedSelect<FormSelectFieldProps<EggGroupOption>> {
     onlyOwned?: boolean;
+    fieldName: string;
 }
 
 export function EggGroupSelect(_props: IProps) {
     const { onlyOwned, ...props } = _props;
     const ownEggGroups = useOwnEggGroups();
     return (
-        <FormSelect<EggGroupOption>
+        <FormSelectField<EggGroupOption>
             isClearable
             {...props}
             options={

@@ -14,6 +14,8 @@ export interface IProject {
     averagePricing: number;
     targetPokemonID: string;
     breederPokemonIDs: string[];
+    altBreederIdentifiers: string[];
+    allowEvolvedAltBreeders: boolean;
     dateCreated: string;
     dateUpdated: string;
 }
@@ -35,7 +37,7 @@ function ensureProject<T>(
     data: IProjectsState,
     action: ProjectPayload<T>,
 ): data is StateWithProject<typeof action["payload"]["projectID"]> {
-    return action.payload.projectID in data;
+    return action.payload.projectID in data.projectsByID;
 }
 
 function handleDates(data: IProjectsState, action: ProjectPayload<any>) {
@@ -59,12 +61,13 @@ export const projectsSlice = createSlice({
             state.projectsByID[project.projectID] = project;
         },
         updateProject: (state, action: ProjectPayload<Partial<IProject>>) => {
-            ensureProject(state, action);
-            handleDates(state, action);
-            state.projectsByID[action.payload.projectID] = {
-                ...state.projectsByID[action.payload.projectID],
-                ...action.payload,
-            };
+            if (ensureProject(state, action)) {
+                handleDates(state, action);
+                state.projectsByID[action.payload.projectID] = {
+                    ...state.projectsByID[action.payload.projectID],
+                    ...action.payload,
+                };
+            }
         },
         deleteProject: (
             state,
@@ -73,11 +76,36 @@ export const projectsSlice = createSlice({
             const { project } = action.payload;
             delete state.projectsByID[project.projectID];
         },
+        addAlternative: (
+            state,
+            action: ProjectPayload<{ alternativeIdentifier: string }>,
+        ) => {
+            if (ensureProject(state, action)) {
+                console.log("found project");
+                handleDates(state, action);
+                const { projectID, alternativeIdentifier } = action.payload;
+                const alternativeSet = new Set(
+                    state.projectsByID[projectID].altBreederIdentifiers,
+                );
+                alternativeSet.add(alternativeIdentifier);
+                state.projectsByID[
+                    projectID
+                ].altBreederIdentifiers = Array.from(alternativeSet);
+            }
+        },
+        clearAlternatives: (state, action: ProjectPayload<{}>) => {
+            if (ensureProject(state, action)) {
+                handleDates(state, action);
+                const { projectID } = action.payload;
+                state.projectsByID[projectID].altBreederIdentifiers = [];
+            }
+        },
         setPokemon: (state, action: ProjectPayload<{ pokemonID: string }>) => {
-            ensureProject(state, action);
-            handleDates(state, action);
-            const { projectID, pokemonID } = action.payload;
-            state.projectsByID[projectID].targetPokemonID = pokemonID;
+            if (ensureProject(state, action)) {
+                handleDates(state, action);
+                const { projectID, pokemonID } = action.payload;
+                state.projectsByID[projectID].targetPokemonID = pokemonID;
+            }
         },
     },
     extraReducers: builder =>

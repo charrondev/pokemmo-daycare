@@ -42,6 +42,8 @@ export function ProjectForm(props: IProps) {
                     dateUpdated: new Date().toISOString(),
                     ivPricing: pokemon.ivs,
                     averagePricing: 10_000,
+                    allowEvolvedAltBreeders: true,
+                    altBreederIdentifiers: [],
                 };
                 addProject({ project });
                 history.push(`/projects/${project.projectID}`);

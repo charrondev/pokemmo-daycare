@@ -108,15 +108,32 @@ export const pokedexOptions: OptionsType<PokeDexMonOptionType> = allPokemon.map(
     mapDexMonToItem,
 );
 
-export const loadPokedexOptions = memoize(
-    async (input: string): Promise<OptionsType<PokeDexMonOptionType>> => {
-        return pokedexOptions
-            .filter(poke =>
-                poke.pokedexMon.identifier.includes(input.toLowerCase()),
-            )
-            .slice(0, 20);
-    },
-);
+export const loadPokedexOptionsSync = (filter: string | null) =>
+    pokedexOptions.filter(poke =>
+        filter
+            ? poke.pokedexMon.identifier.includes(filter.toLowerCase())
+            : true,
+    );
+
+export const loadPokedexOptions = (filter: string | null) => {
+    return Promise.resolve(loadPokedexOptionsSync(filter));
+};
+
+export const filterLoadedDexOptions = (
+    filterMethod: (dexOption: PokeDexMonOptionType) => boolean,
+    optionLoader: typeof loadPokedexOptions = loadPokedexOptions,
+) => async (input: string | null) => {
+    const options = await optionLoader(input);
+    return options.filter(filterMethod).slice(0, 20);
+};
+
+export const filterLoadedDexOptionsSync = (
+    filterMethod: (dexOption: PokeDexMonOptionType) => boolean,
+    optionLoader: typeof loadPokedexOptionsSync = loadPokedexOptionsSync,
+) => (input: string | null) => {
+    const options = optionLoader(input);
+    return options.filter(filterMethod).slice(0, 20);
+};
 
 export const loadOwnPokemonOptionsSync = (filter: string | null) => {
     const ownPokemon = getStore().getState().pokemon.pokemonByID;
@@ -124,10 +141,6 @@ export const loadOwnPokemonOptionsSync = (filter: string | null) => {
 
     const alreadyFound: string[] = [];
     for (const pokemon of Object.values(ownPokemon)) {
-        if (results.length >= 20) {
-            break;
-        }
-
         if (alreadyFound.includes(pokemon.identifier)) {
             continue;
         }

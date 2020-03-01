@@ -3,7 +3,6 @@
  * @license MIT
  */
 
-import styled from "@emotion/styled";
 import { PageLayout } from "@pokemmo/layout/PageLayout";
 import { PokemonGridItem } from "@pokemmo/pokemon/PokemonGridItem";
 import {
@@ -23,15 +22,6 @@ interface IProps {}
 //     POKEMON_NAME = "pokemonName",
 //     DATE_CREATED = "dateCreated",
 // }
-
-const HeadingGroup = styled.div`
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 12px;
-`;
 
 export function ProjectPage(props: IProps) {
     // const projects = useStateSelector(state => state.projects);
