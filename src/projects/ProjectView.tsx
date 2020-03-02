@@ -136,6 +136,14 @@ function CalculateBar(props: { project: IProject }) {
                         ).calculateBreeders();
                         console.table(breeders);
                         const stubs: Record<string, IPokemonBreederStub[]> = {};
+                        breeders.forEach(breeder => {
+                            if (stubs[breeder.stubHash]) {
+                                stubs[breeder.stubHash].push(breeder);
+                            } else {
+                                stubs[breeder.stubHash] = [breeder];
+                            }
+                        });
+
                         updateProject({ projectID, breederStubs: stubs });
                         history.push(`/projects/${project.projectID}/guide`);
                     }}

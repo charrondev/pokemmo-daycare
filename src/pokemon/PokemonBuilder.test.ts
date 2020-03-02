@@ -54,18 +54,24 @@ describe("PokemonBuilder", () => {
             expect(breeders[0].ivs.hp.value).toBe(31);
             expect(breeders[0].gender).toBe(Gender.FEMALE);
             expect(breeders[0].generation).toBe(0);
+            expect(breeders[0].parents).not.toBeNull();
+            expect(breeders[0].childHash).toBeNull();
 
             // First breeder is for the target pokemon.
             expect(breeders[1].ivs.def.value).toBe(31);
             expect(breeders[1].ivs.hp.value).toBe(0);
             expect(breeders[1].gender).toBe(Gender.MALE);
             expect(breeders[1].generation).toBe(1);
+            expect(breeders[1].parents).toBeNull();
+            expect(breeders[1].childHash).not.toBeNull();
 
             // First breeder is for the target pokemon.
             expect(breeders[2].ivs.def.value).toBe(0);
             expect(breeders[2].ivs.hp.value).toBe(31);
             expect(breeders[2].gender).toBe(Gender.FEMALE);
             expect(breeders[2].generation).toBe(1);
+            expect(breeders[1].parents).toBeNull();
+            expect(breeders[2].childHash).not.toBeNull();
 
             breeders.forEach(breeder => {
                 // No natures.

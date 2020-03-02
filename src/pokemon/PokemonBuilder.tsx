@@ -330,29 +330,17 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             });
         }
 
-        const idsFromAncestors = (ancestors: IStubAncestors) => {
-            if (!ancestors.parents) {
-                return null;
-            }
-            return {
-                [Gender.MALE]: ancestors.parents.male.stubHash,
-                [Gender.FEMALE]: ancestors.parents.female.stubHash,
-            };
-        };
-
         // Recursively calculate parents and link them..
         const firstAncestors = this.internalCalculateBreeders(
             firstParent,
             options,
         );
-        firstParent.parents = idsFromAncestors(firstAncestors);
         firstParent.childHash = childStub.stubHash;
 
         const secondAncestors = this.internalCalculateBreeders(
             secondParent,
             options,
         );
-        secondParent.parents = idsFromAncestors(secondAncestors);
         secondParent.childHash = childStub.stubHash;
 
         // Generate return values.
@@ -360,6 +348,11 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             // As assignment need to satisfy enum constraint.
             [firstParentGender as Gender.MALE]: firstParent,
             [secondParentGender as Gender.FEMALE]: secondParent,
+        };
+
+        childStub.parents = {
+            [Gender.MALE]: parents.male.stubHash,
+            [Gender.FEMALE]: parents.female.stubHash,
         };
 
         const allParents = [
@@ -396,25 +389,10 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             ...stub,
             parents: null,
             childHash: null,
-            stubHash:
-                "stub-" + stub.generation + "-" + hashString(id).toString(),
+            stubHash: "stub-" + hashString(id).toString(),
             attachedPokemon: null,
         };
     }
-
-    /**
-     * Convert a pokemon into a breeder stub.
-     */
-    // public static pokemonToBreederStub(pokemon: IPokemon): IPokemonBreederStub {
-    //     return {
-    //         ivs: pokemon.ivs,
-    //         nature: pokemon.nature,
-    //         gender: pokemon.gender,
-    //         attachedPokemon: null,
-    //         nonUniqueID:
-
-    //     };
-    // }
 
     /**
      * Get the most expensive stat/gender combo.

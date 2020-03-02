@@ -8,7 +8,7 @@ import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormCheckBox } from "@pokemmo/form/FormCheckBox";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { FormLabel } from "@pokemmo/form/FormLabel";
-import { FormRow } from "@pokemmo/form/FormRow";
+import { FormGrid, FormRow } from "@pokemmo/form/FormRow";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { usePokemon } from "@pokemmo/pokemon/pokemonHooks";
 import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
@@ -107,13 +107,15 @@ export function ProjectAlternativeBreederForm(props: { project: IProject }) {
                 </FormButton>
             </FormRow>
             {project.altBreederIdentifiers.length > 0 && (
-                <FormRow
-                    itemStyles={{
-                        minWidth: 250,
-                        maxWidth: 350,
-                        flex: 1,
-                        flexGrow: 1,
-                    }}
+                <FormGrid
+                    itemStyles={
+                        {
+                            // minWidth: 250,
+                            // maxWidth: 350,
+                            // flex: 1,
+                            // flexGrow: 1,
+                        }
+                    }
                 >
                     {project.altBreederIdentifiers.map(
                         (alternativeIdentifier, i) => {
@@ -136,7 +138,7 @@ export function ProjectAlternativeBreederForm(props: { project: IProject }) {
                             );
                         },
                     )}
-                </FormRow>
+                </FormGrid>
             )}
         </>
     );
