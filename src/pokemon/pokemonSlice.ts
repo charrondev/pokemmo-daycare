@@ -39,35 +39,6 @@ export const pokemonSlice = createSlice({
                 delete state.pokemonByID[pokemonID];
             }
         },
-        clearPokemonAndChildren: (
-            state,
-            action: PayloadAction<{ pokemonID: string; projectID: string }>,
-        ) => {
-            const { projectID, pokemonID } = action.payload;
-            function clearPokemonAndChildren(pokemonID: string) {
-                const pokemon = state.pokemonByID[pokemonID];
-                if (!pokemon) {
-                    console.warn(
-                        `Attempted to delete pokemon ${pokemonID}, but it did not exist`,
-                    );
-                    return;
-                }
-
-                if (
-                    pokemon.projectIDs.includes(projectID) &&
-                    [BreedStatus.NONE].includes(pokemon.breedStatus)
-                ) {
-                    const { parentIDs } = pokemon;
-                    delete state.pokemonByID[pokemon.id];
-
-                    parentIDs &&
-                        Object.values(parentIDs).forEach(
-                            clearPokemonAndChildren,
-                        );
-                }
-            }
-            clearPokemonAndChildren(pokemonID);
-        },
         setBreedStatus: (
             state,
             action: PayloadAction<{
@@ -76,30 +47,7 @@ export const pokemonSlice = createSlice({
             }>,
         ) => {
             const { pokemon, status } = action.payload;
-            function setStatus(pokemonID: string, status: BreedStatus) {
-                const pokemon = state.pokemonByID[pokemonID];
-                if (!pokemon) {
-                    console.warn(
-                        `Attempted to change the status of pokemonID ${pokemonID}. Pokemon could not be found.`,
-                    );
-                }
-
-                switch (status) {
-                    case BreedStatus.USED:
-                        if (pokemon.parentIDs) {
-                            Object.values(pokemon.parentIDs).forEach(id =>
-                                setStatus(id, BreedStatus.USED),
-                            );
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-                pokemon.breedStatus = status;
-            }
-
-            setStatus(pokemon.id, status);
+            pokemon.breedStatus = status;
         },
     },
 });

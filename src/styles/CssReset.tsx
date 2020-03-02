@@ -58,6 +58,18 @@ export function CssReset() {
                     box-shadow: 0 0 0 3px ${colorPrimary.lighten(0.7).string()};
                 }
 
+                a {
+                    color: ${colorPrimary.toString()};
+                    text-decoration: none;
+                }
+
+                a:hover,
+                a.focus-visible,
+                a:active {
+                    text-decoration: underline;
+                    box-shadow: none;
+                }
+
                 h1,
                 h2,
                 h3,

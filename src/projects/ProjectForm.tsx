@@ -38,6 +38,7 @@ export function ProjectForm(props: IProps) {
                     projectID: uuidv4(),
                     targetPokemonID: pokemon.id,
                     breederPokemonIDs: [],
+                    breederStubs: {},
                     dateCreated: new Date().toISOString(),
                     dateUpdated: new Date().toISOString(),
                     ivPricing: pokemon.ivs,

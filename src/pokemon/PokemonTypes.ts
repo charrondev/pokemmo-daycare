@@ -18,13 +18,12 @@ export interface Nature {
     negativeStat: Stat | null;
 }
 
-export type IVRequirements = Record<
-    Stat,
-    {
-        value: number;
-        prices: Partial<Record<Gender, number>>;
-    }
->;
+export type SingleStatInfo = {
+    value: number;
+    prices: Partial<Record<Gender, number>>;
+};
+
+export type IVRequirements = Record<Stat, SingleStatInfo>;
 export type ActiveIVs = Partial<Record<Stat, boolean>>;
 
 export enum Gender {
@@ -57,12 +56,25 @@ export interface IPokemon {
     // IDs
     _uuid: string;
     id: string;
-    childID: string | null;
-    parentIDs: ParentIDs;
 
     // status
     projectIDs: string[];
     ownershipStatus: OwnershipStatus;
     boughtPrice: number;
     breedStatus: BreedStatus;
+}
+
+type BreederStubHash = string;
+
+export interface IPokemonBreederStub {
+    generation: number;
+    attachedPokemon: IPokemon | null;
+    stubHash: BreederStubHash;
+    parents: Record<Gender, BreederStubHash> | null;
+    childHash: BreederStubHash | null;
+    forcedIdentifier?: string | null;
+    allowedIdentifiers: string[];
+    ivs: IVRequirements;
+    gender: Gender;
+    nature: string | null;
 }

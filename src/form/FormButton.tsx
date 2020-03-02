@@ -97,7 +97,10 @@ const buttonIcon: CssType = {
     color: colorPrimary.string(),
     minWidth: 24,
     minHeight: 24,
-    padding: "6px 9px",
+    padding: "6px 6px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
 
     [`&:not(:disabled):focus, &:not(:disabled):hover, &:not(:disabled):active`]: {
         background: colorPrimary.alpha(0.15).string(),

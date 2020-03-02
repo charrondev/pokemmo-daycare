@@ -13,20 +13,29 @@ import {
     BreedStatus,
     Gender,
     IPokemon,
+    IPokemonBreederStub,
     IVRequirements,
     OwnershipStatus,
-    ParentIDs,
     Stat,
 } from "@pokemmo/pokemon/PokemonTypes";
-import { uuidv4 } from "@pokemmo/utils";
-import { sample } from "lodash-es";
+import { hashString, uuidv4 } from "@pokemmo/utils";
 
-export interface IParentBuilderOptions {
-    allowedAlts: string[];
+export interface IParentOptions {
+    allowedIdentifiers: string[];
 }
 
-export const DEFAULT_PARENT_BUILDER_OPTIONS: IParentBuilderOptions = {
-    allowedAlts: [],
+export const DEFAULT_PARENT_BUILDER_OPTIONS: IParentOptions = {
+    allowedIdentifiers: [],
+};
+
+interface IStubAncestors {
+    parents: Record<Gender, IPokemonBreederStub> | null;
+    allParents: IPokemonBreederStub[];
+}
+
+const EMPTY_PARENT_GROUP: IStubAncestors = {
+    parents: null,
+    allParents: [],
 };
 
 /**
@@ -51,8 +60,6 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             this._ivs = pok.ivs;
             this._nature = pok.nature;
             this._gender = pok.gender;
-            this._parentIDs = pok.parentIDs;
-            this._childID = pok.childID;
             this._projectIDs = pok.projectIDs;
             this._breedStatus = pok.breedStatus;
             this._ownershipStatus = pok.ownershipStatus;
@@ -64,10 +71,9 @@ export class PokemonBuilder extends PokemonStoreAccessor {
         return new PokemonBuilder(identifier);
     }
 
-    public static from(identifier: string): PokemonBuilder {
-        const pokemon = new PokemonBuilder(identifier);
-
-        return pokemon;
+    public static from(pokemon: IPokemon): PokemonBuilder {
+        const builder = new PokemonBuilder(pokemon);
+        return builder;
     }
 
     public result(): IPokemon {
@@ -79,8 +85,6 @@ export class PokemonBuilder extends PokemonStoreAccessor {
 
             _uuid: this._uuid,
             id: this._id,
-            parentIDs: this._parentIDs,
-            childID: this._childID,
 
             projectIDs: this._projectIDs,
             ownershipStatus: this._ownershipStatus,
@@ -117,25 +121,6 @@ export class PokemonBuilder extends PokemonStoreAccessor {
         return this;
     }
 
-    private _childID: string | null = null;
-    public childID(id: string | null) {
-        this._childID = id;
-        return this;
-    }
-
-    private _parentIDs: ParentIDs = null;
-    public parentIDs(parentIDs: ParentIDs) {
-        this._parentIDs = parentIDs;
-        return this;
-    }
-
-    public calculateParents(
-        options: IParentBuilderOptions = DEFAULT_PARENT_BUILDER_OPTIONS,
-    ) {
-        this._parentIDs = this.createParents(this.result(), options);
-        return this;
-    }
-
     // Statuses
 
     private _projectIDs: string[] = [];
@@ -168,20 +153,20 @@ export class PokemonBuilder extends PokemonStoreAccessor {
     private calculateID() {
         const id = `${this._identifier}-${
             this._gender
-        }-${this.ivRequirementsAsString()}-${
+        }-${PokemonBuilder.ivRequirementsAsString(this._ivs)}-${
             this._nature ? this._nature + "-" : ""
         }${this._uuid}`;
         this._id = id;
         return id;
     }
 
-    private ivRequirementsAsString(): string {
+    public static ivRequirementsAsString(ivs: IVRequirements): string {
         const statNum = (stat: Stat) => {
-            const statInfo = this._ivs?.[stat];
+            const statInfo = ivs?.[stat];
             if (!statInfo) {
-                return 0;
+                return (0).toString().padStart(2, "0");
             } else {
-                return statInfo.value ?? 31;
+                return (statInfo.value ?? 31).toString().padStart(2, "0");
             }
         };
         return `${statNum(Stat.HP)}_${statNum(Stat.ATTACK)}_${statNum(
@@ -196,91 +181,121 @@ export class PokemonBuilder extends PokemonStoreAccessor {
     public static AVERAGE_UNDEFINED_PRICE = 10000;
     public static EVERSTONE_COST = 7000;
 
+    public calculateBreeders(
+        options: IParentOptions = DEFAULT_PARENT_BUILDER_OPTIONS,
+    ): IPokemonBreederStub[] {
+        const { ivs, nature, gender, identifier } = this.result();
+        const stub = this.makeBreedingStub({
+            ivs,
+            nature,
+            gender,
+            allowedIdentifiers: [identifier],
+            forcedIdentifier: identifier,
+            generation: 0,
+        });
+        return [
+            stub,
+            ...this.internalCalculateBreeders(stub, options).allParents,
+        ];
+    }
+
     /**
      * Calculate the parents for a pokemon.
      * @param pokemon The pokemon to calculate from.
      * @param options Breeding options.
      */
-    private createParents(
-        pokemon: IPokemon,
-        options: IParentBuilderOptions = DEFAULT_PARENT_BUILDER_OPTIONS,
-    ): ParentIDs {
+    private internalCalculateBreeders(
+        childStub: IPokemonBreederStub,
+        options: IParentOptions = DEFAULT_PARENT_BUILDER_OPTIONS,
+    ): IStubAncestors {
+        // const stub = "stubHash" in pokemonOrStub ? pokemonOrStub : makeBreedingStub()
+
         // This is the stat/gender that's most expensive.
         // It should be elimated first.
-        const mostExpensive = this.getMostExpensiveStatGender(pokemon);
-        const EMPTY_RESULT: ParentIDs = null;
+        const mostExpensive = this.getMostExpensiveStatGender(childStub.ivs);
 
         if (!mostExpensive) {
-            return EMPTY_RESULT;
+            return EMPTY_PARENT_GROUP;
         }
-        const sampledName = sample([
-            pokemon.identifier,
-            ...options.allowedAlts,
-        ])!;
-        let statCount = Object.keys(pokemon.ivs).length;
+        let statCount = Object.values(childStub.ivs).filter(
+            iv => iv.value !== 0,
+        ).length;
         const firstParentStat = mostExpensive.stat;
-        const firstParentGender = swapGender(mostExpensive.gender);
-        const firstParentIdentifier =
-            firstParentGender === Gender.MALE
-                ? sampledName
-                : pokemon.identifier;
-        const secondParentGender = mostExpensive.gender;
-        const secondParentIdentifier =
-            secondParentGender === Gender.MALE
-                ? sampledName
-                : pokemon.identifier;
 
-        if (pokemon.nature) {
+        // Select genders and names
+        const { forcedIdentifier } = childStub;
+        const firstParentGender = swapGender(mostExpensive.gender);
+
+        // The female identifier must be preserved down the purely female line.
+        const forcedIdentifierForGender = (gender: Gender): string | null => {
+            if (gender === Gender.FEMALE && forcedIdentifier) {
+                return forcedIdentifier;
+            } else {
+                return null;
+            }
+        };
+        const allowedIdentifiersForGender = (gender: Gender): string[] => {
+            if (gender === Gender.FEMALE && forcedIdentifier) {
+                return [forcedIdentifier];
+            } else {
+                return Array.from(
+                    new Set([
+                        ...childStub.allowedIdentifiers,
+                        ...options.allowedIdentifiers,
+                    ]),
+                );
+            }
+        };
+        const secondParentGender = mostExpensive.gender;
+
+        let firstParent: IPokemonBreederStub | null = null;
+        let secondParent: IPokemonBreederStub | null = null;
+
+        if (childStub.nature) {
             if (statCount === 0) {
-                return EMPTY_RESULT;
+                return EMPTY_PARENT_GROUP;
             }
 
             // When targeting nature, we have to have a another pokemon with no nature, and all IVs.
             // In case of "perfect" pokemon, that means a 6IV non-nature and 5IV natured.
 
-            const firstParent = PokemonBuilder.create(firstParentIdentifier)
-                .ivs(pokemon.ivs)
-                .gender(firstParentGender)
-                .childID(pokemon.id)
-                .projectIDs(pokemon.projectIDs)
-                .calculateParents()
-                .result();
+            firstParent = this.makeBreedingStub({
+                allowedIdentifiers: allowedIdentifiersForGender(
+                    firstParentGender,
+                ),
+                forcedIdentifier: forcedIdentifierForGender(firstParentGender),
+                ivs: childStub.ivs,
+                gender: firstParentGender,
+                nature: null, // Gender is forced onto the second parnet.
+                generation: childStub.generation + 1,
+            });
 
-            const secondParent = PokemonBuilder.create(secondParentIdentifier)
-                .ivs(subtractIVRequirement(pokemon.ivs, firstParentStat))
-                .gender(secondParentGender)
-                .nature(pokemon.nature)
-                .childID(pokemon.id)
-                .projectIDs(pokemon.projectIDs)
-                .calculateParents()
-                .result();
-
-            // Stash the pokemon in the store.
-            this.storeActions.addPokemon([firstParent, secondParent]);
-
-            const parentIDs = {
-                // As assignment need to satisfy enum constraint.
-                [firstParentGender as Gender.MALE]: firstParent.id,
-                [secondParentGender as Gender.FEMALE]: secondParent.id,
-            };
-
-            return parentIDs;
+            secondParent = this.makeBreedingStub({
+                allowedIdentifiers: allowedIdentifiersForGender(
+                    secondParentGender,
+                ),
+                forcedIdentifier: forcedIdentifierForGender(secondParentGender),
+                ivs: subtractIVRequirement(childStub.ivs, firstParentStat),
+                gender: secondParentGender,
+                nature: childStub.nature,
+                generation: childStub.generation + 1,
+            });
         } else {
             if (statCount <= 1) {
                 // Only 1 stat needed. Moving on.
-                return EMPTY_RESULT;
+                return EMPTY_PARENT_GROUP;
             }
 
             // We have no nature specified. As a result, both pokemon targetted will have 1 less pokemon than before.
             // When targeting nature, we have to have a another pokemon with no nature, and all IVs.
             // In case of "perfect" pokemon, that means a 6IV non-nature and 5IV natured.
 
-            const secondParentRequirements = subtractIVRequirement(
-                pokemon.ivs,
+            const secondParentIVs = subtractIVRequirement(
+                childStub.ivs,
                 firstParentStat,
             );
             const secondParentStat = this.mostExpensiveStat(
-                secondParentRequirements,
+                secondParentIVs,
                 secondParentGender,
             );
 
@@ -288,56 +303,133 @@ export class PokemonBuilder extends PokemonStoreAccessor {
                 throw new Error("Shouldn't happen");
             }
             const firstParentIVs = subtractIVRequirement(
-                pokemon.ivs,
+                childStub.ivs,
                 secondParentStat,
             );
 
-            const firstParent = PokemonBuilder.create(firstParentIdentifier)
-                .ivs(firstParentIVs)
-                .gender(firstParentGender)
-                .childID(pokemon.id)
-                .projectIDs(pokemon.projectIDs)
-                .calculateParents()
-                .result();
+            firstParent = this.makeBreedingStub({
+                allowedIdentifiers: allowedIdentifiersForGender(
+                    firstParentGender,
+                ),
+                forcedIdentifier: forcedIdentifierForGender(firstParentGender),
+                ivs: firstParentIVs,
+                gender: firstParentGender,
+                nature: null, // No natures here.
+                generation: childStub.generation + 1,
+            });
 
-            const secondParent = PokemonBuilder.create(secondParentIdentifier)
-                .ivs(secondParentRequirements)
-                .gender(secondParentGender)
-                .childID(pokemon.id)
-                .projectIDs(pokemon.projectIDs)
-                .calculateParents()
-                .result();
-
-            const parentIDs = {
-                // As assignment need to satisfy enum constraint.
-                [firstParentGender as Gender.MALE]: firstParent.id,
-                [secondParentGender as Gender.FEMALE]: secondParent.id,
-            };
-
-            return parentIDs;
+            secondParent = this.makeBreedingStub({
+                allowedIdentifiers: allowedIdentifiersForGender(
+                    secondParentGender,
+                ),
+                forcedIdentifier: forcedIdentifierForGender(secondParentGender),
+                ivs: secondParentIVs,
+                gender: secondParentGender,
+                nature: null, // No natures here.
+                generation: childStub.generation + 1,
+            });
         }
+
+        const idsFromAncestors = (ancestors: IStubAncestors) => {
+            if (!ancestors.parents) {
+                return null;
+            }
+            return {
+                [Gender.MALE]: ancestors.parents.male.stubHash,
+                [Gender.FEMALE]: ancestors.parents.female.stubHash,
+            };
+        };
+
+        // Recursively calculate parents and link them..
+        const firstAncestors = this.internalCalculateBreeders(
+            firstParent,
+            options,
+        );
+        firstParent.parents = idsFromAncestors(firstAncestors);
+        firstParent.childHash = childStub.stubHash;
+
+        const secondAncestors = this.internalCalculateBreeders(
+            secondParent,
+            options,
+        );
+        secondParent.parents = idsFromAncestors(secondAncestors);
+        secondParent.childHash = childStub.stubHash;
+
+        // Generate return values.
+        const parents = {
+            // As assignment need to satisfy enum constraint.
+            [firstParentGender as Gender.MALE]: firstParent,
+            [secondParentGender as Gender.FEMALE]: secondParent,
+        };
+
+        const allParents = [
+            firstParent,
+            ...firstAncestors.allParents,
+            secondParent,
+            ...secondAncestors.allParents,
+        ];
+
+        return { parents, allParents };
     }
+
+    private makeBreedingStub(
+        stub: Pick<
+            IPokemonBreederStub,
+            | "allowedIdentifiers"
+            | "gender"
+            | "ivs"
+            | "nature"
+            | "generation"
+            | "forcedIdentifier"
+        >,
+    ): IPokemonBreederStub {
+        const id =
+            PokemonBuilder.ivRequirementsAsString(stub.ivs) +
+            "-" +
+            stub.gender +
+            "-" +
+            stub.nature +
+            "-" +
+            stub.allowedIdentifiers.sort().join(",");
+
+        return {
+            ...stub,
+            parents: null,
+            childHash: null,
+            stubHash:
+                "stub-" + stub.generation + "-" + hashString(id).toString(),
+            attachedPokemon: null,
+        };
+    }
+
+    /**
+     * Convert a pokemon into a breeder stub.
+     */
+    // public static pokemonToBreederStub(pokemon: IPokemon): IPokemonBreederStub {
+    //     return {
+    //         ivs: pokemon.ivs,
+    //         nature: pokemon.nature,
+    //         gender: pokemon.gender,
+    //         attachedPokemon: null,
+    //         nonUniqueID:
+
+    //     };
+    // }
 
     /**
      * Get the most expensive stat/gender combo.
      */
-    private getMostExpensiveStatGender(pokemon: IPokemon) {
-        const mostExpMaleStat = this.mostExpensiveStat(
-            pokemon.ivs,
-            Gender.MALE,
-        );
-        const mostExpFemaleStat = this.mostExpensiveStat(
-            pokemon.ivs,
-            Gender.FEMALE,
-        );
+    private getMostExpensiveStatGender(ivs: IVRequirements) {
+        const mostExpMaleStat = this.mostExpensiveStat(ivs, Gender.MALE);
+        const mostExpFemaleStat = this.mostExpensiveStat(ivs, Gender.FEMALE);
 
         if (!mostExpMaleStat || !mostExpFemaleStat) {
             return null;
         }
 
         if (
-            this.getPriceForStat(pokemon, mostExpMaleStat, Gender.MALE) >
-            this.getPriceForStat(pokemon, mostExpFemaleStat, Gender.FEMALE)
+            this.getPriceForStat(ivs, mostExpMaleStat, Gender.MALE) >
+            this.getPriceForStat(ivs, mostExpFemaleStat, Gender.FEMALE)
         ) {
             return {
                 stat: mostExpMaleStat,
@@ -355,13 +447,12 @@ export class PokemonBuilder extends PokemonStoreAccessor {
      * Look into a pokemons info and find the price for a stat/gender combo.
      */
     private getPriceForStat(
-        pokemon: IPokemon,
+        ivs: IVRequirements,
         stat: Stat,
         gender: Gender,
     ): number {
         return (
-            pokemon.ivs[stat].prices[gender] ??
-            PokemonBuilder.AVERAGE_UNDEFINED_PRICE
+            ivs[stat].prices[gender] ?? PokemonBuilder.AVERAGE_UNDEFINED_PRICE
         );
     }
 
@@ -377,6 +468,9 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             PokemonBuilder.AVERAGE_UNDEFINED_PRICE;
 
         for (const [stat, info] of Object.entries(ivs)) {
+            if (info.value === 0) {
+                continue;
+            }
             const price =
                 info?.prices?.[gender] ||
                 PokemonBuilder.AVERAGE_UNDEFINED_PRICE;

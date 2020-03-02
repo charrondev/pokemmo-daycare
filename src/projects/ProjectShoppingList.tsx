@@ -5,10 +5,15 @@
 
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
+import { IPokemonBreederStub } from "@pokemmo/pokemon/PokemonTypes";
+import { useProject } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import React from "react";
 
 export function ProjectShoppingList(props: { project: IProject }) {
+    // const { project } = props;
+    // const { projectID, breederStubs, breederPokemonIDs } = project;
+
     return (
         <>
             <FormHeading
@@ -37,4 +42,27 @@ export function ProjectShoppingList(props: { project: IProject }) {
             />
         </>
     );
+}
+
+function useBreederStubsByGrouping(
+    projectID: string,
+): {
+    owned: Record<string, IPokemonBreederStub>;
+    required: Record<string, IPokemonBreederStub>;
+} {
+    const project = useProject(projectID);
+    const result = {
+        owned: {},
+        required: {},
+    };
+
+    if (!project) {
+        return result;
+    }
+
+    // for (const breederStub of project.breederStubs) {
+    //     const id = PokemonBuilder.ivRequirementsAsString(breederStub.ivs) + "-" + breederStub.gender + "-" + breederStub.nature;
+    // }
+
+    return result;
 }

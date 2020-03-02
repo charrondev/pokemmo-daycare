@@ -3,9 +3,14 @@
  * @license GPL-3.0-only
  */
 
-import { Gender, IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
+import {
+    Gender,
+    IVRequirements,
+    SingleStatInfo,
+    Stat,
+} from "@pokemmo/pokemon/PokemonTypes";
 
-export const EMPTY_IV = Object.freeze({
+export const EMPTY_IV: SingleStatInfo = Object.freeze({
     value: 0,
     prices: {},
 });
@@ -31,7 +36,7 @@ export function subtractIVRequirement(
     requirements: IVRequirements,
     statToRemove: Stat,
 ): IVRequirements {
-    const newRequirements: IVRequirements = EMPTY_IVS;
+    const newRequirements: IVRequirements = { ...EMPTY_IVS };
     for (const [stat, info] of Object.entries(requirements)) {
         if (stat !== statToRemove) {
             newRequirements[stat as Stat] = info;
@@ -55,5 +60,36 @@ export function nameForStat(stat: Stat): string {
             return "Sp. Def";
         case Stat.SPEED:
             return "Speed";
+    }
+}
+
+export class IVBuilder {
+    private ivs: IVRequirements = {
+        ...EMPTY_IVS,
+    };
+
+    public static maxedStats(stats: Stat[]) {
+        const builder = IVBuilder.create();
+
+        stats.forEach(stat => {
+            builder.add(stat, { value: 31 });
+        });
+        return builder.result();
+    }
+
+    public static create() {
+        return new IVBuilder();
+    }
+
+    public add(stat: Stat, info: Partial<SingleStatInfo>) {
+        this.ivs[stat] = {
+            ...EMPTY_IV,
+            ...info,
+        };
+        return this;
+    }
+
+    public result() {
+        return this.ivs;
     }
 }

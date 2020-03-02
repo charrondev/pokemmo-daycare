@@ -170,7 +170,11 @@ function AltBreederCard(props: {
             >
                 Percentage Male: {dexMon.percentageMale}%
             </LabelAndValue>
-            <FormButton buttonType={ButtonType.ICON} onClick={onDelete}>
+            <FormButton
+                buttonType={ButtonType.ICON}
+                onClick={onDelete}
+                title="Remove Pokemon"
+            >
                 <IconClear
                     css={{
                         height: 14,

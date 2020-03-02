@@ -7,9 +7,17 @@ import { ActionCreatorsMapObject, bindActionCreators } from "@reduxjs/toolkit";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { debounce, uniqueId } from "lodash-es";
 import queryString from "query-string";
-import { useCallback, useEffect, useMemo } from "react";
+import {
+    RefObject,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useState,
+} from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import ResizeObserver from "resize-observer-polyfill";
 
 export function relativeTime(date: string | Date) {
     return formatDistanceToNow(new Date(date));
@@ -158,4 +166,91 @@ export function useQueryParamsSync<T extends Object>(
     useEffect(() => {
         tryUpdateQuery(currentValue);
     });
+}
+
+// DOMRectReadOnly.fromRect()
+export const EMPTY_RECT: DOMRect = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    toJSON: () => "",
+};
+
+/**
+ * Utility hook for measuring a dom element.
+ * Will return back measurements as a bounding rectangle for the element contained in a ref.
+ */
+export function useMeasure(
+    ref: RefObject<HTMLElement | null>,
+    adjustForScrollOffset: boolean = false,
+) {
+    const [bounds, setContentRect] = useState<DOMRect>(EMPTY_RECT);
+
+    useLayoutEffect(() => {
+        let animationFrameId: number | null = null;
+
+        const measure = () => {
+            animationFrameId = window.requestAnimationFrame(() => {
+                if (!ref.current) {
+                    return;
+                }
+                let rect = ref.current.getBoundingClientRect();
+
+                if (adjustForScrollOffset) {
+                    rect = {
+                        ...rect,
+                        y: rect.y + window.scrollY,
+                        top: rect.top + window.scrollY,
+                        bottom: rect.bottom + window.scrollY,
+                        width: rect.width,
+                        height: rect.height,
+                        right: rect.right,
+                        left: rect.left,
+                    };
+                }
+
+                setContentRect(rect);
+            });
+        };
+
+        const resizeListener = debounce(() => {
+            measure();
+        }, 100);
+        window.addEventListener("resize", resizeListener);
+
+        const ro = new ResizeObserver(measure);
+        if (ref.current) {
+            ro.observe(ref.current);
+        }
+
+        return () => {
+            window.cancelAnimationFrame(animationFrameId!);
+            ro.disconnect();
+            resizeListener.cancel();
+            window.removeEventListener("resize", resizeListener);
+        };
+    }, [adjustForScrollOffset, ref]);
+
+    return bounds;
+}
+
+/**
+ * A simple, fast method of hashing a string. Similar to Java's hash function.
+ * https://stackoverflow.com/a/7616484/1486603
+ *
+ * @param str - The string to hash.
+ *
+ * @returns The hash code returned.
+ */
+export function hashString(str: string): number {
+    function hashReduce(prevHash: number, currVal: string) {
+        // tslint:disable-next-line:no-bitwise
+        return (prevHash << 5) - prevHash + currVal.charCodeAt(0);
+    }
+    return str.split("").reduce(hashReduce, 0);
 }

@@ -11,7 +11,6 @@ import { Gender, IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
 import { StatView } from "@pokemmo/projects/IVView";
 import { useProjectActions } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
-import { makeSingleBorder } from "@pokemmo/styles/variables";
 import React from "react";
 
 export function ProjectPricingRequirementsForm(props: { project: IProject }) {
@@ -39,6 +38,8 @@ export function ProjectPricingRequirementsForm(props: { project: IProject }) {
                     label="Average Price (across all stats)"
                 >
                     <FormInput
+                        type="number"
+                        beforeNode="¥"
                         value={averagePrice}
                         onChange={onAveragePriceChange}
                     />
@@ -47,28 +48,27 @@ export function ProjectPricingRequirementsForm(props: { project: IProject }) {
             <FormRow itemStyles={{ flexGrow: 1 }}>
                 <table
                     css={{
-                        "& th": {
-                            borderBottom: makeSingleBorder(1),
-                        },
                         width: "100%",
                         "& td, & th": {
                             textAlign: "left",
                             padding: "6px 12px",
                         },
-                        "& td:first-of-type, & th:first-of-type": {
+                        "& td:first-child, & th:first-child": {
                             fontWeight: "bold",
                             paddingLeft: 0,
                         },
-                        "& td:last-of-type, & th:last-of-type": {
+                        "& td:last-child, & th:last-child": {
                             fontWeight: "bold",
                             paddingRight: 0,
                         },
                     }}
                 >
                     <thead>
-                        <th>Stat</th>
-                        <th>Male Price (Avg.)</th>
-                        <th>Female Price (Avg.)</th>
+                        <tr>
+                            <th>Stat</th>
+                            <th>Male Price (Avg.)</th>
+                            <th>Female Price (Avg.)</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {Object.entries(ivPricing).map(([stat, data]) => {
@@ -78,12 +78,12 @@ export function ProjectPricingRequirementsForm(props: { project: IProject }) {
 
                             return (
                                 <tr key={stat}>
-                                    <td>
+                                    <th>
                                         <StatView
                                             stat={stat as Stat}
                                             points={data.value}
                                         />
-                                    </td>
+                                    </th>
                                     <td>
                                         <FormInput
                                             type="number"

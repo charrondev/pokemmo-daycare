@@ -5,15 +5,15 @@
 
 import { PageLayout } from "@pokemmo/layout/PageLayout";
 import { PokemonGridItem } from "@pokemmo/pokemon/PokemonGridItem";
+import { BreedingView } from "@pokemmo/projects/BreedingView";
 import {
     useAllProjects,
-    useProject,
     useProjectPokemon,
 } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { ProjectView } from "@pokemmo/projects/ProjectView";
 import React from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 
 interface IProps {}
 
@@ -24,15 +24,32 @@ interface IProps {}
 // }
 
 export function ProjectPage(props: IProps) {
-    // const projects = useStateSelector(state => state.projects);
-    const { projectID } = useParams<{ projectID: string }>();
-    let content: React.ReactNode = "No Project Selected";
-    const project = useProject(projectID);
-    if (project) {
-        content = <ProjectView project={project} />;
-    }
-
-    return <PageLayout content={content} subNav={<ProjectListNav />} />;
+    return (
+        <PageLayout
+            content={
+                <Switch>
+                    <Route
+                        exact
+                        path={"/projects/:projectID"}
+                        component={ProjectView}
+                    />
+                    <Route
+                        exact
+                        path={"/projects/:projectID/guide"}
+                        component={BreedingView}
+                    />
+                    <Route
+                        exact
+                        path="/projects"
+                        component={() => {
+                            return <div>Project not selected</div>;
+                        }}
+                    />
+                </Switch>
+            }
+            subNav={<ProjectListNav />}
+        />
+    );
 }
 
 function ProjectListNav() {

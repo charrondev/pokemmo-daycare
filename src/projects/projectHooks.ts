@@ -30,7 +30,6 @@ export function useProject(projectID?: string | null): IProject | null {
 export function useProjectPokemon(projectID: string): IPokemon | null {
     const project = useProject(projectID);
     const pokemon = usePokemon(project?.targetPokemonID ?? null);
-    console.log(project);
     useDebugValue({ project, pokemon });
     return pokemon;
 }

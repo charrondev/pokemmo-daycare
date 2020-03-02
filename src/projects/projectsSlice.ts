@@ -4,7 +4,10 @@
  */
 
 import { pokemonSlice } from "@pokemmo/pokemon/pokemonSlice";
-import { IVRequirements } from "@pokemmo/pokemon/PokemonTypes";
+import {
+    IPokemonBreederStub,
+    IVRequirements,
+} from "@pokemmo/pokemon/PokemonTypes";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IProject {
@@ -14,6 +17,7 @@ export interface IProject {
     averagePricing: number;
     targetPokemonID: string;
     breederPokemonIDs: string[];
+    breederStubs: Record<string, IPokemonBreederStub[]>;
     altBreederIdentifiers: string[];
     allowEvolvedAltBreeders: boolean;
     dateCreated: string;

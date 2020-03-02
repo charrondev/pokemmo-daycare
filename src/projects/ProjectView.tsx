@@ -3,37 +3,59 @@
  * @license GPL-3.0-only
  */
 
+import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { FormInput } from "@pokemmo/form/FormInput";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { FormRow } from "@pokemmo/form/FormRow";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
+import { Breadcrumbs } from "@pokemmo/layout/Breadcrumbs";
+import { pageContainerPadding } from "@pokemmo/layout/PageContainer";
+import { usePageContentSize } from "@pokemmo/layout/PageContent";
+import { PokemonBuilder } from "@pokemmo/pokemon/PokemonBuilder";
 import { usePokemon } from "@pokemmo/pokemon/pokemonHooks";
 import { PokemonInfoRow } from "@pokemmo/pokemon/PokemonInfoRow";
+import { IPokemonBreederStub } from "@pokemmo/pokemon/PokemonTypes";
 import { ProjectAlternativeBreederForm } from "@pokemmo/projects/ProjectAlternativeBreederForm";
-import { useProjectActions } from "@pokemmo/projects/projectHooks";
+import {
+    useProject,
+    useProjectActions,
+    useProjectPokemon,
+} from "@pokemmo/projects/projectHooks";
 import { ProjectPricingRequirementsForm } from "@pokemmo/projects/ProjectPricingRequirementsForm";
-import { ProjectShoppingList } from "@pokemmo/projects/ProjectShoppingList";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
-import { colorPrimary } from "@pokemmo/styles/variables";
+import { boxShadowCard, colorPrimary } from "@pokemmo/styles/variables";
 import { relativeTime } from "@pokemmo/utils";
 import React from "react";
+import { useHistory, useParams } from "react-router-dom";
 
-interface IProps {
-    project: IProject;
-}
-
-interface IProjectViewForm extends IProject {}
+interface IProps {}
 
 export function ProjectView(props: IProps) {
     const { updateProject } = useProjectActions();
-    const { project } = props;
-    const { projectID } = project;
-    const projectPokemon = usePokemon(project.targetPokemonID);
+    const { projectID } = useParams<{ projectID: string }>();
+    const project = useProject(projectID);
+    const projectPokemon = useProjectPokemon(projectID);
+
+    if (!project || !projectPokemon) {
+        return <>Not Found</>;
+    }
 
     return (
         <div>
+            <Breadcrumbs
+                crumbs={[
+                    {
+                        name: "Projects",
+                        href: "/projects",
+                    },
+                    {
+                        name: project.projectName,
+                        href: `/projects/${project.projectID}`,
+                    },
+                ]}
+            />
             <FormHeading
                 title="Project Information"
                 description="Meta information about your Project."
@@ -64,7 +86,63 @@ export function ProjectView(props: IProps) {
             {projectPokemon && <PokemonInfoRow pokemon={projectPokemon} />}
             <ProjectPricingRequirementsForm project={project} />
             <ProjectAlternativeBreederForm project={project} />
-            <ProjectShoppingList project={project} />
+            <CalculateBar project={project} />
+            {/* <ProjectShoppingList project={project} /> */}
         </div>
+    );
+}
+
+function CalculateBar(props: { project: IProject }) {
+    const { project } = props;
+    const { projectID } = project;
+    const { updateProject } = useProjectActions();
+    const history = useHistory();
+    const pokemon = usePokemon(project.targetPokemonID);
+    const pageSize = usePageContentSize();
+
+    if (!pokemon) {
+        return null;
+    }
+    const { breederStubs } = project;
+    const hasBeenCalculated = breederStubs
+        ? Object.keys(breederStubs).length > 0
+        : false;
+    return (
+        <>
+            <div css={{ height: 32 }}></div>
+            <div
+                css={{
+                    height: 66,
+                    position: "fixed",
+                    bottom: 0,
+                    right: 0,
+                    left: pageSize.left,
+                    background: "#fff",
+                    boxShadow: boxShadowCard,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: pageContainerPadding,
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                }}
+            >
+                <h3 css={{ marginBottom: 0 }}>Breeding Guide</h3>
+                <FormButton
+                    buttonType={ButtonType.PRIMARY}
+                    onClick={() => {
+                        const breeders = PokemonBuilder.from(
+                            pokemon,
+                        ).calculateBreeders();
+                        console.table(breeders);
+                        const stubs: Record<string, IPokemonBreederStub[]> = {};
+                        updateProject({ projectID, breederStubs: stubs });
+                        history.push(`/projects/${project.projectID}/guide`);
+                    }}
+                >
+                    {hasBeenCalculated ? "View" : "Calculate"}
+                </FormButton>
+            </div>
+        </>
     );
 }

@@ -80,7 +80,6 @@ connection.onmessage = function(e) {
       window.location.reload();
       break;
     default:
-      console.log("other message", message);
     // Do nothing.
   }
 };

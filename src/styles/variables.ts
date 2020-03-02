@@ -66,3 +66,8 @@ export const mixinSrOnly = (): CssType => ({
     position: "absolute !important" as any,
     width: "1px !important",
 });
+
+export const mixinExtendContainer = (by: number): CssType => ({
+    width: `calc(100% + ${by * 2}px)`,
+    marginLeft: -by,
+});
