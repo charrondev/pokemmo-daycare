@@ -5,21 +5,29 @@
 
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
-import { FormLabel } from "@pokemmo/form/FormLabel";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
+import { GridLayout, GridSection } from "@pokemmo/layout/GridLayout";
 import { Separator } from "@pokemmo/layout/Separator";
-import { Gender, IPokemonBreederStub } from "@pokemmo/pokemon/PokemonTypes";
-import { IVView } from "@pokemmo/projects/IVView";
-import { useProject } from "@pokemmo/projects/projectHooks";
+import {
+    IPokemonFormRequirements,
+    PokemonForm,
+} from "@pokemmo/pokemon/PokemonForm";
+import {
+    Gender,
+    IPokemonBreederStub,
+    IVRequirements,
+    Stat,
+} from "@pokemmo/pokemon/PokemonTypes";
+import { colorForStat, IVView } from "@pokemmo/projects/IVView";
+import { useProject, useProjectActions } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
-import { mixinExtendContainer } from "@pokemmo/styles/variables";
 import { uppercaseFirst } from "@pokemmo/utils";
-import React, { useDebugValue } from "react";
+import React, { useDebugValue, useState } from "react";
 
 export function ProjectShoppingList(props: { project: IProject }) {
     const { project } = props;
-    const { projectID, breederStubs, breederPokemonIDs } = project;
+    const { projectID } = project;
     const ownedStubs = useBreederStubs(projectID, true, true);
     const requiredStubs = useBreederStubs(projectID, false, true);
 
@@ -49,64 +57,59 @@ export function ProjectShoppingList(props: { project: IProject }) {
                     </>
                 }
             />
-            <FormLabel label="Required">
-                <div
-                    css={{
-                        gridTemplateColumns:
-                            "repeat(auto-fit, minmax(240px, 1fr))",
-                        gridAutoColumns: "max-content",
-                        display: "grid",
-                        ...mixinExtendContainer(18),
-                        marginBottom: 18,
-                    }}
-                >
-                    {Object.values(requiredStubs).map((stubs, i) => {
-                        return (
-                            <ShoppingListStubItem
-                                stubs={stubs}
-                                key={i}
-                                css={{
-                                    margin: 18,
-                                }}
-                                action={<FormButton>Add</FormButton>}
-                            />
-                        );
-                    })}
-                </div>
-            </FormLabel>
-            <FormLabel label="Owned">
-                <div
-                    css={{
-                        gridTemplateColumns:
-                            "repeat(auto-fit, minmax(240px, 1fr))",
-                        gridAutoColumns: "max-content",
-                        display: "grid",
-                        ...mixinExtendContainer(18),
-                        marginBottom: 18,
-                    }}
-                >
-                    {Object.values(ownedStubs).map((stubs, i) => {
-                        return (
-                            <ShoppingListStubItem
-                                stubs={stubs}
-                                key={i}
-                                css={{
-                                    margin: 18,
-                                }}
-                            />
-                        );
-                    })}
-                </div>
-            </FormLabel>
+            <GridLayout>
+                {Object.keys(requiredStubs).length > 0 && (
+                    <GridSection title="Required">
+                        {Object.values(requiredStubs).map((stubs, i) => {
+                            return (
+                                <ShoppingListStubItem
+                                    projectID={projectID}
+                                    stubs={stubs}
+                                    key={i}
+                                    css={{
+                                        margin: 18,
+                                    }}
+                                    type="add"
+                                />
+                            );
+                        })}
+                    </GridSection>
+                )}
+                {Object.keys(ownedStubs).length > 0 && (
+                    <GridSection title="Owned">
+                        {Object.values(ownedStubs).map((stubs, i) => {
+                            return (
+                                <ShoppingListStubItem
+                                    projectID={projectID}
+                                    stubs={stubs}
+                                    key={i}
+                                    css={{
+                                        margin: 18,
+                                    }}
+                                    type="remove"
+                                />
+                            );
+                        })}
+                    </GridSection>
+                )}
+            </GridLayout>
         </>
     );
 }
 
 function ShoppingListStubItem(props: {
     stubs: IPokemonBreederStub[];
+    projectID: string;
     className?: string;
     action?: React.ReactNode;
+    type: "add" | "remove";
 }) {
+    const { projectID } = props;
+    const { attachPokemonToStub, detachPokemonFromStub } = useProjectActions();
+    const [
+        newPokemonRequirements,
+        setNewPokemonRequirements,
+    ] = useState<IPokemonFormRequirements | null>(null);
     const { stubs } = props;
     const first = stubs[0];
 
@@ -121,6 +124,13 @@ function ShoppingListStubItem(props: {
         }
     });
 
+    let firstStat: Stat | null = null;
+    for (const [stat, firstStatInfo] of Object.entries(first.ivs)) {
+        if (firstStatInfo.value) {
+            firstStat = stat as Stat;
+        }
+    }
+
     return (
         <DecoratedCard
             itemCount={stubs.length}
@@ -131,8 +141,20 @@ function ShoppingListStubItem(props: {
                 alignItems: "stretch",
                 justifyContent: "space-between",
             }}
+            decorationColor={colorForStat(firstStat) ?? undefined}
         >
-            <div css={{ flex: 1 }}>
+            <div
+                css={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+
+                    "& > *:last-child": {
+                        marginBottom: 0,
+                    },
+                }}
+            >
                 {hasStats && (
                     <LabelAndValue label="Stats" css={{ marginBottom: 6 }}>
                         <IVView ivRequirements={first.ivs} />
@@ -148,11 +170,56 @@ function ShoppingListStubItem(props: {
                     {first.gender === Gender.MALE ? "♂" : "♀"}
                 </LabelAndValue>
             </div>
-            {props.action && (
-                <div css={{ display: "flex", alignItems: "center" }}>
-                    <Separator vertical />
-                    {props.action}
-                </div>
+            <div css={{ display: "flex", alignItems: "center" }}>
+                <Separator vertical />
+                <FormButton
+                    buttonType={ButtonType.TEXT}
+                    onClick={() => {
+                        if (props.type === "add") {
+                            const minimalIVs: Partial<IVRequirements> = {};
+                            Object.entries(first.ivs).forEach(
+                                ([stat, data]) => {
+                                    if (data.value) {
+                                        minimalIVs[stat as Stat] = data;
+                                    }
+                                },
+                            );
+
+                            setNewPokemonRequirements({
+                                allowedIdentifiers: first.allowedIdentifiers,
+                                nature: first.nature ?? undefined,
+                                gender: first.gender ?? undefined,
+                                requiredIVs:
+                                    Object.keys(minimalIVs).length > 0
+                                        ? minimalIVs
+                                        : undefined,
+                            });
+                        } else {
+                            detachPokemonFromStub({
+                                projectID,
+                                pokemonID: first.attachedPokemonID!,
+                                stubHash: first.stubHash,
+                            });
+                        }
+                    }}
+                >
+                    {props.type === "add" ? "Add" : "Remove"}
+                </FormButton>
+            </div>
+            {newPokemonRequirements && (
+                <PokemonForm
+                    requirements={newPokemonRequirements}
+                    onDismiss={() => {
+                        setNewPokemonRequirements(null);
+                    }}
+                    afterSubmit={pokemon => {
+                        attachPokemonToStub({
+                            projectID,
+                            pokemonID: pokemon.id,
+                            stubHash: first.stubHash,
+                        });
+                    }}
+                />
             )}
         </DecoratedCard>
     );
@@ -173,9 +240,9 @@ function useBreederStubs(
                     return false;
                 }
 
-                if (owned && stub.attachedPokemon) {
+                if (owned && stub.attachedPokemonID) {
                     return true;
-                } else if (!owned && !stub.attachedPokemon) {
+                } else if (!owned && !stub.attachedPokemonID) {
                     return true;
                 }
 

@@ -19,6 +19,7 @@ export enum ButtonType {
     SUBMIT = "submit",
     TRANSLUSCENT = "transcluscent",
     ICON = "icon",
+    TEXT = "text",
 }
 
 interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -78,6 +79,20 @@ const standardCSS: CssType = {
     },
 };
 
+const textCSS: CssType = {
+    ...mixinBorder(colorBorder),
+    borderColor: "transparent",
+    background: "transparent",
+    borderWidth: 2,
+    fontWeight: 500,
+    minWidth: "initial",
+    color: colorPrimary.string(),
+
+    [`&:not(:disabled):focus, &:not(:disabled):hover, &:not(:disabled):active`]: {
+        color: colorPrimary.darken(0.3).string(),
+    },
+};
+
 const white = Color("#fff");
 
 const translucentCSS: CssType = {
@@ -118,6 +133,8 @@ export function cssForButtonType(buttonType?: ButtonType): CssType {
             return standardCSS;
         case ButtonType.ICON:
             return buttonIcon;
+        case ButtonType.TEXT:
+            return textCSS;
         default:
             return standardCSS;
     }

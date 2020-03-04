@@ -85,7 +85,6 @@ export const projectsSlice = createSlice({
             action: ProjectPayload<{ alternativeIdentifier: string }>,
         ) => {
             if (ensureProject(state, action)) {
-                console.log("found project");
                 handleDates(state, action);
                 const { projectID, alternativeIdentifier } = action.payload;
                 const alternativeSet = new Set(
@@ -102,7 +101,6 @@ export const projectsSlice = createSlice({
             action: ProjectPayload<{ alternativeIdentifier: string }>,
         ) => {
             if (ensureProject(state, action)) {
-                console.log("found project");
                 handleDates(state, action);
                 const { projectID, alternativeIdentifier } = action.payload;
                 const alternativeSet = new Set(
@@ -119,6 +117,43 @@ export const projectsSlice = createSlice({
                 handleDates(state, action);
                 const { projectID } = action.payload;
                 state.projectsByID[projectID].altBreederIdentifiers = [];
+            }
+        },
+        attachPokemonToStub: (
+            state,
+            action: ProjectPayload<{ pokemonID: string; stubHash: string }>,
+        ) => {
+            if (ensureProject(state, action)) {
+                handleDates(state, action);
+                const { projectID, stubHash, pokemonID } = action.payload;
+                const project = state.projectsByID[projectID];
+                const stubs = project.breederStubs[stubHash];
+                const firstUnattachedStub = stubs.find(stub => {
+                    if (!stub.attachedPokemonID) {
+                        return stub;
+                    }
+                });
+                if (firstUnattachedStub) {
+                    firstUnattachedStub.attachedPokemonID = pokemonID;
+                }
+            }
+        },
+        detachPokemonFromStub: (
+            state,
+            action: ProjectPayload<{ pokemonID: string; stubHash: string }>,
+        ) => {
+            if (ensureProject(state, action)) {
+                handleDates(state, action);
+                const { projectID, stubHash, pokemonID } = action.payload;
+                const project = state.projectsByID[projectID];
+                const stub = project.breederStubs[stubHash]?.find(stub => {
+                    if (stub.attachedPokemonID === pokemonID) {
+                        return stub;
+                    }
+                });
+                if (stub) {
+                    stub.attachedPokemonID = null;
+                }
             }
         },
         setPokemon: (state, action: ProjectPayload<{ pokemonID: string }>) => {

@@ -32,7 +32,6 @@ export function FormCheckBox(_props: IProps) {
                 type="checkbox"
                 {...props}
                 onChange={e => {
-                    console.log("onChange");
                     onChange?.(e.target.checked);
                 }}
                 css={{

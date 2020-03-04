@@ -39,15 +39,23 @@ import * as Yup from "yup";
 interface IProps extends React.ComponentProps<typeof Dialog> {
     isProject?: boolean;
     afterSubmit?: (pokemon: IPokemon) => void;
+    requirements?: IPokemonFormRequirements;
 }
 
-interface IPokemonForm {
+export interface IPokemonForm {
     pokemon: string | null;
     gender: Gender;
     nature: string | null;
     ownershipStatus: OwnershipStatus;
     cost: number | null;
     stats: IVRequirements;
+}
+
+export interface IPokemonFormRequirements {
+    allowedIdentifiers?: string[];
+    gender?: Gender;
+    nature?: string;
+    requiredIVs?: Partial<IVRequirements>;
 }
 
 const INITIAL_FORM: IPokemonForm = {
@@ -77,26 +85,16 @@ const ownershipOptions: IToggleButtonOption[] = Object.values(
 
 export function PokemonForm(_props: IProps) {
     const { addPokemon } = usePokemonActions();
-    const { afterSubmit, isProject, ...props } = _props;
+    const { afterSubmit, isProject, requirements, ...props } = _props;
 
     const form = useFormik({
         initialValues: INITIAL_FORM,
         validateOnMount: false,
         validationSchema: Yup.object().shape({
             pokemon: Yup.mixed().required("Required"),
-            nature: Yup.mixed().required("Required"),
         }),
         onSubmit: (values, { setFieldError }) => {
-            console.log(values);
             if (!values.pokemon) {
-                setFieldError("pokemon", "Pokemon is Required.");
-            }
-
-            if (!values.nature) {
-                setFieldError("nature", "Nature is Required");
-            }
-
-            if (!values.pokemon || !values.nature) {
                 return;
             }
             const pokemon = PokemonBuilder.create(values.pokemon)
@@ -139,10 +137,17 @@ export function PokemonForm(_props: IProps) {
                 }}
             >
                 <FormLabel label="Pokemon Name">
-                    <PokemonSelect fieldName="pokemon" />
+                    <PokemonSelect
+                        allowedIdentifiers={requirements?.allowedIdentifiers}
+                        fieldName="pokemon"
+                        forceGender={requirements?.gender}
+                    />
                 </FormLabel>
                 <FormLabel label="Nature">
-                    <NatureSelect fieldName="nature" />
+                    <NatureSelect
+                        forceValue={requirements?.nature}
+                        fieldName="nature"
+                    />
                 </FormLabel>
                 <FormLabel label="Gender" css={{ flex: "initial" }}>
                     <FormToggleButton
@@ -151,7 +156,7 @@ export function PokemonForm(_props: IProps) {
                             { label: "Female", value: Gender.FEMALE },
                         ]}
                         fieldName="gender"
-                        forceValue={forceGender}
+                        forceValue={requirements?.gender ?? forceGender}
                     />
                 </FormLabel>
             </FormRow>
@@ -213,9 +218,12 @@ export function PokemonForm(_props: IProps) {
                 }}
             >
                 {Object.values(Stat).map(stat => {
+                    const forcedStatValue =
+                        requirements?.requiredIVs?.[stat]?.value;
                     return (
                         <FormLabel label={nameForStat(stat)} key={stat}>
                             <FormInputField
+                                forceValue={forcedStatValue}
                                 min={0}
                                 max={31}
                                 type="number"

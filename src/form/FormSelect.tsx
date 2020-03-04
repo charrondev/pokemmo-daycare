@@ -9,7 +9,7 @@ import { useLabeledInputProps } from "@pokemmo/form/FormLabel";
 import { BaseFormSelectProps } from "@pokemmo/form/FormSelectProps";
 import { colorPrimary, colorPrimaryState } from "@pokemmo/styles/variables";
 import { FieldMetaProps, useField } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import Select, { ValueType } from "react-select";
 import makeAnimated from "react-select/animated";
 import AsyncSelect, { AsyncProps } from "react-select/async";
@@ -30,7 +30,7 @@ export interface FormSelectProps<T>
 export type FormSelectFieldProps<T> = Omit<
     FormSelectProps<T>,
     "onChange" | "value" | "meta" | "onTouched"
-> & { fieldName: string };
+> & { fieldName: string; forceValue?: string };
 
 export type SpecializedSelect<T> = Omit<
     T,
@@ -138,20 +138,28 @@ export function FormSelect<T extends { value: string }>(
 }
 
 export function FormSelectField<T extends { value: string }>(
-    _props: FormSelectFieldProps<T>,
+    _props: FormSelectFieldProps<T> & {
+        initialValue?: string | string[];
+    },
 ) {
-    const { fieldName, ...props } = _props;
+    const { fieldName, forceValue, initialValue, ...props } = _props;
     const [field, meta, fieldHelpers] = useField({
         name: fieldName,
         type: "select",
     });
+
+    useEffect(() => {
+        fieldHelpers.setValue(initialValue);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialValue]);
 
     return (
         <FormSelect
             {...field}
             onTouched={fieldHelpers.setTouched}
             {...props}
-            value={field.value}
+            value={forceValue ? forceValue : field.value}
+            isDisabled={forceValue != null ? !!forceValue : props.isDisabled}
             onChange={value => {
                 fieldHelpers.setValue(value);
             }}

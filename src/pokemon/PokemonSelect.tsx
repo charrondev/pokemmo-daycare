@@ -22,6 +22,7 @@ import {
     FormSelectProps,
     SpecializedSelect,
 } from "@pokemmo/form/FormSelect";
+import { Gender } from "@pokemmo/pokemon/PokemonTypes";
 import React from "react";
 import { FormatOptionLabelMeta, OptionTypeBase } from "react-select";
 
@@ -34,7 +35,9 @@ type IProps = (
     onlyOwnedPokemon?: boolean;
     eggGroups?: string[];
     excludeIdentifiers?: string[];
+    allowedIdentifiers?: string[];
     allowEvolvedPokemon?: boolean;
+    forceGender?: string;
 };
 
 export function PokemonSelect(_props: IProps) {
@@ -42,7 +45,9 @@ export function PokemonSelect(_props: IProps) {
         onlyOwnedPokemon,
         eggGroups,
         excludeIdentifiers,
+        allowedIdentifiers,
         allowEvolvedPokemon = true,
+        forceGender,
         ...props
     } = _props;
 
@@ -57,9 +62,30 @@ export function PokemonSelect(_props: IProps) {
     const filter = (option: PokeDexMonOptionType) => {
         const { pokedexMon } = option;
 
+        if (forceGender != null) {
+            if (
+                pokedexMon.percentageMale === 100 &&
+                forceGender === Gender.FEMALE
+            ) {
+                return false;
+            } else if (
+                pokedexMon.percentageMale === 0 &&
+                forceGender === Gender.MALE
+            ) {
+                return false;
+            }
+        }
+
         if (
             excludeIdentifiers &&
             excludeIdentifiers.includes(pokedexMon.identifier)
+        ) {
+            return false;
+        }
+
+        if (
+            allowedIdentifiers &&
+            !allowedIdentifiers.includes(pokedexMon.identifier)
         ) {
             return false;
         }
@@ -84,23 +110,33 @@ export function PokemonSelect(_props: IProps) {
     loadOptions = filterLoadedDexOptions(filter, loadOptions);
     loadInitialOptions = filterLoadedDexOptionsSync(filter, loadInitialOptions);
 
+    let onlyAllowedIdentifier: string | null = null;
+    if (allowedIdentifiers && allowedIdentifiers.length === 1) {
+        onlyAllowedIdentifier = allowedIdentifiers[0];
+    }
+
+    const makeOptionFromValue = (value: any) => {
+        if (!value) {
+            return null;
+        }
+        const pokemon = getPokemon(value);
+        if (!pokemon) {
+            return null;
+        } else {
+            return mapDexMonToItem(pokemon);
+        }
+    };
+
     const finalProps = {
+        isDisabled: !!onlyAllowedIdentifier,
         ...props,
-        isClearable: true,
+        forcedValue: onlyAllowedIdentifier ?? undefined,
+        initialValue: onlyAllowedIdentifier ?? undefined,
+        isClearable: !onlyAllowedIdentifier,
         defaultOptions: loadInitialOptions(null),
         loadOptions: loadOptions,
         formatOptionLabel: formatPokemonLabel,
-        makeOptionFromValue: (value: any) => {
-            if (!value) {
-                return null;
-            }
-            const pokemon = getPokemon(value);
-            if (!pokemon) {
-                return null;
-            } else {
-                return mapDexMonToItem(pokemon);
-            }
-        },
+        makeOptionFromValue,
     };
     if ("fieldName" in _props) {
         return <FormSelectField {...finalProps} fieldName={_props.fieldName} />;

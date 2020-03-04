@@ -38,10 +38,10 @@ export const inputCSS: CssType = {
     minWidth: 200,
     width: "100%",
     color: colorText.string(),
-    [`&:hover, &:focus, &.active`]: {
+    [`&:not(:disabled):hover, &:not(:disabled):focus, &:not(:disabled).active`]: {
         borderColor: colorPrimaryState.string(),
     },
-    "&&:focus": inputFocusCSS,
+    "&&:not(:disabled):focus": inputFocusCSS,
 };
 
 interface IProps<ValueType extends string | number>
@@ -80,6 +80,12 @@ export function FormInput<ValueType extends string | number = string>(
                         paddingRight: 12,
                     },
                     hasFocus && { "&&": inputFocusCSS },
+                    props.disabled && {
+                        "&&&": {
+                            borderColor: colorBorder.string(),
+                            opacity: 0.5,
+                        },
+                    },
                 ]}
             >
                 {beforeNode && (
@@ -151,15 +157,18 @@ export function FormInput<ValueType extends string | number = string>(
 export function FormInputField<ValueType extends string | number = string>(
     _props: Omit<IProps<ValueType>, "meta" | "onTouched"> & {
         fieldName: string;
+        forceValue?: ValueType;
     },
 ) {
-    const { fieldName, ...props } = _props;
+    const { fieldName, forceValue, ...props } = _props;
     const [field, meta, helpers] = useField(fieldName);
 
     return (
         <FormInput
             {...props}
             {...field}
+            value={forceValue != null ? forceValue : field.value}
+            disabled={forceValue != null ? true : props.disabled}
             meta={meta}
             onChange={helpers.setValue}
             onTouched={helpers.setTouched}

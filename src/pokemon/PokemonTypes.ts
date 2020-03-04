@@ -68,7 +68,7 @@ type BreederStubHash = string;
 
 export interface IPokemonBreederStub {
     generation: number;
-    attachedPokemon: IPokemon | null;
+    attachedPokemonID: string | null;
     stubHash: BreederStubHash;
     parents: Record<Gender, BreederStubHash> | null;
     childHash: BreederStubHash | null;
