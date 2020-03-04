@@ -9,7 +9,7 @@ import { FormLabel } from "@pokemmo/form/FormLabel";
 import { EggGroupSelect } from "@pokemmo/pokemon/EggGroupSelect";
 import { NatureSelect } from "@pokemmo/pokemon/NatureSelect";
 import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
-import { IPokemon } from "@pokemmo/pokemon/PokemonTypes";
+import { BreedStatus, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
 import { Form, FormikProvider, useFormik } from "formik";
 import React from "react";
 
@@ -84,6 +84,9 @@ export function filterPokemon(
     filters: IPokemonFilters,
 ): IPokemon[] {
     return pokemon.filter(poke => {
+        if (filters.hideUsedPokemon && poke.breedStatus === BreedStatus.USED) {
+            return false;
+        }
         if (
             filters.pokemonIdentifiers &&
             filters.pokemonIdentifiers.length > 0

@@ -46,6 +46,16 @@ export function subtractIVRequirement(
     return newRequirements;
 }
 
+export function nonEmptyIVs(ivs: IVRequirements): Partial<IVRequirements> {
+    const result: Partial<IVRequirements> = {};
+    for (const [stat, data] of Object.entries(ivs)) {
+        if (data.value !== 0 && data.value != null) {
+            result[stat as Stat] = data;
+        }
+    }
+    return result;
+}
+
 export function nameForStat(stat: Stat): string {
     switch (stat) {
         case Stat.HP:

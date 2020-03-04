@@ -7,7 +7,6 @@ import styled from "@emotion/styled";
 import { labelStyle } from "@pokemmo/form/LabelAndValue";
 import { nameForStat } from "@pokemmo/pokemon/IVUtils";
 import { IVRequirements, Stat } from "@pokemmo/pokemon/PokemonTypes";
-import { fontSizeSmall } from "@pokemmo/styles/variables";
 import Color from "color";
 import React from "react";
 
@@ -37,7 +36,7 @@ export function IVView(_props: IProps) {
             }}
         >
             {withLabel && (
-                <li css={{ listStyle: "none", margin: "8px 4px 0" }}>
+                <li css={{ listStyle: "none", margin: "8px 4px" }}>
                     <label css={labelStyle}>{withLabel}:</label>
                 </li>
             )}
@@ -74,9 +73,9 @@ const StatPoints = styled.span`
 const Lozenge = styled.span`
     display: inline-flex;
     height: 24;
-    padding: 3px 6px;
+    padding: 2px 4px;
     border-radius: 4px;
-    font-size: ${fontSizeSmall}px;
+    font-size: ${11}px;
 `;
 
 export const colorForStat = (stat: Stat | null): Color | null => {
@@ -101,7 +100,13 @@ export const colorForStat = (stat: Stat | null): Color | null => {
 export function StatView(props: { stat: Stat; points: number }) {
     const statColor = colorForStat(props.stat);
     return (
-        <li css={{ listStyle: "none", margin: "8px 4px 0" }}>
+        <li
+            css={{
+                listStyle: "none",
+                margin: "8px 4px",
+                display: "inline-block",
+            }}
+        >
             <Lozenge style={{ backgroundColor: statColor?.toString() }}>
                 <StatName>{nameForStat(props.stat)} </StatName>
                 <StatPoints>{props.points}</StatPoints>

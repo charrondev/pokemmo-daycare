@@ -4,7 +4,7 @@
  */
 
 import styled from "@emotion/styled";
-import { Nature } from "@pokemmo/pokemon/PokemonTypes";
+import { getNature } from "@pokemmo/pokemon/natures";
 import React from "react";
 
 const NatureViewWrapper = styled.span<{ isVertical?: boolean }>`
@@ -31,21 +31,22 @@ const StatModifierLabel = styled.span`
 `;
 
 export function NatureView(props: {
-    nature: Nature | null;
+    nature: string | null;
     isVertical?: boolean;
 }) {
+    const fullNature = getNature(props.nature);
     return (
         <NatureViewWrapper isVertical={props.isVertical}>
-            <span className="natureName">{props.nature?.name}</span>
+            <span className="natureName">{fullNature?.name}</span>
             <span>
-                {props.nature?.positiveStat && (
+                {fullNature?.positiveStat && (
                     <StatModifierLabel>
-                        +{props.nature.positiveStat}
+                        +{fullNature.positiveStat}
                     </StatModifierLabel>
                 )}
-                {props.nature?.negativeStat && (
+                {fullNature?.negativeStat && (
                     <StatModifierLabel>
-                        -{props.nature.negativeStat}
+                        -{fullNature.negativeStat}
                     </StatModifierLabel>
                 )}
             </span>

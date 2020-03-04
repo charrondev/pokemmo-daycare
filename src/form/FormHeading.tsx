@@ -10,17 +10,19 @@ interface IProps
     title: React.ReactNode;
     actions?: React.ReactNode;
     description?: React.ReactNode;
+    asElement?: "h2" | "h3" | "h4" | "h5";
 }
 
 export function FormHeading(_props: IProps) {
-    const { title, actions, description, ...props } = _props;
+    const { title, actions, description, asElement = "h2", ...props } = _props;
+    const HeadingElement = asElement;
     return (
         <div
             {...props}
             css={{ display: "flex", alignItems: "flex-start", width: "100%" }}
         >
             <div css={{ flex: 1 }}>
-                <h2>{title}</h2>
+                <HeadingElement>{title}</HeadingElement>
                 {description && (
                     <p
                         css={{

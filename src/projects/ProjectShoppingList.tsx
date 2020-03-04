@@ -5,24 +5,22 @@
 
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
-import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
 import { GridLayout, GridSection } from "@pokemmo/layout/GridLayout";
 import { Separator } from "@pokemmo/layout/Separator";
 import {
     IPokemonFormRequirements,
     PokemonForm,
 } from "@pokemmo/pokemon/PokemonForm";
+import { PokemonMeta } from "@pokemmo/pokemon/PokemonMeta";
 import {
-    Gender,
     IPokemonBreederStub,
     IVRequirements,
     Stat,
 } from "@pokemmo/pokemon/PokemonTypes";
-import { colorForStat, IVView } from "@pokemmo/projects/IVView";
+import { colorForStat } from "@pokemmo/projects/IVView";
 import { useProject, useProjectActions } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
-import { uppercaseFirst } from "@pokemmo/utils";
 import React, { useDebugValue, useState } from "react";
 
 export function ProjectShoppingList(props: { project: IProject }) {
@@ -30,6 +28,9 @@ export function ProjectShoppingList(props: { project: IProject }) {
     const { projectID } = project;
     const ownedStubs = useBreederStubs(projectID, true, true);
     const requiredStubs = useBreederStubs(projectID, false, true);
+    const requiredLength = Object.values(requiredStubs).flat().length;
+    const ownedLength = Object.values(ownedStubs).flat().length;
+    const totalLength = requiredLength + ownedLength;
 
     return (
         <>
@@ -42,7 +43,9 @@ export function ProjectShoppingList(props: { project: IProject }) {
                 title={
                     <>
                         Shopping/Catching List{" "}
-                        <span css={{ fontWeight: "normal" }}>(4/31)</span>
+                        <span css={{ fontWeight: "normal" }}>
+                            ({ownedLength}/{totalLength})
+                        </span>
                     </>
                 }
                 description={
@@ -58,7 +61,7 @@ export function ProjectShoppingList(props: { project: IProject }) {
                 }
             />
             <GridLayout>
-                {Object.keys(requiredStubs).length > 0 && (
+                {requiredLength > 0 && (
                     <GridSection title="Required">
                         {Object.values(requiredStubs).map((stubs, i) => {
                             return (
@@ -75,7 +78,7 @@ export function ProjectShoppingList(props: { project: IProject }) {
                         })}
                     </GridSection>
                 )}
-                {Object.keys(ownedStubs).length > 0 && (
+                {ownedLength > 0 && (
                     <GridSection title="Owned">
                         {Object.values(ownedStubs).map((stubs, i) => {
                             return (
@@ -117,12 +120,6 @@ function ShoppingListStubItem(props: {
         // Shouldn't happen.
         return null;
     }
-    let hasStats = false;
-    Object.values(first.ivs).forEach(stat => {
-        if (stat?.value !== 0) {
-            hasStats = true;
-        }
-    });
 
     let firstStat: Stat | null = null;
     for (const [stat, firstStatInfo] of Object.entries(first.ivs)) {
@@ -155,20 +152,11 @@ function ShoppingListStubItem(props: {
                     },
                 }}
             >
-                {hasStats && (
-                    <LabelAndValue label="Stats" css={{ marginBottom: 6 }}>
-                        <IVView ivRequirements={first.ivs} />
-                    </LabelAndValue>
-                )}
-                {first.nature && (
-                    <LabelAndValue label="Nature" css={{ marginBottom: 6 }}>
-                        {first.nature}
-                    </LabelAndValue>
-                )}
-                <LabelAndValue label="Gender" css={{ marginBottom: 6 }}>
-                    {uppercaseFirst(first.gender)}
-                    {first.gender === Gender.MALE ? "♂" : "♀"}
-                </LabelAndValue>
+                <PokemonMeta
+                    ivs={first.ivs}
+                    nature={first.nature}
+                    gender={first.gender}
+                />
             </div>
             <div css={{ display: "flex", alignItems: "center" }}>
                 <Separator vertical />

@@ -17,7 +17,7 @@ import {
 } from "@pokemmo/styles/variables";
 import { numberWithCommas } from "@pokemmo/utils";
 import { FieldMetaProps, useField } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export const inputFocusCSS: CssType = {
     background: "#fff",
@@ -163,11 +163,18 @@ export function FormInputField<ValueType extends string | number = string>(
     const { fieldName, forceValue, ...props } = _props;
     const [field, meta, helpers] = useField(fieldName);
 
+    useEffect(() => {
+        if (forceValue) {
+            helpers.setValue(forceValue);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [forceValue]);
+
     return (
         <FormInput
             {...props}
             {...field}
-            value={forceValue != null ? forceValue : field.value}
+            value={field.value}
             disabled={forceValue != null ? true : props.disabled}
             meta={meta}
             onChange={helpers.setValue}
