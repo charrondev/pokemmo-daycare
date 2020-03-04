@@ -218,7 +218,7 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             return EMPTY_PARENT_GROUP;
         }
         let statCount = Object.values(childStub.ivs).filter(
-            iv => iv.value !== 0,
+            iv => iv.value !== 0 && iv.value != null,
         ).length;
         const firstParentStat = mostExpensive.stat;
 

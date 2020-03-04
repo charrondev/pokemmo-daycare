@@ -7,16 +7,13 @@ import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
+import { Separator } from "@pokemmo/layout/Separator";
 import { Gender, IPokemonBreederStub } from "@pokemmo/pokemon/PokemonTypes";
 import { IVView } from "@pokemmo/projects/IVView";
 import { useProject } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
-import {
-    colorPrimary,
-    fontSizeSmall,
-    mixinExtendContainer,
-} from "@pokemmo/styles/variables";
+import { mixinExtendContainer } from "@pokemmo/styles/variables";
 import { uppercaseFirst } from "@pokemmo/utils";
 import React, { useDebugValue } from "react";
 
@@ -71,6 +68,7 @@ export function ProjectShoppingList(props: { project: IProject }) {
                                 css={{
                                     margin: 18,
                                 }}
+                                action={<FormButton>Add</FormButton>}
                             />
                         );
                     })}
@@ -107,6 +105,7 @@ export function ProjectShoppingList(props: { project: IProject }) {
 function ShoppingListStubItem(props: {
     stubs: IPokemonBreederStub[];
     className?: string;
+    action?: React.ReactNode;
 }) {
     const { stubs } = props;
     const first = stubs[0];
@@ -124,45 +123,37 @@ function ShoppingListStubItem(props: {
 
     return (
         <DecoratedCard
+            itemCount={stubs.length}
             className={props.className}
             css={{
                 marginBottom: 18,
+                display: "flex",
+                alignItems: "stretch",
+                justifyContent: "space-between",
             }}
         >
-            {hasStats && (
-                <LabelAndValue label="Stats" css={{ marginBottom: 6 }}>
-                    <IVView ivRequirements={first.ivs} />
+            <div css={{ flex: 1 }}>
+                {hasStats && (
+                    <LabelAndValue label="Stats" css={{ marginBottom: 6 }}>
+                        <IVView ivRequirements={first.ivs} />
+                    </LabelAndValue>
+                )}
+                {first.nature && (
+                    <LabelAndValue label="Nature" css={{ marginBottom: 6 }}>
+                        {first.nature}
+                    </LabelAndValue>
+                )}
+                <LabelAndValue label="Gender" css={{ marginBottom: 6 }}>
+                    {uppercaseFirst(first.gender)}
+                    {first.gender === Gender.MALE ? "♂" : "♀"}
                 </LabelAndValue>
+            </div>
+            {props.action && (
+                <div css={{ display: "flex", alignItems: "center" }}>
+                    <Separator vertical />
+                    {props.action}
+                </div>
             )}
-            {first.nature && (
-                <LabelAndValue label="Nature" css={{ marginBottom: 6 }}>
-                    {first.nature}
-                </LabelAndValue>
-            )}
-            <LabelAndValue label="Gender" css={{ marginBottom: 6 }}>
-                {uppercaseFirst(first.gender)}
-                {first.gender === Gender.MALE ? "♂" : "♀"}
-            </LabelAndValue>
-            <span
-                css={{
-                    background: colorPrimary.toString(),
-                    color: "#fff",
-                    fontWeight: "bold",
-                    borderRadius: 27,
-                    height: 27,
-                    width: 27,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    transform: "translate(40%, -40%)",
-                    fontSize: fontSizeSmall,
-                }}
-            >
-                {stubs.length}
-            </span>
         </DecoratedCard>
     );
 }

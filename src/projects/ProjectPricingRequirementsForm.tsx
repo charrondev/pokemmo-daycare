@@ -72,7 +72,7 @@ export function ProjectPricingRequirementsForm(props: { project: IProject }) {
                     </thead>
                     <tbody>
                         {Object.entries(ivPricing).map(([stat, data]) => {
-                            if (data.value === 0) {
+                            if (data.value === 0 || data.value == null) {
                                 return <React.Fragment key={stat} />;
                             }
 

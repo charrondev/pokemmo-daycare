@@ -7,8 +7,10 @@ import { StyledFactory } from "@pokemmo/styles/styledUtils";
 import {
     borderRadius,
     boxShadowCard,
+    colorPrimary,
     colorSecondary,
     colorText,
+    fontSizeSmall,
 } from "@pokemmo/styles/variables";
 import Color from "color";
 import React from "react";
@@ -29,9 +31,15 @@ export function DecoratedCard(
     _props: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> & {
         decorationColor?: Color;
         hoverable?: boolean;
+        itemCount?: number;
     },
 ) {
-    const { decorationColor = colorSecondary, hoverable, ...props } = _props;
+    const {
+        decorationColor = colorSecondary,
+        hoverable,
+        itemCount,
+        ...props
+    } = _props;
     return (
         <Card
             {...props}
@@ -60,6 +68,30 @@ export function DecoratedCard(
                     },
                 },
             ]}
-        />
+        >
+            {props.children}
+            {itemCount != null && (
+                <span
+                    css={{
+                        background: colorPrimary.toString(),
+                        color: "#fff",
+                        fontWeight: "bold",
+                        borderRadius: 27,
+                        height: 27,
+                        width: 27,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        transform: "translate(40%, -40%)",
+                        fontSize: fontSizeSmall,
+                    }}
+                >
+                    {itemCount}
+                </span>
+            )}
+        </Card>
     );
 }

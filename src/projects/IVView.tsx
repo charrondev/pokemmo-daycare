@@ -39,13 +39,16 @@ export function IVView(_props: IProps) {
                 </li>
             )}
             {Object.entries(ivRequirements).map(([stat, data], i) => {
-                if (!showEmpties && data?.value === 0) {
+                if (
+                    !showEmpties &&
+                    (data?.value === 0 || data?.value == null)
+                ) {
                     return <React.Fragment key={i}></React.Fragment>;
                 }
                 return (
                     <StatView
                         stat={stat as Stat}
-                        points={data?.value ?? 31}
+                        points={data?.value}
                         key={i}
                     />
                 );
