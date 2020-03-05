@@ -459,12 +459,6 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             }
         }
 
-        console.log(
-            "Most expensive stat is",
-            mostExpensiveIV,
-            mostExpensiveIVPrice,
-        );
-
         return mostExpensiveIV;
     }
 }

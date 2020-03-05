@@ -125,7 +125,7 @@ describe("PokemonBuilder", () => {
                         .add(Stat.HP, {
                             value: 31,
                             prices: {
-                                [Gender.FEMALE]: 13000,
+                                [Gender.FEMALE]: 5000,
                                 [Gender.MALE]: 11000,
                             },
                         })
@@ -139,7 +139,7 @@ describe("PokemonBuilder", () => {
                         .add(Stat.DEFENSE, {
                             value: 31,
                             prices: {
-                                [Gender.FEMALE]: 10000,
+                                [Gender.FEMALE]: 5000,
                                 [Gender.MALE]: 10000,
                             },
                         })

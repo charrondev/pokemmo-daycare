@@ -109,9 +109,12 @@ function CalculateBar(props: { project: IProject }) {
         : false;
 
     const calculateBreeders = () => {
-        const breeders = PokemonBuilder.from(pokemon).calculateBreeders({
-            allowedIdentifiers: project.altBreederIdentifiers,
-        });
+        // Mix in project costs.
+        const breeders = PokemonBuilder.from(pokemon)
+            .ivs(project.ivPricing)
+            .calculateBreeders({
+                allowedIdentifiers: project.altBreederIdentifiers,
+            });
         const stubs: Record<string, IPokemonBreederStub[]> = {};
         breeders.forEach(breeder => {
             if (stubs[breeder.stubHash]) {
