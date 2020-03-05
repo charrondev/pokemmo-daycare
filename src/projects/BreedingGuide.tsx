@@ -219,7 +219,10 @@ function BreederPair(props: { pair: IBreedingPair; projectID: string }) {
                             });
                         }}
                     >
-                        Hatch
+                        Hatch{" "}
+                        <span>
+                            {pair.stub.gender === Gender.MALE ? "♂" : "♀"}
+                        </span>
                     </FormButton>
                 ) : (
                     <FormButton
@@ -265,7 +268,10 @@ function BreederPair(props: { pair: IBreedingPair; projectID: string }) {
                             }
                         }}
                     >
-                        Breed
+                        Breed{" "}
+                        <span>
+                            {pair.stub.gender === Gender.MALE ? "♂" : "♀"}
+                        </span>
                     </FormButton>
                 )}
             </div>
