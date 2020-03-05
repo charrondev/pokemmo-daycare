@@ -5,6 +5,7 @@
 
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
+import { Flyout } from "@pokemmo/layout/Flyout";
 import { GridLayout, GridSection } from "@pokemmo/layout/GridLayout";
 import { Separator } from "@pokemmo/layout/Separator";
 import {
@@ -18,12 +19,14 @@ import {
     Stat,
 } from "@pokemmo/pokemon/PokemonTypes";
 import { colorForStat } from "@pokemmo/projects/IVView";
-import { useProject, useProjectActions } from "@pokemmo/projects/projectHooks";
+import { useProject } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
+import { useStubActions } from "@pokemmo/projects/stubSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
+import { MenuItem } from "@reach/menu-button";
 import React, { useDebugValue, useState } from "react";
 
-export function ProjectShoppingList(props: { project: IProject }) {
+export function BreedingShoppingList(props: { project: IProject }) {
     const { project } = props;
     const { projectID } = project;
     const ownedStubs = useBreederStubs(projectID, true, true);
@@ -35,11 +38,6 @@ export function ProjectShoppingList(props: { project: IProject }) {
     return (
         <>
             <FormHeading
-                actions={
-                    <FormButton buttonType={ButtonType.PRIMARY}>
-                        Add Pokemon
-                    </FormButton>
-                }
                 title={
                     <>
                         Shopping/Catching List{" "}
@@ -53,7 +51,7 @@ export function ProjectShoppingList(props: { project: IProject }) {
                         In order to breed this pokemon, you will need to
                         purchase or catch the following pokemon & items. If you
                         buy or catch a pokemon that is already already has some
-                        desired IVs, just add it to the project.
+                        desired IVs, just add it to the project.{" "}
                         <strong>
                             Estimated spread is to reduce purchasing costs.
                         </strong>
@@ -108,11 +106,7 @@ function ShoppingListStubItem(props: {
     type: "add" | "remove";
 }) {
     const { projectID } = props;
-    const { attachPokemonToStub, detachPokemonFromStub } = useProjectActions();
-    const [
-        newPokemonRequirements,
-        setNewPokemonRequirements,
-    ] = useState<IPokemonFormRequirements | null>(null);
+    const { detachPokemonFromStub } = useStubActions();
     const { stubs } = props;
     const first = stubs[0];
 
@@ -160,40 +154,75 @@ function ShoppingListStubItem(props: {
             </div>
             <div css={{ display: "flex", alignItems: "center" }}>
                 <Separator vertical />
-                <FormButton
-                    buttonType={ButtonType.TEXT}
-                    onClick={() => {
-                        if (props.type === "add") {
-                            const minimalIVs: Partial<IVRequirements> = {};
-                            Object.entries(first.ivs).forEach(
-                                ([stat, data]) => {
-                                    if (data.value) {
-                                        minimalIVs[stat as Stat] = data;
-                                    }
-                                },
-                            );
-
-                            setNewPokemonRequirements({
-                                allowedIdentifiers: first.allowedIdentifiers,
-                                nature: first.nature ?? undefined,
-                                gender: first.gender ?? undefined,
-                                requiredIVs:
-                                    Object.keys(minimalIVs).length > 0
-                                        ? minimalIVs
-                                        : undefined,
-                            });
-                        } else {
+                {props.type === "add" ? (
+                    <AddPokemonButton stub={first} projectID={projectID} />
+                ) : (
+                    <FormButton
+                        buttonType={ButtonType.TEXT}
+                        onClick={() => {
                             detachPokemonFromStub({
                                 projectID,
                                 pokemonID: first.attachedPokemonID!,
                                 stubHash: first.stubHash,
                             });
-                        }
-                    }}
-                >
-                    {props.type === "add" ? "Add" : "Remove"}
-                </FormButton>
+                        }}
+                    >
+                        Remove
+                    </FormButton>
+                )}
             </div>
+        </DecoratedCard>
+    );
+}
+
+function AddPokemonButton(props: {
+    stub: IPokemonBreederStub;
+    projectID: string;
+}) {
+    const { stub, projectID } = props;
+    const { attachPokemonToStub } = useStubActions();
+    const [
+        newPokemonRequirements,
+        setNewPokemonRequirements,
+    ] = useState<IPokemonFormRequirements | null>(null);
+
+    return (
+        <>
+            <Flyout
+                items={
+                    <>
+                        <MenuItem
+                            onSelect={() => {
+                                const minimalIVs: Partial<IVRequirements> = {};
+                                Object.entries(stub.ivs).forEach(
+                                    ([stat, data]) => {
+                                        if (data.value) {
+                                            minimalIVs[stat as Stat] = data;
+                                        }
+                                    },
+                                );
+
+                                setNewPokemonRequirements({
+                                    allowedIdentifiers: stub.allowedIdentifiers,
+                                    nature: stub.nature ?? undefined,
+                                    gender: stub.gender ?? undefined,
+                                    requiredIVs:
+                                        Object.keys(minimalIVs).length > 0
+                                            ? minimalIVs
+                                            : undefined,
+                                });
+                            }}
+                        >
+                            New Pokemon
+                        </MenuItem>
+                        <MenuItem onSelect={() => {}}>
+                            Existing Pokemon
+                        </MenuItem>
+                    </>
+                }
+                buttonContent={"Add"}
+                buttonType={ButtonType.TEXT}
+            />
             {newPokemonRequirements && (
                 <PokemonForm
                     requirements={newPokemonRequirements}
@@ -204,12 +233,12 @@ function ShoppingListStubItem(props: {
                         attachPokemonToStub({
                             projectID,
                             pokemonID: pokemon.id,
-                            stubHash: first.stubHash,
+                            stubHash: stub.stubHash,
                         });
                     }}
                 />
             )}
-        </DecoratedCard>
+        </>
     );
 }
 

@@ -6,6 +6,7 @@
 import { getPokemon } from "@pokemmo/data/pokedex";
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormSelectSimple } from "@pokemmo/form/FormSelectSimple";
+import { GridLayout, GridSection } from "@pokemmo/layout/GridLayout";
 import {
     PageContainer,
     pageContainerPadding,
@@ -23,7 +24,11 @@ import {
     usePokemonActions,
 } from "@pokemmo/pokemon/pokemonHooks";
 import { IPokemon } from "@pokemmo/pokemon/PokemonTypes";
-import { colorPrimary, fontSizeLarge } from "@pokemmo/styles/variables";
+import {
+    colorPrimary,
+    fontSizeLarge,
+    fontSizeTitle,
+} from "@pokemmo/styles/variables";
 import { useQueryParamsSync } from "@pokemmo/utils";
 import queryString from "query-string";
 import React, { useState } from "react";
@@ -68,31 +73,31 @@ export function PokemonPage() {
                         sortValue={sortValue}
                         onSortValueChange={setSortValue}
                     />
-                    <div>
+                    <GridLayout>
                         {Object.values(sortedPokemon).map(
                             ({ pokemon, title }, i) => {
                                 return (
-                                    <div key={i}>
-                                        <h2
-                                            css={{
-                                                marginTop: 18,
-                                                marginBottom: 0,
-                                            }}
+                                    <React.Fragment>
+                                        <GridSection
+                                            css={{ fontSize: fontSizeTitle }}
+                                            title={title}
+                                            key={i}
                                         >
-                                            {title}
-                                        </h2>
-                                        <PokemonGrid
-                                            pokemon={pokemon}
-                                            selectedPokemon={selectedPokemon}
-                                            setSelectedPokemon={
-                                                setSelectedPokemon
-                                            }
-                                        />
-                                    </div>
+                                            <PokemonGridItems
+                                                pokemon={pokemon}
+                                                selectedPokemon={
+                                                    selectedPokemon
+                                                }
+                                                setSelectedPokemon={
+                                                    setSelectedPokemon
+                                                }
+                                            />
+                                        </GridSection>
+                                    </React.Fragment>
                                 );
                             },
                         )}
-                    </div>
+                    </GridLayout>
                 </div>
             }
             subNav={
@@ -110,18 +115,11 @@ interface ISelectionManager {
     setSelectedPokemon: (pokemon: IPokemon[]) => void;
 }
 
-function PokemonGrid(props: { pokemon: IPokemon[] } & ISelectionManager) {
+function PokemonGridItems(props: { pokemon: IPokemon[] } & ISelectionManager) {
     const { selectedPokemon, setSelectedPokemon } = props;
 
     return (
-        <div
-            css={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                marginLeft: -gridItemPadding,
-                maxWidth: `calc(100% + ${gridItemPadding * 2}px)`,
-            }}
-        >
+        <>
             {props.pokemon.map(pokemon => {
                 const handleClick = () => {
                     if (selectedPokemon.includes(pokemon)) {
@@ -154,7 +152,7 @@ function PokemonGrid(props: { pokemon: IPokemon[] } & ISelectionManager) {
                     />
                 );
             })}
-        </div>
+        </>
     );
 }
 
@@ -261,7 +259,7 @@ function PokemonActionHeader(props: {
                         onClick={() => {
                             selectedPokemon.forEach(pokemon => {
                                 deletePokemon({
-                                    pokemonID: pokemon.id,
+                                    pokemon,
                                 });
                             });
                             setSelectedPokemon([]);

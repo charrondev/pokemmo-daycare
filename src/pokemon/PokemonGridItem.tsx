@@ -27,8 +27,6 @@ interface IProps extends React.HTMLAttributes<HTMLDivElement> {
 const standardGridLabelStyle = css({
     flex: 1,
     minWidth: "50%",
-    marginBottom: 3,
-    padding: "6px 0",
 });
 
 export function PokemonGridItem(_props: IProps) {
@@ -79,19 +77,11 @@ export function PokemonGridItem(_props: IProps) {
             </h4>
             <div css={{ display: "flex", flexWrap: "wrap" }}>
                 {pokemon.nature && (
-                    <LabelAndValue
-                        label="Nature"
-                        inline
-                        css={standardGridLabelStyle}
-                    >
+                    <LabelAndValue label="Nature" css={standardGridLabelStyle}>
                         {pokemon.nature}
                     </LabelAndValue>
                 )}
-                <LabelAndValue
-                    label="Gender"
-                    inline
-                    css={standardGridLabelStyle}
-                >
+                <LabelAndValue label="Gender" css={standardGridLabelStyle}>
                     {uppercaseFirst(pokemon.gender)}
                     {pokemon.gender === Gender.MALE ? "♂" : "♀"}
                 </LabelAndValue>
@@ -106,8 +96,6 @@ export function PokemonGridItem(_props: IProps) {
                         css={{
                             flex: 1,
                             minWidth: "100%",
-                            marginBottom: 3,
-                            marginTop: -6,
                         }}
                         ivRequirements={pokemon.ivs}
                     />

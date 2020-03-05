@@ -20,7 +20,7 @@ import {
 import { useProject } from "@pokemmo/projects/projectHooks";
 import { Card } from "@pokemmo/styles/Card";
 import { fontSizeLarge, makeSingleBorder } from "@pokemmo/styles/variables";
-import { uppercaseFirst } from "@pokemmo/utils";
+import { numberWithCommas, uppercaseFirst } from "@pokemmo/utils";
 import { sample } from "lodash-es";
 import React, { useDebugValue } from "react";
 
@@ -165,7 +165,12 @@ function BreederPart(props: {
                         {props.heldItem ?? "N/A"}
                     </LabelAndValue>
                     <LabelAndValue label="Ownership" vertical>
-                        {ownStatus ? uppercaseFirst(ownStatus) : "Not Owned"}
+                        {ownStatus
+                            ? uppercaseFirst(ownStatus) +
+                              (boughtPrice
+                                  ? ` (¥${numberWithCommas(boughtPrice)})`
+                                  : "")
+                            : "Not Owned"}
                     </LabelAndValue>
                 </div>
             </div>
@@ -186,7 +191,7 @@ function useBreederStubPairs(projectID: string) {
     const incompleteStubs: IPokemonBreederStub[] = [];
     const completeStubs: IPokemonBreederStub[] = [];
 
-    for (const [stubHash, stubGroup] of Object.entries(project.breederStubs)) {
+    for (const stubGroup of Object.values(project.breederStubs)) {
         stubGroup.forEach(stub => {
             if (stub.attachedPokemonID || !stub.parents) {
                 completeStubs.push(stub);

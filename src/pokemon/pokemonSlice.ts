@@ -4,6 +4,7 @@
  */
 
 import { BreedStatus, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
+import { stubSlice } from "@pokemmo/projects/stubSlice";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type PokemonByID = Record<string, IPokemon>;
@@ -32,9 +33,9 @@ export const pokemonSlice = createSlice({
         },
         deletePokemon: (
             state: IPokemonState,
-            action: PayloadAction<{ pokemonID: string }>,
+            action: PayloadAction<{ pokemon: IPokemon }>,
         ) => {
-            const { pokemonID } = action.payload;
+            const pokemonID = action.payload.pokemon.id;
             if (state.pokemonByID[pokemonID]) {
                 delete state.pokemonByID[pokemonID];
             }
@@ -49,5 +50,21 @@ export const pokemonSlice = createSlice({
             const { pokemon, status } = action.payload;
             pokemon.breedStatus = status;
         },
+    },
+    extraReducers: builder => {
+        builder.addCase(
+            stubSlice.actions.attachPokemonToStub,
+            (state, action) => {
+                const { projectID, pokemonID } = action.payload;
+                const pokemon = state.pokemonByID[pokemonID];
+                if (pokemon) {
+                    if (pokemon.projectIDs) {
+                        pokemon.projectIDs.push(projectID);
+                    } else {
+                        pokemon.projectIDs = [projectID];
+                    }
+                }
+            },
+        );
     },
 });

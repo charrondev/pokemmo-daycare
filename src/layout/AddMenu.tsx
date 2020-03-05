@@ -5,20 +5,10 @@
 
 import { css } from "@emotion/core";
 import IconAdd from "@pokemmo/icons/IconAdd.svg";
+import { Flyout } from "@pokemmo/layout/Flyout";
 import { PokemonForm } from "@pokemmo/pokemon/PokemonForm";
 import { ProjectForm } from "@pokemmo/projects/ProjectForm";
-import {
-    borderRadius,
-    fontSizeLarge,
-    makeSingleBorder,
-} from "@pokemmo/styles/variables";
-import {
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    MenuPopover,
-} from "@reach/menu-button";
+import { MenuItem } from "@reach/menu-button";
 import React, { useState } from "react";
 
 interface IProps {
@@ -39,20 +29,10 @@ export function AddMenu(props: IProps) {
 
     return (
         <>
-            <Menu>
-                <MenuButton className={props.className}>
-                    <IconAdd />
-                </MenuButton>
-                <MenuPopover
-                    position={(targetRect, ownRect) => {
-                        return {
-                            left: targetRect!.right + 9,
-                            top: targetRect?.top,
-                            width: ownRect?.width,
-                            minWidth: 160,
-                        };
-                    }}
-                >
+            <Flyout
+                className={props.className}
+                buttonContent={<IconAdd />}
+                scrim={
                     <div
                         css={{
                             position: "fixed",
@@ -63,18 +43,17 @@ export function AddMenu(props: IProps) {
                             background: "rgba(0, 0, 0, 0.2)",
                         }}
                     ></div>
-                    <MenuItems
-                        css={{
-                            position: "relative",
-                            zIndex: 1,
-                            padding: "9px 0",
-                            border: makeSingleBorder(1),
-                            borderColor: "rgba(0, 0, 0, 0.1)",
-                            borderRadius: borderRadius,
-                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                            fontSize: fontSizeLarge,
-                        }}
-                    >
+                }
+                position={(targetRect, ownRect) => {
+                    return {
+                        left: targetRect!.right + 9,
+                        top: targetRect?.top,
+                        width: ownRect?.width,
+                        minWidth: 160,
+                    };
+                }}
+                items={
+                    <>
                         <MenuItem
                             onSelect={() => setShowProjectModal(true)}
                             css={menuItemStyles}
@@ -87,9 +66,9 @@ export function AddMenu(props: IProps) {
                         >
                             Add Pokemon
                         </MenuItem>
-                    </MenuItems>
-                </MenuPopover>
-            </Menu>
+                    </>
+                }
+            />
             {showPokemonModal && (
                 <PokemonForm onDismiss={() => setShowPokemonModal(false)} />
             )}

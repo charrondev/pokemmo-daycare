@@ -131,10 +131,16 @@ function CalculateBar(props: { project: IProject }) {
                 <FormButton
                     buttonType={ButtonType.PRIMARY}
                     onClick={() => {
+                        const url = `/projects/${project.projectID}/guide`;
+
+                        if (hasBeenCalculated) {
+                            history.push(url);
+                            return;
+                        }
+
                         const breeders = PokemonBuilder.from(
                             pokemon,
                         ).calculateBreeders();
-                        console.table(breeders);
                         const stubs: Record<string, IPokemonBreederStub[]> = {};
                         breeders.forEach(breeder => {
                             if (stubs[breeder.stubHash]) {
@@ -145,7 +151,7 @@ function CalculateBar(props: { project: IProject }) {
                         });
 
                         updateProject({ projectID, breederStubs: stubs });
-                        history.push(`/projects/${project.projectID}/guide`);
+                        history.push(url);
                     }}
                 >
                     {hasBeenCalculated ? "View" : "Calculate"}

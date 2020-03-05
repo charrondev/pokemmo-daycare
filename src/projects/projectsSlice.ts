@@ -8,6 +8,7 @@ import {
     IPokemonBreederStub,
     IVRequirements,
 } from "@pokemmo/pokemon/PokemonTypes";
+import { stubSlice } from "@pokemmo/projects/stubSlice";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IProject {
@@ -119,43 +120,6 @@ export const projectsSlice = createSlice({
                 state.projectsByID[projectID].altBreederIdentifiers = [];
             }
         },
-        attachPokemonToStub: (
-            state,
-            action: ProjectPayload<{ pokemonID: string; stubHash: string }>,
-        ) => {
-            if (ensureProject(state, action)) {
-                handleDates(state, action);
-                const { projectID, stubHash, pokemonID } = action.payload;
-                const project = state.projectsByID[projectID];
-                const stubs = project.breederStubs[stubHash];
-                const firstUnattachedStub = stubs.find(stub => {
-                    if (!stub.attachedPokemonID) {
-                        return stub;
-                    }
-                });
-                if (firstUnattachedStub) {
-                    firstUnattachedStub.attachedPokemonID = pokemonID;
-                }
-            }
-        },
-        detachPokemonFromStub: (
-            state,
-            action: ProjectPayload<{ pokemonID: string; stubHash: string }>,
-        ) => {
-            if (ensureProject(state, action)) {
-                handleDates(state, action);
-                const { projectID, stubHash, pokemonID } = action.payload;
-                const project = state.projectsByID[projectID];
-                const stub = project.breederStubs[stubHash]?.find(stub => {
-                    if (stub.attachedPokemonID === pokemonID) {
-                        return stub;
-                    }
-                });
-                if (stub) {
-                    stub.attachedPokemonID = null;
-                }
-            }
-        },
         setPokemon: (state, action: ProjectPayload<{ pokemonID: string }>) => {
             if (ensureProject(state, action)) {
                 handleDates(state, action);
@@ -165,16 +129,59 @@ export const projectsSlice = createSlice({
         },
     },
     extraReducers: builder =>
-        builder.addCase(
-            pokemonSlice.actions.setBreedStatus,
-            (state, action) => {
-                // const { pokemon, status } = action.payload;
-                // if (status === BreedStatus.USED) {
-                // const projects = pokemon.projectIDs.map(id => state[id]);
-                // projects.forEach(proj => {
-                //     proj.expandedPokemonIDs[pokemon.id] = false;
-                // });
-                // }
-            },
-        ),
+        builder
+            .addCase(stubSlice.actions.attachPokemonToStub, (state, action) => {
+                if (ensureProject(state, action)) {
+                    handleDates(state, action);
+                    const { projectID, stubHash, pokemonID } = action.payload;
+                    const project = state.projectsByID[projectID];
+                    const stubs = project.breederStubs[stubHash];
+                    const firstUnattachedStub = stubs.find(stub => {
+                        return !stub.attachedPokemonID;
+                    });
+                    if (firstUnattachedStub) {
+                        firstUnattachedStub.attachedPokemonID = pokemonID;
+                    }
+                }
+            })
+            .addCase(
+                stubSlice.actions.detachPokemonFromStub,
+                (state, action) => {
+                    if (ensureProject(state, action)) {
+                        handleDates(state, action);
+                        const {
+                            projectID,
+                            stubHash,
+                            pokemonID,
+                        } = action.payload;
+                        const project = state.projectsByID[projectID];
+                        const stub = project.breederStubs[stubHash]?.find(
+                            stub => {
+                                if (stub.attachedPokemonID === pokemonID) {
+                                    return stub;
+                                }
+                            },
+                        );
+                        if (stub) {
+                            stub.attachedPokemonID = null;
+                        }
+                    }
+                },
+            )
+            .addCase(pokemonSlice.actions.deletePokemon, (state, action) => {
+                const { pokemon } = action.payload;
+                pokemon.projectIDs.forEach(projectID => {
+                    const project = state.projectsByID[projectID];
+                    if (project) {
+                        // Go through all breeder stubs and remove the pokemon.
+                        Object.values(project.breederStubs)
+                            .flat()
+                            .forEach(stub => {
+                                if (stub.attachedPokemonID === pokemon.id) {
+                                    stub.attachedPokemonID = null;
+                                }
+                            });
+                    }
+                });
+            }),
 });

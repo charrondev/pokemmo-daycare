@@ -27,7 +27,7 @@ interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     buttonType?: ButtonType;
 }
 
-const buttonCommon: CssType = {
+export const buttonCommonCSS: CssType = {
     appearance: "none",
     padding: "4px 12px",
     minHeight: 36,
@@ -151,7 +151,11 @@ export const FormButton = React.forwardRef(function FormButton(
             {...props}
             type={buttonType === ButtonType.SUBMIT ? "submit" : "button"}
             ref={ref}
-            css={[props.className, buttonCommon, cssForButtonType(buttonType)]}
+            css={[
+                props.className,
+                buttonCommonCSS,
+                cssForButtonType(buttonType),
+            ]}
         />
     );
 });
