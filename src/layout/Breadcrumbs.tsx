@@ -32,7 +32,6 @@ export function Breadcrumbs(props: IProps) {
         >
             {crumbs.map((crumb, i) => {
                 const isLast = i === crumbs.length - 1;
-                const crumbUrl = new URL(window.location.host + crumb.href);
 
                 return (
                     <React.Fragment key={i}>
@@ -42,7 +41,7 @@ export function Breadcrumbs(props: IProps) {
                                 fontWeight: 500,
                             }}
                             aria-current={
-                                crumbUrl.pathname === location.pathname
+                                crumb.href === location.pathname
                                     ? "page"
                                     : undefined
                             }
