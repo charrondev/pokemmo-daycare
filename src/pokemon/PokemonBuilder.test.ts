@@ -117,6 +117,66 @@ describe("PokemonBuilder", () => {
             expect(breeders[6].allowedIdentifiers).toEqual(["main"]);
             expect(breeders[6].nature).toEqual(nature);
         });
+
+        it("calculates the lowest priced stats", () => {
+            const builder = PokemonBuilder.create("magikarp")
+                .ivs(
+                    IVBuilder.create()
+                        .add(Stat.HP, {
+                            value: 31,
+                            prices: {
+                                [Gender.FEMALE]: 13000,
+                                [Gender.MALE]: 11000,
+                            },
+                        })
+                        .add(Stat.SPECIAL_ATTACK, {
+                            value: 31,
+                            prices: {
+                                [Gender.FEMALE]: 2500,
+                                [Gender.MALE]: 4000,
+                            },
+                        })
+                        .add(Stat.DEFENSE, {
+                            value: 31,
+                            prices: {
+                                [Gender.FEMALE]: 10000,
+                                [Gender.MALE]: 10000,
+                            },
+                        })
+                        .result(),
+                )
+                .gender(Gender.FEMALE);
+            const breeders = builder.calculateBreeders();
+
+            expect(breeders).toHaveLength(7);
+
+            const singleIVBreeders = breeders.filter(stub => {
+                let count = 0;
+                Object.values(stub.ivs).forEach(stat => {
+                    if (stat.value === 31) {
+                        count++;
+                    }
+                });
+
+                return count === 1;
+            });
+
+            expect(singleIVBreeders).toHaveLength(4);
+
+            const countSpecialAttack = singleIVBreeders.filter(
+                stub => stub.ivs.spAtk.value === 31,
+            ).length;
+            const countHP = singleIVBreeders.filter(
+                stub => stub.ivs.hp.value === 31,
+            ).length;
+            const countDefense = singleIVBreeders.filter(
+                stub => stub.ivs.hp.value === 31,
+            ).length;
+
+            expect(countSpecialAttack).toEqual(2);
+            expect(countHP).toEqual(1);
+            expect(countDefense).toEqual(1);
+        });
     });
 });
 

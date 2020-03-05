@@ -300,6 +300,7 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             );
 
             if (!secondParentStat) {
+                console.error(childStub);
                 throw new Error("Shouldn't happen");
             }
             const firstParentIVs = subtractIVRequirement(
@@ -443,8 +444,7 @@ export class PokemonBuilder extends PokemonStoreAccessor {
         gender: Gender,
     ): Stat | null {
         let mostExpensiveIV: Stat | null = null;
-        let mostExpensiveIVPrice: number =
-            PokemonBuilder.AVERAGE_UNDEFINED_PRICE;
+        let mostExpensiveIVPrice: number = 0;
 
         for (const [stat, info] of Object.entries(ivs)) {
             if (info.value === 0) {
@@ -458,6 +458,12 @@ export class PokemonBuilder extends PokemonStoreAccessor {
                 mostExpensiveIV = stat as Stat;
             }
         }
+
+        console.log(
+            "Most expensive stat is",
+            mostExpensiveIV,
+            mostExpensiveIVPrice,
+        );
 
         return mostExpensiveIV;
     }
