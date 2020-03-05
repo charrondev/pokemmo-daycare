@@ -51,7 +51,7 @@ export function FormLabel(props: IProps) {
             <label
                 htmlFor={inputID}
                 id={labelID}
-                css={{ display: "block" }}
+                css={{ display: "block", position: "relative" }}
                 {...props}
             >
                 <div

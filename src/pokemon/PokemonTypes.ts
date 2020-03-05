@@ -70,6 +70,7 @@ export interface IPokemonBreederStub {
     generation: number;
     attachedPokemonID: string | null;
     stubHash: BreederStubHash;
+    stubID: string;
     parents: Record<Gender, BreederStubHash> | null;
     childHash: BreederStubHash | null;
     forcedIdentifier?: string | null;

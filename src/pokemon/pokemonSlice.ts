@@ -43,11 +43,12 @@ export const pokemonSlice = createSlice({
         setBreedStatus: (
             state,
             action: PayloadAction<{
-                pokemon: IPokemon;
+                pokemonID: string;
                 status: BreedStatus;
             }>,
         ) => {
-            const { pokemon, status } = action.payload;
+            const { pokemonID, status } = action.payload;
+            const pokemon = state.pokemonByID[pokemonID];
             pokemon.breedStatus = status;
         },
     },

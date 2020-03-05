@@ -46,6 +46,22 @@ export function subtractIVRequirement(
     return newRequirements;
 }
 
+export function ivsMeetMinimums(
+    ivs: IVRequirements,
+    minimums: Partial<IVRequirements>,
+) {
+    for (const [minimumStat, minimumData] of Object.entries(minimums)) {
+        if (
+            minimumData &&
+            ivs[minimumStat as Stat].value < minimumData?.value
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 export function nonEmptyIVs(ivs: IVRequirements): Partial<IVRequirements> {
     const result: Partial<IVRequirements> = {};
     for (const [stat, data] of Object.entries(ivs)) {

@@ -133,14 +133,22 @@ export const projectsSlice = createSlice({
             .addCase(stubSlice.actions.attachPokemonToStub, (state, action) => {
                 if (ensureProject(state, action)) {
                     handleDates(state, action);
-                    const { projectID, stubHash, pokemonID } = action.payload;
+                    const {
+                        projectID,
+                        stubHash,
+                        stubID,
+                        pokemonID,
+                    } = action.payload;
                     const project = state.projectsByID[projectID];
                     const stubs = project.breederStubs[stubHash];
-                    const firstUnattachedStub = stubs.find(stub => {
-                        return !stub.attachedPokemonID;
+                    const stubModify = stubs.find(stub => {
+                        const matchesSpecificID = stubID
+                            ? stub.stubID === stubID
+                            : true;
+                        return !stub.attachedPokemonID && matchesSpecificID;
                     });
-                    if (firstUnattachedStub) {
-                        firstUnattachedStub.attachedPokemonID = pokemonID;
+                    if (stubModify) {
+                        stubModify.attachedPokemonID = pokemonID;
                     }
                 }
             })

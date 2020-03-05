@@ -12,6 +12,7 @@ type IStubAttachmentAction = PayloadAction<{
     projectID: string;
     pokemonID: string;
     stubHash: string;
+    stubID?: string;
 }>;
 
 export const stubSlice = createSlice({

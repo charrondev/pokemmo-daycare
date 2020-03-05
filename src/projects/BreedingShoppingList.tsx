@@ -4,32 +4,19 @@
  */
 
 import { getPokemon } from "@pokemmo/data/pokedex";
-import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { LabelAndValue } from "@pokemmo/form/LabelAndValue";
-import { Flyout } from "@pokemmo/layout/Flyout";
 import { GridLayout, GridSection } from "@pokemmo/layout/GridLayout";
 import { Separator } from "@pokemmo/layout/Separator";
-import { ExistingPokemonChooser } from "@pokemmo/pokemon/ExistingPokemonChooser";
-import { IPokemonFilters } from "@pokemmo/pokemon/PokemonFilters";
-import {
-    IPokemonFormRequirements,
-    PokemonForm,
-} from "@pokemmo/pokemon/PokemonForm";
 import { PokemonMeta } from "@pokemmo/pokemon/PokemonMeta";
-import {
-    IPokemonBreederStub,
-    IVRequirements,
-    Stat,
-} from "@pokemmo/pokemon/PokemonTypes";
+import { IPokemonBreederStub, Stat } from "@pokemmo/pokemon/PokemonTypes";
+import { BreedingAttachButton } from "@pokemmo/projects/BreedingAttachButton";
 import { colorForStat } from "@pokemmo/projects/IVView";
 import { useProject } from "@pokemmo/projects/projectHooks";
 import { IProject } from "@pokemmo/projects/projectsSlice";
-import { useStubActions } from "@pokemmo/projects/stubSlice";
 import { DecoratedCard } from "@pokemmo/styles/Card";
 import { notEmpty } from "@pokemmo/utils";
-import { MenuItem } from "@reach/menu-button";
-import React, { useDebugValue, useMemo, useState } from "react";
+import React, { useDebugValue } from "react";
 
 export function BreedingShoppingList(props: { project: IProject }) {
     const { project } = props;
@@ -111,7 +98,6 @@ function ShoppingListStubItem(props: {
     type: "add" | "remove";
 }) {
     const { projectID } = props;
-    const { detachPokemonFromStub } = useStubActions();
     const { stubs } = props;
     const first = stubs[0];
 
@@ -165,136 +151,9 @@ function ShoppingListStubItem(props: {
             </div>
             <div css={{ display: "flex", alignItems: "center" }}>
                 <Separator vertical />
-                {props.type === "add" ? (
-                    <AddPokemonButton stub={first} projectID={projectID} />
-                ) : (
-                    <FormButton
-                        buttonType={ButtonType.TEXT}
-                        onClick={() => {
-                            detachPokemonFromStub({
-                                projectID,
-                                pokemonID: first.attachedPokemonID!,
-                                stubHash: first.stubHash,
-                            });
-                        }}
-                    >
-                        Remove
-                    </FormButton>
-                )}
+                <BreedingAttachButton stub={first} projectID={projectID} />
             </div>
         </DecoratedCard>
-    );
-}
-
-function AddPokemonButton(props: {
-    stub: IPokemonBreederStub;
-    projectID: string;
-}) {
-    const { stub, projectID } = props;
-    const { attachPokemonToStub } = useStubActions();
-    const [
-        newPokemonRequirements,
-        setNewPokemonRequirements,
-    ] = useState<IPokemonFormRequirements | null>(null);
-    const [
-        existingPokemonFilters,
-        setExistingPokemonFilters,
-    ] = useState<IPokemonFilters | null>(null);
-
-    const allEggGroupsForStub = useMemo(() => {
-        const result: Set<string> = new Set();
-        stub.allowedIdentifiers.forEach(identifier => {
-            const dexMon = getPokemon(identifier);
-            if (dexMon) {
-                result.add(dexMon.eggGroup1);
-                if (dexMon.eggGroup2) {
-                    result.add(dexMon.eggGroup2);
-                }
-            }
-        });
-        return Array.from(result);
-    }, [stub]);
-
-    return (
-        <>
-            <Flyout
-                items={
-                    <>
-                        <MenuItem
-                            onSelect={() => {
-                                const minimalIVs: Partial<IVRequirements> = {};
-                                Object.entries(stub.ivs).forEach(
-                                    ([stat, data]) => {
-                                        if (data.value) {
-                                            minimalIVs[stat as Stat] = data;
-                                        }
-                                    },
-                                );
-
-                                setNewPokemonRequirements({
-                                    allowedIdentifiers: stub.allowedIdentifiers,
-                                    nature: stub.nature ?? undefined,
-                                    gender: stub.gender ?? undefined,
-                                    requiredIVs:
-                                        Object.keys(minimalIVs).length > 0
-                                            ? minimalIVs
-                                            : undefined,
-                                });
-                            }}
-                        >
-                            New Pokemon
-                        </MenuItem>
-                        <MenuItem
-                            onSelect={() => {
-                                setExistingPokemonFilters({
-                                    eggGroups: allEggGroupsForStub,
-                                    pokemonIdentifiers: stub.allowedIdentifiers,
-                                    projectIDs: null,
-                                    hideUsedPokemon: true,
-                                    hideProjectPokemon: true,
-                                    gender: stub.gender,
-                                    natures: stub.nature ? [stub.nature] : null,
-                                });
-                            }}
-                        >
-                            Existing Pokemon
-                        </MenuItem>
-                    </>
-                }
-                buttonContent={"Add"}
-                buttonType={ButtonType.TEXT}
-            />
-            {existingPokemonFilters && (
-                <ExistingPokemonChooser
-                    filters={existingPokemonFilters}
-                    onDismiss={() => {
-                        setExistingPokemonFilters(null);
-                    }}
-                    onSelect={pokemon => {
-                        attachPokemonToStub({
-                            projectID,
-                            pokemonID: pokemon.id,
-                            stubHash: stub.stubHash,
-                        });
-                    }}
-                />
-            )}
-            {newPokemonRequirements && (
-                <PokemonForm
-                    requirements={newPokemonRequirements}
-                    onDismiss={() => {
-                        setNewPokemonRequirements(null);
-                    }}
-                    afterSubmit={pokemon => {
-                        attachPokemonToStub({
-                            projectID,
-                            pokemonID: pokemon.id,
-                            stubHash: stub.stubHash,
-                        });
-                    }}
-                />
-            )}
-        </>
     );
 }
 

@@ -389,6 +389,7 @@ export class PokemonBuilder extends PokemonStoreAccessor {
             ...stub,
             parents: null,
             childHash: null,
+            stubID: uuidv4(),
             stubHash: "stub-" + hashString(id).toString(),
             attachedPokemonID: null,
         };

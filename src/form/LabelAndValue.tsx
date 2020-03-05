@@ -49,7 +49,7 @@ export function LabelAndValue(_props: IProps) {
                 css={[
                     labelStyle,
                     vertical && {
-                        marginRight: 0,
+                        marginLeft: 0,
                         marginBottom: 6,
                     },
                 ]}
@@ -57,7 +57,7 @@ export function LabelAndValue(_props: IProps) {
                 {label}
                 {vertical ? "" : ":"}
             </strong>
-            <span css={[vertical && { margin: "4px 4px" }]}>
+            <span css={[vertical && { margin: "4px 0" }]}>
                 {props.children}
             </span>
         </label>

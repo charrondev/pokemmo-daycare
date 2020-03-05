@@ -8,16 +8,28 @@ import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { LabelAndValue, labelStyle } from "@pokemmo/form/LabelAndValue";
 import { Separator } from "@pokemmo/layout/Separator";
-import { usePokemon } from "@pokemmo/pokemon/pokemonHooks";
+import { PokemonBuilder } from "@pokemmo/pokemon/PokemonBuilder";
+import {
+    useAllPokemon,
+    usePokemon,
+    usePokemonActions,
+} from "@pokemmo/pokemon/pokemonHooks";
 import { PokemonMeta } from "@pokemmo/pokemon/PokemonMeta";
 import { PokemonSprite } from "@pokemmo/pokemon/PokemonSprite";
-import { Gender, IPokemonBreederStub } from "@pokemmo/pokemon/PokemonTypes";
+import {
+    BreedStatus,
+    Gender,
+    IPokemonBreederStub,
+    OwnershipStatus,
+} from "@pokemmo/pokemon/PokemonTypes";
+import { BreedingAttachButton } from "@pokemmo/projects/BreedingAttachButton";
 import {
     BreedingItem,
     helpItemForPair,
     IBreedingPair,
 } from "@pokemmo/projects/breedingUtils";
 import { useProject } from "@pokemmo/projects/projectHooks";
+import { useStubActions } from "@pokemmo/projects/stubSlice";
 import { Card } from "@pokemmo/styles/Card";
 import { fontSizeLarge, makeSingleBorder } from "@pokemmo/styles/variables";
 import { numberWithCommas, uppercaseFirst } from "@pokemmo/utils";
@@ -29,50 +41,167 @@ interface IProps {
 }
 
 export function BreedingGuide(props: IProps) {
-    const pairs = useBreederStubPairs(props.projectID);
-    console.log(pairs);
+    const pokemonByID = useAllPokemon();
+    const allPairs = useBreederStubPairs(props.projectID);
+
+    const eggPairs: IBreedingPair[] = [];
+    const readyPairs: IBreedingPair[] = [];
+    const notReadyPairs: IBreedingPair[] = [];
+    const completePairs: IBreedingPair[] = [];
+
+    allPairs.forEach(pair => {
+        if (!pair.parents) {
+            return;
+            // Don't show.
+        }
+
+        const ownPokemon =
+            pair.stub.attachedPokemonID &&
+            pokemonByID[pair.stub.attachedPokemonID];
+        if (ownPokemon) {
+            if (ownPokemon.breedStatus === BreedStatus.EGG) {
+                eggPairs.push(pair);
+                return;
+            } else {
+                completePairs.push(pair);
+                return;
+            }
+        }
+
+        const { male, female } = pair.parents;
+        if (
+            pair.parents &&
+            male.attachedPokemonID &&
+            female.attachedPokemonID
+        ) {
+            const malePokemon = pokemonByID[male.attachedPokemonID];
+            const femalePokemon = pokemonByID[female.attachedPokemonID];
+
+            if (
+                malePokemon?.breedStatus === BreedStatus.NONE &&
+                femalePokemon?.breedStatus === BreedStatus.NONE
+            ) {
+                readyPairs.push(pair);
+                return;
+            }
+        }
+
+        notReadyPairs.push(pair);
+    });
     return (
         <div>
             <FormHeading
                 title="Breeding Guide"
                 description="Get an estimation of the order to breed the pokemon that minimizes cost. Track your progress so you don’t repeat steps."
             />
-            <FormHeading title="Ready to Breed" asElement="h3" />
-            {pairs.map((pair, i) => {
-                return <BreederPair stubWithParents={pair} key={i} />;
-            })}
+            {eggPairs.length > 0 && (
+                <>
+                    <FormHeading title="Eggs" asElement="h3" />
+                    {eggPairs.map((pair, i) => {
+                        return (
+                            <BreederPair
+                                projectID={props.projectID}
+                                pair={pair}
+                                key={i}
+                            />
+                        );
+                    })}
+                </>
+            )}
+            {readyPairs.length > 0 && (
+                <>
+                    <FormHeading title="Ready to Breed" asElement="h3" />
+                    {readyPairs.map((pair, i) => {
+                        return (
+                            <BreederPair
+                                projectID={props.projectID}
+                                pair={pair}
+                                key={i}
+                            />
+                        );
+                    })}
+                </>
+            )}
+
+            {notReadyPairs.length > 0 && (
+                <>
+                    <FormHeading title="Not Ready" asElement="h3" />
+                    {notReadyPairs.map((pair, i) => {
+                        return (
+                            <BreederPair
+                                projectID={props.projectID}
+                                pair={pair}
+                                key={i}
+                            />
+                        );
+                    })}
+                </>
+            )}
+            {completePairs.length > 0 && (
+                <>
+                    <FormHeading title="Complete" asElement="h3" />
+                    {completePairs.map((pair, i) => {
+                        return (
+                            <BreederPair
+                                projectID={props.projectID}
+                                pair={pair}
+                                key={i}
+                            />
+                        );
+                    })}
+                </>
+            )}
         </div>
     );
 }
 
-function BreederPair(props: { stubWithParents: IBreedingPair }) {
-    const { stubWithParents } = props;
+function BreederPair(props: { pair: IBreedingPair; projectID: string }) {
+    const { pair, projectID } = props;
+    const childPokemon = usePokemon(pair.stub.attachedPokemonID);
+    const { attachPokemonToStub } = useStubActions();
+    const { setBreedStatus, addPokemon } = usePokemonActions();
+    const femaleParent = usePokemon(
+        pair.parents?.female.attachedPokemonID ?? null,
+    );
 
-    if (!stubWithParents.parents) {
+    if (!pair.parents) {
         return null;
     }
-    const { male, female } = stubWithParents.parents;
+    const { male, female } = pair.parents;
 
     if (!male || !female) {
         // Don't show stubs without parents. They don't need to be bred.
         return null;
     }
 
-    const heldItems = helpItemForPair(stubWithParents);
-    const canBreed = !!male.attachedPokemonID && !!female.attachedPokemonID;
+    const heldItems = helpItemForPair(pair);
+    const hasAttachedParents =
+        !!male.attachedPokemonID && !!female.attachedPokemonID;
+    const isEgg = childPokemon?.breedStatus === BreedStatus.EGG;
+    const isUsed = childPokemon?.breedStatus === BreedStatus.USED;
+    const canBreed = hasAttachedParents && !isEgg && !isUsed;
 
     return (
         <Card
             css={{ marginBottom: 24, display: "flex", alignItems: "stretch" }}
         >
-            <div>
-                <BreederPart stub={male} heldItem={heldItems.male} />
+            <div css={{ flex: 1 }}>
+                <BreederPart
+                    projectID={projectID}
+                    stub={male}
+                    heldItem={heldItems.male}
+                />
                 <Separator horizontal />
-                <BreederPart stub={female} heldItem={heldItems.female} />
+                <BreederPart
+                    projectID={projectID}
+                    stub={female}
+                    heldItem={heldItems.female}
+                />
             </div>
             <div
                 css={{
-                    flex: 1,
+                    flex: "0 1 auto",
+                    minWidth: 140,
                     justifyContent: "center",
                     paddingLeft: 18,
                     display: "flex",
@@ -80,22 +209,76 @@ function BreederPair(props: { stubWithParents: IBreedingPair }) {
                     borderLeft: makeSingleBorder(1),
                 }}
             >
-                <FormButton
-                    disabled={!canBreed}
-                    buttonType={ButtonType.PRIMARY}
-                >
-                    Breed
-                </FormButton>
+                {isEgg ? (
+                    <FormButton
+                        buttonType={ButtonType.PRIMARY}
+                        onClick={() => {
+                            setBreedStatus({
+                                pokemonID: pair.stub.attachedPokemonID!,
+                                status: BreedStatus.USED,
+                            });
+                        }}
+                    >
+                        Hatch
+                    </FormButton>
+                ) : (
+                    <FormButton
+                        disabled={!canBreed}
+                        buttonType={ButtonType.PRIMARY}
+                        onClick={() => {
+                            // We have to make a new pokemon from the stub.
+                            if (femaleParent) {
+                                const pokemon = PokemonBuilder.create(
+                                    femaleParent.identifier,
+                                )
+                                    .breedStatus(BreedStatus.EGG)
+                                    .gender(pair.stub.gender)
+                                    .nature(pair.stub.nature)
+                                    .projectIDs([projectID])
+                                    .ownershipStatus(OwnershipStatus.BRED)
+                                    .ivs(pair.stub.ivs)
+                                    .result();
+                                addPokemon([pokemon]);
+
+                                attachPokemonToStub({
+                                    pokemonID: pokemon.id,
+                                    stubHash: pair.stub.stubHash,
+                                    stubID: pair.stub.stubID,
+                                    projectID,
+                                });
+                            }
+
+                            if (pair.parents?.male.attachedPokemonID) {
+                                setBreedStatus({
+                                    pokemonID:
+                                        pair.parents.male.attachedPokemonID,
+                                    status: BreedStatus.USED,
+                                });
+                            }
+
+                            if (pair.parents?.female.attachedPokemonID) {
+                                setBreedStatus({
+                                    pokemonID:
+                                        pair.parents.female.attachedPokemonID,
+                                    status: BreedStatus.USED,
+                                });
+                            }
+                        }}
+                    >
+                        Breed
+                    </FormButton>
+                )}
             </div>
         </Card>
     );
 }
 
 function BreederPart(props: {
+    projectID: string;
     stub: IPokemonBreederStub;
     heldItem: BreedingItem | null;
 }) {
-    const { stub } = props;
+    const { stub, projectID } = props;
     const pokemon = usePokemon(stub.attachedPokemonID ?? null);
 
     let pokemonIdentifier =
@@ -114,57 +297,81 @@ function BreederPart(props: {
     const canBreed = !!stub.attachedPokemonID;
 
     return (
-        <div
-            css={[
-                { display: "flex", alignItems: "center" },
-                !canBreed && { opacity: 0.5 },
-            ]}
-        >
-            <PokemonSprite dexMon={dexMon} height={50} width={50} />
+        <div css={[{ display: "flex", alignItems: "center" }]}>
+            <PokemonSprite
+                dexMon={dexMon}
+                height={50}
+                width={50}
+                css={!canBreed && { opacity: 0.5 }}
+            />
             <div
-                css={{ marginLeft: 18, display: "flex", alignItems: "center" }}
+                css={{
+                    marginLeft: 18,
+                    display: "flex",
+                    alignItems: "center",
+                    flex: 1,
+                }}
             >
                 <div
-                    css={{
-                        ...labelStyle,
-                        fontWeight: "bold",
-                        fontSize: fontSizeLarge,
-                    }}
+                    css={{ display: "flex", flexDirection: "column", flex: 1 }}
                 >
-                    {dexMon.displayName}
-                </div>
-                <div
-                    css={{
-                        width: 500,
-                        display: "flex",
-                        alignItems: "baseline",
-                        flexWrap: "wrap",
+                    <div
+                        css={[
+                            {
+                                ...labelStyle,
+                                paddingLeft: 4,
+                                fontWeight: "bold",
+                                fontSize: fontSizeLarge,
+                            },
+                            !canBreed && { opacity: 0.5 },
+                        ]}
+                    >
+                        {dexMon.displayName}
+                    </div>
+                    <div
+                        css={[
+                            {
+                                flex: 1,
+                                display: "flex",
+                                alignItems: "baseline",
+                                flexWrap: "wrap",
 
-                        "& > *": {
-                            marginRight: 18,
-                        },
-                    }}
-                >
-                    <PokemonMeta
-                        ivs={pokemon?.ivs ?? stub.ivs}
-                        nature={stub.nature}
-                        gender={stub.gender}
-                    />
+                                "& > *": {
+                                    marginRight: 18,
+                                },
+                            },
+                            !canBreed && { opacity: 0.5 },
+                        ]}
+                    >
+                        <PokemonMeta
+                            ivs={pokemon?.ivs ?? stub.ivs}
+                            nature={stub.nature}
+                            gender={stub.gender}
+                        />
+                    </div>
                 </div>
                 <div
                     css={{
                         display: "flex",
                         alignItems: "center",
                         "& > *": {
-                            margin: "0 18px",
-                            minWidth: 100,
+                            marginRight: 12,
+                            minWidth: 140,
                         },
                     }}
                 >
-                    <LabelAndValue label="Held Item" vertical>
+                    <LabelAndValue
+                        label="Held Item"
+                        vertical
+                        css={!canBreed && { opacity: 0.5 }}
+                    >
                         {props.heldItem ?? "N/A"}
                     </LabelAndValue>
-                    <LabelAndValue label="Ownership" vertical>
+                    <LabelAndValue
+                        label="Ownership"
+                        vertical
+                        css={!canBreed && { opacity: 0.5 }}
+                    >
                         {ownStatus
                             ? uppercaseFirst(ownStatus) +
                               (boughtPrice
@@ -172,9 +379,14 @@ function BreederPart(props: {
                                   : "")
                             : "Not Owned"}
                     </LabelAndValue>
+                    <BreedingAttachButton
+                        buttonType={ButtonType.STANDARD}
+                        stub={stub}
+                        projectID={projectID}
+                        css={{ minWidth: "70 !important", marginRight: 24 }}
+                    />
                 </div>
             </div>
-            {/* <div><LabelAndValue label="Gender"></LabelAndValue></div> */}
         </div>
     );
 }
@@ -187,21 +399,7 @@ function useBreederStubPairs(projectID: string) {
     }
 
     const allStubsByStubHash = project.breederStubs;
-
-    const incompleteStubs: IPokemonBreederStub[] = [];
-    const completeStubs: IPokemonBreederStub[] = [];
-
-    for (const stubGroup of Object.values(project.breederStubs)) {
-        stubGroup.forEach(stub => {
-            if (stub.attachedPokemonID || !stub.parents) {
-                completeStubs.push(stub);
-            } else {
-                incompleteStubs.push(stub);
-            }
-        });
-    }
-
-    const allStubs = [...incompleteStubs, ...completeStubs];
+    const allStubs = Object.values(allStubsByStubHash).flat();
 
     const matchedStubs: IPokemonBreederStub[] = [];
 
@@ -283,30 +481,30 @@ function useBreederStubPairs(projectID: string) {
     return result;
 }
 
-function stubStatCount(stubWithParents: IBreedingPair) {
-    let count = Object.values(stubWithParents.stub.ivs).filter(
+function stubStatCount(pair: IBreedingPair) {
+    let count = Object.values(pair.stub.ivs).filter(
         iv => iv.value !== 0 && iv.value != null,
     ).length;
 
-    if (stubWithParents.stub.nature) {
+    if (pair.stub.nature) {
         count++;
     }
 
     return count;
 }
 
-function stubHasOwnedParents(stubWithParents: IBreedingPair) {
+function stubHasOwnedParents(pair: IBreedingPair) {
     return (
-        stubWithParents.parents &&
-        stubWithParents.parents.male.attachedPokemonID &&
-        stubWithParents.parents.female.attachedPokemonID
+        pair.parents &&
+        pair.parents.male.attachedPokemonID &&
+        pair.parents.female.attachedPokemonID
     );
 }
 
-function stubHasAOwnedParent(stubWithParents: IBreedingPair) {
+function stubHasAOwnedParent(pair: IBreedingPair) {
     return (
-        stubWithParents.parents &&
-        (stubWithParents.parents.male.attachedPokemonID ||
-            stubWithParents.parents.female.attachedPokemonID)
+        pair.parents &&
+        (pair.parents.male.attachedPokemonID ||
+            pair.parents.female.attachedPokemonID)
     );
 }

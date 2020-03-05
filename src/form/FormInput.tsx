@@ -26,6 +26,7 @@ export const inputFocusCSS: CssType = {
 
 export const inputCSS: CssType = {
     // Clear builtin "border".
+    position: "relative",
     display: "inline-flex",
     alignItems: "center",
     borderRadius: borderRadius,

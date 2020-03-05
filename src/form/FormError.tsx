@@ -15,6 +15,9 @@ export function FormError(props: IProps) {
             css={{
                 color: "red",
                 fontSize: fontSizeSmall,
+                position: "absolute",
+                top: "100%",
+                left: 0,
             }}
         />
     );

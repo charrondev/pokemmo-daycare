@@ -7,9 +7,15 @@ import { getPokemon } from "@pokemmo/data/pokedex";
 import { FormHeading } from "@pokemmo/form/FormHeading";
 import { FormLabel } from "@pokemmo/form/FormLabel";
 import { EggGroupSelect } from "@pokemmo/pokemon/EggGroupSelect";
+import { ivsMeetMinimums } from "@pokemmo/pokemon/IVUtils";
 import { NatureSelect } from "@pokemmo/pokemon/NatureSelect";
 import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
-import { BreedStatus, Gender, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
+import {
+    BreedStatus,
+    Gender,
+    IPokemon,
+    IVRequirements,
+} from "@pokemmo/pokemon/PokemonTypes";
 import { Form, FormikProvider, useFormik } from "formik";
 import React from "react";
 
@@ -21,6 +27,7 @@ export interface IPokemonFilters {
     gender: Gender | null;
     hideUsedPokemon: boolean;
     hideProjectPokemon: boolean;
+    requiredIVs: Partial<IVRequirements>;
 }
 
 export const DEFAULT_POKEMON_FILTERS: IPokemonFilters = {
@@ -31,6 +38,7 @@ export const DEFAULT_POKEMON_FILTERS: IPokemonFilters = {
     gender: null,
     hideUsedPokemon: true,
     hideProjectPokemon: false,
+    requiredIVs: {},
 };
 
 interface IProps {
@@ -116,6 +124,12 @@ export function filterPokemon(
 
         if (filters.eggGroups && filters.eggGroups.length > 0) {
             if (!pokemonHasOneOfEggGroups(poke, filters.eggGroups)) {
+                return false;
+            }
+        }
+
+        if (filters.requiredIVs) {
+            if (!ivsMeetMinimums(poke.ivs, filters.requiredIVs)) {
                 return false;
             }
         }

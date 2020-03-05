@@ -131,7 +131,8 @@ export function PokemonSelect(_props: IProps) {
         isDisabled: !!onlyAllowedIdentifier,
         ...props,
         forcedValue: onlyAllowedIdentifier ?? undefined,
-        initialValue: onlyAllowedIdentifier ?? undefined,
+        initialValue:
+            onlyAllowedIdentifier ?? allowedIdentifiers?.[0] ?? undefined,
         isClearable: !onlyAllowedIdentifier,
         defaultOptions: loadInitialOptions(null),
         loadOptions: loadOptions,
