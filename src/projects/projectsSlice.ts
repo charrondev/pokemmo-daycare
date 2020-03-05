@@ -173,14 +173,19 @@ export const projectsSlice = createSlice({
                 pokemon.projectIDs.forEach(projectID => {
                     const project = state.projectsByID[projectID];
                     if (project) {
-                        // Go through all breeder stubs and remove the pokemon.
-                        Object.values(project.breederStubs)
-                            .flat()
-                            .forEach(stub => {
-                                if (stub.attachedPokemonID === pokemon.id) {
-                                    stub.attachedPokemonID = null;
-                                }
-                            });
+                        if (project.targetPokemonID === pokemon.id) {
+                            // Delete the project.
+                            delete state.projectsByID[projectID];
+                        } else {
+                            // Go through all breeder stubs and remove the pokemon.
+                            Object.values(project.breederStubs)
+                                .flat()
+                                .forEach(stub => {
+                                    if (stub.attachedPokemonID === pokemon.id) {
+                                        stub.attachedPokemonID = null;
+                                    }
+                                });
+                        }
                     }
                 });
             }),

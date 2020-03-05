@@ -9,7 +9,7 @@ import { FormLabel } from "@pokemmo/form/FormLabel";
 import { EggGroupSelect } from "@pokemmo/pokemon/EggGroupSelect";
 import { NatureSelect } from "@pokemmo/pokemon/NatureSelect";
 import { PokemonSelect } from "@pokemmo/pokemon/PokemonSelect";
-import { BreedStatus, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
+import { BreedStatus, Gender, IPokemon } from "@pokemmo/pokemon/PokemonTypes";
 import { Form, FormikProvider, useFormik } from "formik";
 import React from "react";
 
@@ -18,7 +18,9 @@ export interface IPokemonFilters {
     pokemonIdentifiers: string[] | null;
     eggGroups: string[] | null;
     natures: string[] | null;
+    gender: Gender | null;
     hideUsedPokemon: boolean;
+    hideProjectPokemon: boolean;
 }
 
 export const DEFAULT_POKEMON_FILTERS: IPokemonFilters = {
@@ -26,7 +28,9 @@ export const DEFAULT_POKEMON_FILTERS: IPokemonFilters = {
     pokemonIdentifiers: null,
     eggGroups: null,
     natures: null,
+    gender: null,
     hideUsedPokemon: true,
+    hideProjectPokemon: false,
 };
 
 interface IProps {
@@ -84,9 +88,17 @@ export function filterPokemon(
     filters: IPokemonFilters,
 ): IPokemon[] {
     return pokemon.filter(poke => {
+        if (filters.hideProjectPokemon && poke.projectIDs.length > 0) {
+            return false;
+        }
+
         if (filters.hideUsedPokemon && poke.breedStatus === BreedStatus.USED) {
             return false;
         }
+        if (filters.gender && poke.gender !== filters.gender) {
+            return false;
+        }
+
         if (
             filters.pokemonIdentifiers &&
             filters.pokemonIdentifiers.length > 0

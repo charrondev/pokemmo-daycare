@@ -107,6 +107,24 @@ function CalculateBar(props: { project: IProject }) {
     const hasBeenCalculated = breederStubs
         ? Object.keys(breederStubs).length > 0
         : false;
+
+    const calculateBreeders = () => {
+        const breeders = PokemonBuilder.from(pokemon).calculateBreeders({
+            allowedIdentifiers: project.altBreederIdentifiers,
+        });
+        const stubs: Record<string, IPokemonBreederStub[]> = {};
+        breeders.forEach(breeder => {
+            if (stubs[breeder.stubHash]) {
+                stubs[breeder.stubHash].push(breeder);
+            } else {
+                stubs[breeder.stubHash] = [breeder];
+            }
+        });
+
+        updateProject({ projectID, breederStubs: stubs });
+        history.push(`/projects/${project.projectID}/guide`);
+    };
+
     return (
         <>
             <div css={{ height: 32 }}></div>
@@ -128,34 +146,33 @@ function CalculateBar(props: { project: IProject }) {
                 }}
             >
                 <h3 css={{ marginBottom: 0 }}>Breeding Guide</h3>
-                <FormButton
-                    buttonType={ButtonType.PRIMARY}
-                    onClick={() => {
-                        const url = `/projects/${project.projectID}/guide`;
-
-                        if (hasBeenCalculated) {
-                            history.push(url);
-                            return;
-                        }
-
-                        const breeders = PokemonBuilder.from(
-                            pokemon,
-                        ).calculateBreeders();
-                        const stubs: Record<string, IPokemonBreederStub[]> = {};
-                        breeders.forEach(breeder => {
-                            if (stubs[breeder.stubHash]) {
-                                stubs[breeder.stubHash].push(breeder);
-                            } else {
-                                stubs[breeder.stubHash] = [breeder];
+                <div>
+                    {hasBeenCalculated && (
+                        <FormButton
+                            css={{ marginRight: 18 }}
+                            buttonType={ButtonType.STANDARD}
+                            onClick={() => {
+                                calculateBreeders();
+                            }}
+                        >
+                            Recalculate
+                        </FormButton>
+                    )}
+                    <FormButton
+                        buttonType={ButtonType.PRIMARY}
+                        onClick={() => {
+                            if (hasBeenCalculated) {
+                                history.push(
+                                    `/projects/${project.projectID}/guide`,
+                                );
+                                return;
                             }
-                        });
-
-                        updateProject({ projectID, breederStubs: stubs });
-                        history.push(url);
-                    }}
-                >
-                    {hasBeenCalculated ? "View" : "Calculate"}
-                </FormButton>
+                            calculateBreeders();
+                        }}
+                    >
+                        {hasBeenCalculated ? "View" : "Calculate"}
+                    </FormButton>
+                </div>
             </div>
         </>
     );

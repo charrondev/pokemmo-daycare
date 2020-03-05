@@ -3,10 +3,8 @@
  * @license GPL-3.0-only
  */
 
-import { getPokemon } from "@pokemmo/data/pokedex";
 import { ButtonType, FormButton } from "@pokemmo/form/FormButton";
 import { FormSelectSimple } from "@pokemmo/form/FormSelectSimple";
-import { GridLayout, GridSection } from "@pokemmo/layout/GridLayout";
 import {
     PageContainer,
     pageContainerPadding,
@@ -18,29 +16,13 @@ import {
     IPokemonFilters,
     PokemonFilters,
 } from "@pokemmo/pokemon/PokemonFilters";
-import { PokemonGridItem } from "@pokemmo/pokemon/PokemonGridItem";
-import {
-    useAllPokemon,
-    usePokemonActions,
-} from "@pokemmo/pokemon/pokemonHooks";
+import { PokemonGrid, PokemonSort } from "@pokemmo/pokemon/PokemonGrid";
+import { usePokemonActions } from "@pokemmo/pokemon/pokemonHooks";
 import { IPokemon } from "@pokemmo/pokemon/PokemonTypes";
-import {
-    colorPrimary,
-    fontSizeLarge,
-    fontSizeTitle,
-} from "@pokemmo/styles/variables";
+import { colorPrimary, fontSizeLarge } from "@pokemmo/styles/variables";
 import { useQueryParamsSync } from "@pokemmo/utils";
 import queryString from "query-string";
 import React, { useState } from "react";
-
-interface IProps {}
-
-const gridItemPadding = 18;
-
-enum PokemonSort {
-    NAME = "name",
-    EGG_GROUP = "egggroup",
-}
 
 export function PokemonPage() {
     const [sortValue, setSortValue] = useState(PokemonSort.NAME);
@@ -51,7 +33,6 @@ export function PokemonPage() {
 
     useQueryParamsSync(filters, DEFAULT_POKEMON_FILTERS);
 
-    const sortedPokemon = useSortedPokemon(sortValue, filters);
     const [_selectedPokemon, setSelectedPokemon] = useState<IPokemon[]>([]);
     const selectedPokemon = filterPokemon(_selectedPokemon, filters);
 
@@ -73,31 +54,25 @@ export function PokemonPage() {
                         sortValue={sortValue}
                         onSortValueChange={setSortValue}
                     />
-                    <GridLayout>
-                        {Object.values(sortedPokemon).map(
-                            ({ pokemon, title }, i) => {
-                                return (
-                                    <React.Fragment>
-                                        <GridSection
-                                            css={{ fontSize: fontSizeTitle }}
-                                            title={title}
-                                            key={i}
-                                        >
-                                            <PokemonGridItems
-                                                pokemon={pokemon}
-                                                selectedPokemon={
-                                                    selectedPokemon
-                                                }
-                                                setSelectedPokemon={
-                                                    setSelectedPokemon
-                                                }
-                                            />
-                                        </GridSection>
-                                    </React.Fragment>
+                    <PokemonGrid
+                        sort={sortValue}
+                        filters={filters}
+                        selectedPokemon={selectedPokemon}
+                        onPokemonSelected={pokemon => {
+                            if (selectedPokemon.includes(pokemon)) {
+                                setSelectedPokemon(
+                                    selectedPokemon.filter(
+                                        selected => selected !== pokemon,
+                                    ),
                                 );
-                            },
-                        )}
-                    </GridLayout>
+                            } else {
+                                setSelectedPokemon([
+                                    ...selectedPokemon,
+                                    pokemon,
+                                ]);
+                            }
+                        }}
+                    />
                 </div>
             }
             subNav={
@@ -107,52 +82,6 @@ export function PokemonPage() {
                 />
             }
         />
-    );
-}
-
-interface ISelectionManager {
-    selectedPokemon: IPokemon[];
-    setSelectedPokemon: (pokemon: IPokemon[]) => void;
-}
-
-function PokemonGridItems(props: { pokemon: IPokemon[] } & ISelectionManager) {
-    const { selectedPokemon, setSelectedPokemon } = props;
-
-    return (
-        <>
-            {props.pokemon.map(pokemon => {
-                const handleClick = () => {
-                    if (selectedPokemon.includes(pokemon)) {
-                        setSelectedPokemon(
-                            selectedPokemon.filter(
-                                selected => selected !== pokemon,
-                            ),
-                        );
-                    } else {
-                        setSelectedPokemon([...selectedPokemon, pokemon]);
-                    }
-                };
-                return (
-                    <PokemonGridItem
-                        css={{
-                            margin: gridItemPadding,
-                            minWidth: 300,
-                        }}
-                        pokemon={pokemon}
-                        key={pokemon.id}
-                        isSelected={selectedPokemon.includes(pokemon)}
-                        onClick={handleClick}
-                        onKeyDown={e => {
-                            if (e.key === " ") {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleClick();
-                            }
-                        }}
-                    />
-                );
-            })}
-        </>
     );
 }
 
@@ -271,95 +200,4 @@ function PokemonActionHeader(props: {
             </PageContainer>
         </header>
     );
-}
-
-type ISortedPokemon = Record<
-    string,
-    {
-        title: string;
-        pokemon: IPokemon[];
-    }
->;
-
-function useSortedPokemon(
-    sortValue: PokemonSort,
-    filters: IPokemonFilters,
-): ISortedPokemon {
-    const allPokemonByID = useAllPokemon();
-    const allPokemon = filterPokemon(Object.values(allPokemonByID), filters);
-
-    // Apply sorting
-
-    switch (sortValue) {
-        case PokemonSort.EGG_GROUP: {
-            const pokemonByEggGroup: ISortedPokemon = {};
-            allPokemon.forEach(pokemon => {
-                const dexMon = getPokemon(pokemon.identifier);
-                if (!dexMon) {
-                    return;
-                }
-
-                if (
-                    !filters.eggGroups ||
-                    filters.eggGroups.length === 0 ||
-                    filters.eggGroups.includes(dexMon.eggGroup1)
-                ) {
-                    const existingEgg1 = pokemonByEggGroup[
-                        dexMon.eggGroup1
-                    ] ?? {
-                        title: dexMon.eggGroup1,
-                        pokemon: [],
-                    };
-
-                    existingEgg1.pokemon.push(pokemon);
-                    pokemonByEggGroup[dexMon.eggGroup1] = existingEgg1;
-                }
-
-                if (dexMon.eggGroup2) {
-                    if (
-                        !filters.eggGroups ||
-                        filters.eggGroups.length === 0 ||
-                        filters.eggGroups.includes(dexMon.eggGroup2)
-                    ) {
-                        const existingEgg2 = pokemonByEggGroup[
-                            dexMon.eggGroup2
-                        ] ?? {
-                            title: dexMon.eggGroup2,
-                            pokemon: [],
-                        };
-                        existingEgg2.pokemon.push(pokemon);
-                        pokemonByEggGroup[dexMon.eggGroup2] = existingEgg2;
-                    }
-                }
-            });
-            return sortObjectByKey(pokemonByEggGroup);
-        }
-        case PokemonSort.NAME:
-        default: {
-            const pokemonByName: ISortedPokemon = {};
-            allPokemon.forEach(pokemon => {
-                const dexMon = getPokemon(pokemon.identifier);
-                if (!dexMon) {
-                    return;
-                }
-                const existingByName = pokemonByName[pokemon.identifier] ?? {
-                    title: dexMon.displayName,
-                    pokemon: [],
-                };
-                existingByName.pokemon.push(pokemon);
-                pokemonByName[pokemon.identifier] = existingByName;
-            });
-            return sortObjectByKey(pokemonByName);
-        }
-    }
-}
-
-function sortObjectByKey<T extends object>(object: T): T {
-    const result: T = {} as T;
-    Object.keys(object)
-        .sort()
-        .forEach(key => {
-            (result as any)[key] = (object as any)[key] as any;
-        });
-    return result;
 }

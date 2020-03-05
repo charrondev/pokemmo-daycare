@@ -38,6 +38,7 @@ import * as Yup from "yup";
 
 interface IProps extends React.ComponentProps<typeof Dialog> {
     isProject?: boolean;
+    projectID?: string;
     afterSubmit?: (pokemon: IPokemon) => void;
     requirements?: IPokemonFormRequirements;
 }
@@ -85,7 +86,13 @@ const ownershipOptions: IToggleButtonOption[] = Object.values(
 
 export function PokemonForm(_props: IProps) {
     const { addPokemon } = usePokemonActions();
-    const { afterSubmit, isProject, requirements, ...props } = _props;
+    const {
+        afterSubmit,
+        isProject,
+        requirements,
+        projectID,
+        ...props
+    } = _props;
 
     const form = useFormik({
         initialValues: INITIAL_FORM,
@@ -97,12 +104,17 @@ export function PokemonForm(_props: IProps) {
             if (!values.pokemon) {
                 return;
             }
-            const pokemon = PokemonBuilder.create(values.pokemon)
+            const builder = PokemonBuilder.create(values.pokemon)
                 .ivs(values.stats)
                 .gender(values.gender)
                 .nature(values.nature)
-                .ownershipStatus(values.ownershipStatus, values.cost ?? 0)
-                .result();
+                .ownershipStatus(values.ownershipStatus, values.cost ?? 0);
+
+            if (projectID) {
+                builder.projectIDs([projectID]);
+            }
+
+            const pokemon = builder.result();
 
             addPokemon([pokemon]);
             props.onDismiss?.();

@@ -52,9 +52,8 @@ export const pokemonSlice = createSlice({
         },
     },
     extraReducers: builder => {
-        builder.addCase(
-            stubSlice.actions.attachPokemonToStub,
-            (state, action) => {
+        builder
+            .addCase(stubSlice.actions.attachPokemonToStub, (state, action) => {
                 const { projectID, pokemonID } = action.payload;
                 const pokemon = state.pokemonByID[pokemonID];
                 if (pokemon) {
@@ -64,7 +63,18 @@ export const pokemonSlice = createSlice({
                         pokemon.projectIDs = [projectID];
                     }
                 }
-            },
-        );
+            })
+            .addCase(
+                stubSlice.actions.detachPokemonFromStub,
+                (state, action) => {
+                    const { projectID, pokemonID } = action.payload;
+                    const pokemon = state.pokemonByID[pokemonID];
+                    if (pokemon) {
+                        const ids = new Set(pokemon.projectIDs);
+                        ids.delete(projectID);
+                        pokemon.projectIDs = [];
+                    }
+                },
+            );
     },
 });

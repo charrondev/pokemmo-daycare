@@ -81,7 +81,7 @@ const formatNatureLabel = (
     meta: FormatOptionLabelMeta<any>,
 ) => {
     if (meta.context === "menu") {
-        return <NatureView nature={option.nature} />;
+        return <NatureView nature={option.value} />;
     }
     return option.label;
 };

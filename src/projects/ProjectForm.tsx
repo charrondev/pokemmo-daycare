@@ -11,7 +11,7 @@ import {
 import { IProject } from "@pokemmo/projects/projectsSlice";
 import { uuidv4 } from "@pokemmo/utils";
 import { Dialog } from "@reach/dialog";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 export function useForceUpdate() {
@@ -28,14 +28,18 @@ export function ProjectForm(props: IProps) {
     const history = useHistory();
     const projectCount = useProjectCount();
     const { addProject } = useProjectActions();
+    const projectID = useMemo(() => {
+        return uuidv4();
+    }, []);
     return (
         <PokemonForm
             {...props}
             isProject
+            projectID={projectID}
             afterSubmit={pokemon => {
                 const project: IProject = {
+                    projectID,
                     projectName: `Project ${projectCount + 1}`,
-                    projectID: uuidv4(),
                     targetPokemonID: pokemon.id,
                     breederPokemonIDs: [],
                     breederStubs: {},

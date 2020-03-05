@@ -15,8 +15,9 @@ interface IProps extends React.HTMLAttributes<HTMLLabelElement> {
 
 export const labelStyle: CssType = {
     fontSize: fontSizeNormal,
-    margin: "4px 4px",
     fontWeight: "bold",
+    whiteSpace: "nowrap",
+    marginRight: 4,
 };
 
 export function LabelAndValue(_props: IProps) {
@@ -27,9 +28,11 @@ export function LabelAndValue(_props: IProps) {
             css={[
                 {
                     display: "flex",
+                    flexWrap: "wrap",
                     fontSize: fontSizeNormal,
                     alignItems: "center",
                     minHeight: 25,
+                    padding: 4,
                 },
                 inline && {
                     display: "inline-block",
