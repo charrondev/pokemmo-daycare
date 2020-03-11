@@ -17,6 +17,8 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 const emotionCache = createCache();
 emotionCache.compat = true;
 
+console.log("Hello");
+
 function App() {
     return (
         <>
